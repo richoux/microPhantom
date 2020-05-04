@@ -8,7 +8,7 @@ You may want use a more recent version.  To do so:
 
 1. Clone [microRTS](https://github.com/santiontanon/microrts).
 2. Compile      its      JAR      file      following      [these instructions](https://github.com/santiontanon/microrts#generating-a-jar-file).
-3. Copy `microrts_folder/bin/microrts.jar` in `microphantom/lib`.
+3. Copy `microrts_folder/bin/microrts.jar` in `microPhantom/lib`.
 
 
 ## Compiling our bot
