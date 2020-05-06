@@ -23,7 +23,7 @@ SRCDIR=src
 OBJDIR=obj
 OBJ_PESSIMISTIC=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main_pessimistic.o)
 OBJ_OPTIMISTIC=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main_optimistic.o)
-#BINDIR=../src/ai/poadaptive
+#BINDIR=../src/ai/microPhantom
 BINDIR=.
 INCLUDEDIR=../include
 LIBDIR=../lib
@@ -53,11 +53,11 @@ debug: $(BINDIR)/$(EXEC)
 
 $(BINDIR)/$(EXEC_PESSIMISTIC): $(OBJ_PESSIMISTIC)
 	$(CXX) -o  $@ $^ -L$(LIBDIR) $(LDFLAGS)
-	ln -sf ../../../problem_model/$(EXEC_PESSIMISTIC) ../src/ai/poadaptive/
+	ln -sf ../../../problem_model/$(EXEC_PESSIMISTIC) ../src/ai/microPhantom/
 
 $(BINDIR)/$(EXEC_OPTIMISTIC): $(OBJ_OPTIMISTIC)
 	$(CXX) -o $@ $^ -L$(LIBDIR) $(LDFLAGS)
-	ln -sf ../../../problem_model/$(EXEC_OPTIMISTIC) ../src/ai/poadaptive/
+	ln -sf ../../../problem_model/$(EXEC_OPTIMISTIC) ../src/ai/microPhantom/
 
 $(OBJDIR)/main_pessimistic.o: $(SRCDIR)/main.cpp
 	$(CXX) $(CXXFLAGS) -c -DPESSIMISTIC -I$(INCLUDEDIR) $< -o $@

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.poadaptive;
+package ai.microPhantom;
 
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -43,22 +43,22 @@ import java.io.PrintWriter;
  *
  * @author santi
  */
-public class RandomPOAdaptive extends POAdaptive {
+public class RandomMicroPhantom extends MicroPhantom {
 
     boolean heavy=false;
     
-    public RandomPOAdaptive(UnitTypeTable a_utt, String distribution_file_b, String distribution_file_wb, String solver) {
+    public RandomMicroPhantom(UnitTypeTable a_utt, String distribution_file_b, String distribution_file_wb, String solver) {
         this(a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver);
     }
 
-    public RandomPOAdaptive(UnitTypeTable a_utt, PathFinding a_pf, String distribution_file_b, String distribution_file_wb, String solver) {
+    public RandomMicroPhantom(UnitTypeTable a_utt, PathFinding a_pf, String distribution_file_b, String distribution_file_wb, String solver) {
         super(a_utt, a_pf, distribution_file_b, distribution_file_wb, solver);
         
     }
 
     @Override
     public AI clone() {
-        return new RandomPOAdaptive(utt, pf, distribution_file_b, distribution_file_woutb, solver_name);
+        return new RandomMicroPhantom(utt, pf, distribution_file_b, distribution_file_woutb, solver_name);
     }
 
     @Override

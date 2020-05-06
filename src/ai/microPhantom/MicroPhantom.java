@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.poadaptive;
+package ai.microPhantom;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.lang.NumberFormatException;
@@ -42,10 +42,10 @@ import java.io.PrintWriter;
 
 
 /**
- * @author Valentin Antuari
- * (modifications from Florian Richoux)
+ * @author Florian Richoux
+ * (based upon POAdaptive by Valentin Antuari)
  */
-public class POAdaptive extends AbstractionLayerAI
+public class MicroPhantom extends AbstractionLayerAI
 {
 	Random r = new Random();
 	protected UnitTypeTable utt;
@@ -96,7 +96,7 @@ public class POAdaptive extends AbstractionLayerAI
 
 	boolean barracks;
 
-	public POAdaptive( UnitTypeTable a_utt,
+	public MicroPhantom( UnitTypeTable a_utt,
 	                   PathFinding a_pf,
 	                   String distribution_file_b,
 	                   String distribution_file_wb,
@@ -112,7 +112,7 @@ public class POAdaptive extends AbstractionLayerAI
 		}
 	}
 
-	public POAdaptive( UnitTypeTable a_utt,
+	public MicroPhantom( UnitTypeTable a_utt,
 	                   String distribution_file_b,
 	                   String distribution_file_wb,
 	                   String solver_path )
@@ -120,7 +120,7 @@ public class POAdaptive extends AbstractionLayerAI
 		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver_path );
 	}
 
-	public POAdaptive( UnitTypeTable a_utt,
+	public MicroPhantom( UnitTypeTable a_utt,
 	                   PathFinding a_pf,
 	                   String distribution_file_b,
 	                   String distribution_file_wb,
@@ -187,7 +187,7 @@ public class POAdaptive extends AbstractionLayerAI
 
 		try
 		{
-			writer_log = new PrintWriter( "src/ai/poadaptive/solver.log", "UTF-8" );
+			writer_log = new PrintWriter( "src/ai/microPhantom/solver.log", "UTF-8" );
 		}
 		catch( IOException e1 )
 		{
@@ -246,9 +246,16 @@ public class POAdaptive extends AbstractionLayerAI
 		// System.out.println(distribution);
 	}
 
+	@Override
+	public void gameOver(int winner) throws Exception
+	{
+		System.out.println("Closing miroPhantom AI");
+		writer_log.close();
+	}
+	
 	public AI clone()
 	{
-		return new POAdaptive( utt, pf, distribution_file_b, distribution_file_woutb, solver_path, heat_map );
+		return new MicroPhantom( utt, pf, distribution_file_b, distribution_file_woutb, solver_path, heat_map );
 	}
 
 	public void reset()
@@ -920,8 +927,14 @@ public class POAdaptive extends AbstractionLayerAI
 			// write parameter for solver in a file
 			try
 			{
-				PrintWriter writer = new PrintWriter( "src/ai/poadaptive/data_solver", "UTF-8" );
+				PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
 				writer_log.println( "Time: " + time );
+
+				// Samples indexes:
+				// 0 for worker
+				// 1 for heavy
+				// 2 for ranged
+				// 3 for light
 				for( int i = 0 ; i < nbSamples ; ++i )
 				{
 					writer.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
@@ -934,16 +947,14 @@ public class POAdaptive extends AbstractionLayerAI
 				writer_log.println( playerHeavy );
 				writer_log.println( playerRanged );
 				writer_log.println( playerLight );
+
 				if( p.getResources() <= 2 )
-				{
 					writer.println( 3 );
-					writer_log.println( 3 );
-				}
 				else
-				{
 					writer.println( p.getResources() );
-					writer_log.println( p.getResources() );
-				}
+
+				writer_log.println( p.getResources() );
+
 				writer_log.println("#########\n");
 				writer.close();
 			}
@@ -951,7 +962,7 @@ public class POAdaptive extends AbstractionLayerAI
 			{
 				System.out.println( "Exception in printer" );
 			}
-
+			
 			// get solutions
 			boolean no_train = false;
 			try
@@ -964,16 +975,11 @@ public class POAdaptive extends AbstractionLayerAI
 				else
 					solver_name = solver_path + "solver_cpp_pessimistic";
 					
-				Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/poadaptive/data_solver", nbSamples ) );
+				Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nbSamples ) );
 				process.waitFor();
 
 				BufferedReader b = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
-				// String line = "";
 
-				// while ((line = b.readLine()) != null) {
-				//		 System.out.println(line);
-				//		 // System.out.println("LINE");
-				// }
 				if( INFO )
 				{
 					System.out.println( "Trace after calling the solver:" );
@@ -981,16 +987,12 @@ public class POAdaptive extends AbstractionLayerAI
 					System.out.println( b.readLine() );
 					System.out.println( b.readLine() );
 				}
-				else
-				{
-					b.readLine();
-					b.readLine();
-					b.readLine();
-				}
 
 				sol_heavy = Integer.parseInt( b.readLine() );
 				sol_ranged = Integer.parseInt( b.readLine() );
 				sol_light = Integer.parseInt( b.readLine() );
+
+				System.out.println( "H" + sol_heavy + " R" + sol_ranged + " L" + sol_light + "\n" );
 
 				if( INFO )
 					System.out.println( "H" + sol_heavy + " R" + sol_ranged + " L" + sol_light + "\n\n" );

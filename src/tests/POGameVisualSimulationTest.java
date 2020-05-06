@@ -4,8 +4,8 @@
  */
 package tests;
 
-import ai.poadaptive.POAdaptive;
-import ai.poadaptive.RandomPOAdaptive;
+import ai.microPhantom.MicroPhantom;
+import ai.microPhantom.RandomMicroPhantom;
 
 
 import ai.core.AI;
@@ -61,8 +61,8 @@ public class POGameVisualSimulationTest {
 		int PERIOD = 50;
 		boolean gameover = false;
 
-		AI ai1 = new POAdaptive(utt, "src/ai/poadaptive/distributions.xml", "src/ai/poadaptive/distribution_woutb.xml", "src/ai/poadaptive/");
-		//AI ai1 = new RandomPOAdaptive(utt, "src/ai/poadaptive/distributions.xml", "src/ai/poadaptive/distribution_woutb.xml", "src/ai/poadaptive/");
+		AI ai1 = new MicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/");
+		//AI ai1 = new RandomMicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/");
 
 		//AI ai2 = new POLightRush(utt, new BFSPathFinding());
 		AI ai2 = new POLightRush(utt);

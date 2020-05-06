@@ -21,6 +21,8 @@ int main( int argv, char *argc[] )
 {
 	std::ifstream infile(argc[1]);
 
+	std::ofstream outfile("run.log");
+
 	int nb_samples = std::stoi(argc[2]);
 	int sampled_worker, sampled_heavy, sampled_range, sampled_light;
 	int resources, my_heavy_units, my_range_units, my_light_units;
@@ -39,24 +41,27 @@ int main( int argv, char *argc[] )
 	infile >> my_light_units;
 	infile >> resources;
 
-	cout << "My units H/R/L: " << my_heavy_units << ", " << my_range_units << ", " << my_light_units << "\n"
-	     << "Resources: " << resources << "\n";
+	// cout << "My units H/R/L: " << my_heavy_units << ", " << my_range_units << ", " << my_light_units << "\n"
+	//      << "Resources: " << resources << "\n";
+
+	//outfile << "assign_Lh, assign_Hh, assign_Rh, assign_Ll, assign_Hl, assign_Rl, assign_Lr, assign_Hr, assign_Rr, to_prod_H, to_prod_L, to_prod_R\n//////////////////////////////////////////\n\n";
+
 	
 	vector<Variable> variables;
 
-	variables.push_back( Variable( "Light assigned to heavy", "assign_Lh", 0, 20 + my_light_units ) );
+	variables.push_back( Variable( "Light assigned to heavy", "assign_Lh", 0, 20 + my_light_units ) ); //0
 	variables.push_back( Variable( "Heavy assigned to heavy", "assign_Hh", 0, 20 + my_heavy_units ) );
 	variables.push_back( Variable( "Range assigned to heavy", "assign_Rh", 0, 20 + my_range_units ) );
 
-	variables.push_back( Variable( "Light assigned to light", "assign_Ll", 0, 20 + my_light_units ) );
+	variables.push_back( Variable( "Light assigned to light", "assign_Ll", 0, 20 + my_light_units ) ); //3
 	variables.push_back( Variable( "Heavy assigned to light", "assign_Hl", 0, 20 + my_heavy_units ) );
 	variables.push_back( Variable( "Range assigned to light", "assign_Rl", 0, 20 + my_range_units ) );
 
-	variables.push_back( Variable( "Light assigned to range", "assign_Lr", 0, 20 + my_light_units ) );
+	variables.push_back( Variable( "Light assigned to range", "assign_Lr", 0, 20 + my_light_units ) ); //6
 	variables.push_back( Variable( "Heavy assigned to range", "assign_Hr", 0, 20 + my_heavy_units ) );
 	variables.push_back( Variable( "Range assigned to range", "assign_Rr", 0, 20 + my_range_units ) );
 
-	variables.push_back( Variable( "Heavy to produce", "to_prod_H", 0, 20 ) ); 
+	variables.push_back( Variable( "Heavy to produce", "to_prod_H", 0, 20 ) ); //9
 	variables.push_back( Variable( "Light to produce", "to_prod_L", 0, 20 ) ); 
 	variables.push_back( Variable( "Range to produce", "to_prod_R", 0, 20 ) ); 
 
@@ -106,9 +111,23 @@ int main( int argv, char *argc[] )
 	 * The 3 first lines are dummy lines, just for debug
 	 * The 3 last lines contain necessary information: number of heavy/range/light units to produce
 	 */
-	cout << "Solve ..." << "\n";
-	cout << solver_p.solve( cost_p, solution, 10000, 100000 ) << " : " << cost_p << " / " << obj->cost( variables ) << "\n";
-	cout << "To produce H/R/L: " << solution[9] << ", " << solution[11] << ", " << solution[10] << "\n";
+	// cout << "Solve ..." << "\n";
+	// cout << solver_p.solve( cost_p, solution, 10000, 100000 ) << " : " << cost_p << " / " << obj->cost( variables ) << "\n";
+	solver_p.solve( cost_p, solution, 10000, 100000 );
+	cout << solution[9] << "\n" << solution[11] << "\n" << solution[10] << "\n";
 
+	outfile << solution[0] << ", "
+	        << solution[1] << ", "
+	        << solution[2] << ", "
+	        << solution[3] << ", "
+	        << solution[4] << ", "
+	        << solution[5] << ", "
+	        << solution[6] << ", "
+	        << solution[7] << ", "
+	        << solution[8] << ", "
+	        << solution[9] << ", "
+	        << solution[10] << ", "
+	        << solution[11] << "\n";
+	
 	return 0;
 }

@@ -1,11 +1,12 @@
 *.class
-POAdaptive.jar
+run.log
+MicroPhantom.jar
 /bin/
 /.classpath
 /.project
-src/ai/poadaptive/data_solver
-src/ai/poadaptive/solver.log
-src/ai/poadaptive/solver_cpp*
+src/ai/microPhantom/data_solver
+src/ai/microPhantom/solver.log
+src/ai/microPhantom/solver_cpp*
 problem_model/solver_cpp*
 problem_model/src/solver
 *.o
