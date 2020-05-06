@@ -10,12 +10,18 @@ using namespace ghost;
 
 class Stock : public Constraint
 {
+	int _heavyCost, _lightCost, _rangeCost;
+	int _nb_barracks;
 	double _stock;
 
 	double required_cost() const override;
 
 public:
 	Stock( const vector< reference_wrapper<Variable> >& variables,
+	       int heavyCost,
+	       int lightCost,
+	       int rangeCost,
+	       int nb_barracks,
 	       double stock );
 };
 

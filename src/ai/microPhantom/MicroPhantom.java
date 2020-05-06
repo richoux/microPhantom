@@ -832,6 +832,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		int playerRanged = 0;
 		int playerLight = 0;
 		int playerWorker = 0;
+		int playerBarracks = 0;
 
 		int sol_heavy = 0;
 		int sol_ranged = 0;
@@ -868,6 +869,8 @@ public class MicroPhantom extends AbstractionLayerAI
 							++playerLight;
 						else if( u2.getType().ID == rangedType.ID )
 							++playerRanged;
+						else if( u2.getType().ID == barracksType.ID )
+							++playerBarracks;
 					}
 			}
 
@@ -940,6 +943,16 @@ public class MicroPhantom extends AbstractionLayerAI
 					writer.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
 					writer_log.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
 				}
+
+				writer.println( heavyType.cost );
+				writer.println( rangedType.cost );
+				writer.println( lightType.cost );
+				writer_log.println( heavyType.cost );
+				writer_log.println( rangedType.cost );
+				writer_log.println( lightType.cost );
+
+				writer.println( playerBarracks );
+				writer_log.println( playerBarracks );
 				
 				writer.println( playerHeavy );
 				writer.println( playerRanged );
@@ -948,11 +961,12 @@ public class MicroPhantom extends AbstractionLayerAI
 				writer_log.println( playerRanged );
 				writer_log.println( playerLight );
 
-				if( p.getResources() <= 2 )
-					writer.println( 3 );
-				else
-					writer.println( p.getResources() );
+				// if( p.getResources() <= 2 )
+				// 	writer.println( 3 );
+				// else
+				// 	writer.println( p.getResources() );
 
+				writer.println( p.getResources() );
 				writer_log.println( p.getResources() );
 
 				writer_log.println("#########\n");

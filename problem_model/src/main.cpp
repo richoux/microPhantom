@@ -21,10 +21,13 @@ int main( int argv, char *argc[] )
 {
 	std::ifstream infile(argc[1]);
 
-	std::ofstream outfile("run.log");
+	std::ofstream outfile;
+	outfile.open("run.log", std::ios::app);
 
 	int nb_samples = std::stoi(argc[2]);
 	int sampled_worker, sampled_heavy, sampled_range, sampled_light;
+	int heavyCost, rangeCost, lightCost;
+	int nb_barracks;
 	int resources, my_heavy_units, my_range_units, my_light_units;
 
 	std::vector<std::vector<int>> samples;
@@ -36,6 +39,10 @@ int main( int argv, char *argc[] )
 		samples.push_back( tmp );
 	}
 
+	infile >> heavyCost;
+	infile >> rangeCost;
+	infile >> lightCost;
+	infile >> nb_barracks;
 	infile >> my_heavy_units;
 	infile >> my_range_units;
 	infile >> my_light_units;
@@ -79,7 +86,7 @@ int main( int argv, char *argc[] )
 	shared_ptr<Constraint> assign_heavy = make_shared<Assignment>( variables_assign_heavy, my_heavy_units );
 	shared_ptr<Constraint> assign_light = make_shared<Assignment>( variables_assign_light, my_light_units );
 	shared_ptr<Constraint> assign_range = make_shared<Assignment>( variables_assign_range, my_range_units );
-	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, resources );
+	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, heavyCost, lightCost, rangeCost, nb_barracks, resources );
 
 	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_range, stock };
 

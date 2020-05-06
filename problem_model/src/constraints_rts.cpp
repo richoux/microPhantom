@@ -12,18 +12,27 @@ using namespace ghost;
  *******************/
 
 Stock::Stock( const vector<reference_wrapper< Variable> >& variables,
+              int heavyCost,
+              int lightCost,
+              int rangeCost,
+              int nb_barracks,
               double stock )
 	: Constraint(variables),
+	  _heavyCost(heavyCost),
+	  _lightCost(lightCost),
+	  _rangeCost(rangeCost),
+	  _nb_barracks(nb_barracks),
 	  _stock(stock)
 { }
 
-// 3*to_produce_H + 2*( to_produce_L + to_produce_R ) <= stock
+// H_cost*to_produce_H + L_cost*to_produce_L + R_cost*to_produce_R <= stock
 double Stock::required_cost() const
 {
-	double sum = 3 * variables[0].get().get_value()
-		+ 2 * ( variables[1].get().get_value() + variables[2].get().get_value() );
+	double sum = _heavyCost * variables[0].get().get_value()
+	           + _lightCost * variables[1].get().get_value()
+	           + _rangeCost * variables[2].get().get_value();
 
-	return std::max( 0., sum - _stock );
+	return std::max( 0., sum - ( _stock + _nb_barracks ) );
 }
 
 
