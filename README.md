@@ -20,7 +20,7 @@ You may want use a more recent version.  To do so:
 3. Copy `microrts_folder/bin/microrts.jar` in `microPhantom/lib`.
 
 
-## Compiling our bot
+## Compiling microPhantom
 
 Follow this simple procedure:
 
@@ -28,12 +28,12 @@ Follow this simple procedure:
 `$> make`
 
 It will compile two executables `solver_cpp_optimistic` and
-`solver_cpp_pessimistic` and make symbolic links toward them in the
-src/ai/microPhantom folder where our bot is.
+`solver_cpp_pessimistic` and make symbolic links toward them in
+`microPhantom/src/ai/microPhantom`.
 
 You can run the script `launch.sh`  to be sure everything is (locally) ok!
 
-## Running our bot
+## Running microPhantom
 
 The simplest way is to run the following script:
 
