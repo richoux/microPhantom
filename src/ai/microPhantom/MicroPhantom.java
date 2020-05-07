@@ -173,19 +173,19 @@ public class MicroPhantom extends AbstractionLayerAI
 
 			int end = w.length;
 			for( int i = 0 ; i < end ; ++i )
-				listW.add(Float.parseFloat(w[i]));
+				listW.add( Float.parseFloat( w[i] ) );
 
 			end = r.length;
 			for( int i = 0 ; i < end ; ++i )
-				listR.add(Float.parseFloat(r[i]));
+				listR.add( Float.parseFloat( r[i] ) );
 
 			end = l.length;
 			for( int i = 0 ; i < end ; ++i )
-				listL.add(Float.parseFloat(l[i]));
+				listL.add( Float.parseFloat( l[i] ) );
 
 			end = h.length;
 			for( int i = 0 ; i < end ; ++i )
-				listH.add(Float.parseFloat(h[i]));
+				listH.add( Float.parseFloat( h[i] ) );
 
 			tmp.put( "worker", listW );
 			tmp.put( "ranged", listR );
@@ -253,7 +253,6 @@ public class MicroPhantom extends AbstractionLayerAI
 
 			distribution_woutb.put( Integer.parseInt( item.getAttribute( "time" ).getValue() ), tmp );
 		}
-		// System.out.println(distribution);
 	}
 
 	@Override
