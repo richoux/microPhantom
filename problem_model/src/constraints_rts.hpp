@@ -8,6 +8,17 @@
 using namespace std;
 using namespace ghost;
 
+class Assignment : public Constraint
+{
+	double _possessed_units;
+
+	double required_cost() const override;
+
+public:
+	Assignment( const vector< reference_wrapper<Variable> >& variables,
+	            double rhs );
+};
+
 class Stock : public Constraint
 {
 	int _heavyCost, _lightCost, _rangeCost;
@@ -25,13 +36,13 @@ public:
 	       double stock );
 };
 
-class Assignment : public Constraint
+class ProductionCapacity : public Constraint
 {
-	double _possessed_units;
+	int _nb_barracks;
 
 	double required_cost() const override;
 
 public:
-	Assignment( const vector< reference_wrapper<Variable> >& variables,
-	            double rhs );
+	ProductionCapacity( const vector< reference_wrapper<Variable> >& variables,
+	                    int nb_barracks );
 };

@@ -56,6 +56,7 @@ int main( int argv, char *argc[] )
 	
 	vector<Variable> variables;
 
+	// Our units assigned to enemy units
 	variables.push_back( Variable( "Light assigned to heavy", "assign_Lh", 0, 20 + my_light_units ) ); //0
 	variables.push_back( Variable( "Heavy assigned to heavy", "assign_Hh", 0, 20 + my_heavy_units ) );
 	variables.push_back( Variable( "Range assigned to heavy", "assign_Rh", 0, 20 + my_range_units ) );
@@ -72,23 +73,18 @@ int main( int argv, char *argc[] )
 	variables.push_back( Variable( "Light to produce", "to_prod_L", 0, 20 ) ); 
 	variables.push_back( Variable( "Range to produce", "to_prod_R", 0, 20 ) ); 
 
-	//vector< reference_wrapper<Variable> > variables_assign_heavy( variables.begin(), variables.begin() + 3 );
-	vector< reference_wrapper<Variable> > variables_assign_heavy{ variables[0], variables[1], variables[2], variables[9] };
-
-	//vector< reference_wrapper<Variable> > variables_assign_light( variables.begin() + 3, variables.begin() + 6 );
-	vector< reference_wrapper<Variable> > variables_assign_light{ variables[3], variables[4], variables[5], variables[10] };
-
-	//vector< reference_wrapper<Variable> > variables_assign_range( variables.begin() + 6, variables.begin() + 9 );
-	vector< reference_wrapper<Variable> > variables_assign_range{ variables[6], variables[7], variables[8], variables[11] };
-
+	vector< reference_wrapper<Variable> > variables_heavy{ variables[1], variables[4], variables[7], variables[9] };
+	vector< reference_wrapper<Variable> > variables_light{ variables[0], variables[3], variables[6], variables[10] };
+	vector< reference_wrapper<Variable> > variables_range{ variables[2], variables[5], variables[8], variables[11] };
 	vector< reference_wrapper<Variable> > variables_stock( variables.begin() + 9, variables.end() );
 
-	shared_ptr<Constraint> assign_heavy = make_shared<Assignment>( variables_assign_heavy, my_heavy_units );
-	shared_ptr<Constraint> assign_light = make_shared<Assignment>( variables_assign_light, my_light_units );
-	shared_ptr<Constraint> assign_range = make_shared<Assignment>( variables_assign_range, my_range_units );
+	shared_ptr<Constraint> assign_heavy = make_shared<Assignment>( variables_heavy, my_heavy_units );
+	shared_ptr<Constraint> assign_light = make_shared<Assignment>( variables_light, my_light_units );
+	shared_ptr<Constraint> assign_range = make_shared<Assignment>( variables_range, my_range_units );
 	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, heavyCost, lightCost, rangeCost, nb_barracks, resources );
+	shared_ptr<Constraint> capacity = make_shared<ProductionCapacity>( variables_stock, nb_barracks );
 
-	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_range, stock };
+	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_range, stock, capacity };
 
 #if defined(PESSIMISTIC)
 	auto phi_callback = pessimistic();

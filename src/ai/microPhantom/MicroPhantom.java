@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ai.microPhantom;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,7 +33,6 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-// import java.lang.Float.parseFloat;
 
 
 /**
@@ -54,13 +48,6 @@ public class MicroPhantom extends AbstractionLayerAI
 	public static boolean DEBUG = false;
 
 	public static int NB_SAMPLE = 50;
-
-	public static float WORKER_PER_LIGHT = 5.f;
-	public static float WORKER_PER_RANGED = 5.f;
-	public static float HEAVY_PER_HEAVY = 0.5f;
-	public static float HEAVY_PER_RANGED = 0.5f;
-	public static float RANGED_PER_LIGHT = 1.5f;
-	public static float LIGHT_PER_HEAVY = 1.5f;
 
 	public static PrintWriter writer_log;
 
@@ -97,11 +84,11 @@ public class MicroPhantom extends AbstractionLayerAI
 	boolean barracks;
 
 	public MicroPhantom( UnitTypeTable a_utt,
-	                   PathFinding a_pf,
-	                   String distribution_file_b,
-	                   String distribution_file_wb,
-	                   String solver_path,
-	                   double[][] heat_map )
+	                     PathFinding a_pf,
+	                     String distribution_file_b,
+	                     String distribution_file_wb,
+	                     String solver_path,
+	                     double[][] heat_map )
 	{
 		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver_path );
 		if( heat_map != null )
@@ -113,18 +100,18 @@ public class MicroPhantom extends AbstractionLayerAI
 	}
 
 	public MicroPhantom( UnitTypeTable a_utt,
-	                   String distribution_file_b,
-	                   String distribution_file_wb,
-	                   String solver_path )
+	                     String distribution_file_b,
+	                     String distribution_file_wb,
+	                     String solver_path )
 	{
 		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver_path );
 	}
 
 	public MicroPhantom( UnitTypeTable a_utt,
-	                   PathFinding a_pf,
-	                   String distribution_file_b,
-	                   String distribution_file_wb,
-	                   String solver_path )
+	                     PathFinding a_pf,
+	                     String distribution_file_b,
+	                     String distribution_file_wb,
+	                     String solver_path )
 	{
 		super( a_pf );
 		reset( a_utt );
@@ -193,7 +180,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		{
 			System.out.println( "Exception with writer log" );
 		}
-		
+
 		try
 		{
 			document = sxb.build( new File( distribution_file_woutb ) );
@@ -249,10 +236,10 @@ public class MicroPhantom extends AbstractionLayerAI
 	@Override
 	public void gameOver(int winner) throws Exception
 	{
-		System.out.println("Closing miroPhantom AI");
+		System.out.println("Closing microPhantom AI");
 		writer_log.close();
 	}
-	
+
 	public AI clone()
 	{
 		return new MicroPhantom( utt, pf, distribution_file_b, distribution_file_woutb, solver_path, heat_map );
@@ -372,7 +359,7 @@ public class MicroPhantom extends AbstractionLayerAI
 			    && u.getPlayer() == player
 			    && gs.getActionAssignment(u) == null )
 			{
-				barracksBehavior( u, p, pgs, gs.getTime() );
+				barracksBehavior( u, p, gs, pgs, gs.getTime() );
 			}
 
 			// behavior of melee units:
@@ -434,12 +421,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		if( u.getType() == rangedType && closestDistance <= 2 )
 		{
 			// if( DEBUG )
-			// 	System.out.println( "RUN" );
+			//   System.out.println( "RUN" );
 
 			// In case we do not run away
 			UnitActionAssignment ua = gs.getUnitActions().get( closestEnemy );
 			// if( DEBUG )
-			// 	System.out.println( ua );
+			//   System.out.println( ua );
 
 			if( closestEnemy.getType() == rangedType || ua == null || ( ua.action.getType() != UnitAction.TYPE_MOVE && closestDistance > 1 ) )
 				attack( u, closestEnemy );
@@ -821,7 +808,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		return i - 1;
 	}
 
-	public void barracksBehavior( Unit u, Player p, PhysicalGameState pgs, int time )
+	public void barracksBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, int time )
 	{
 		int enemyWorker = 0;
 		int enemyRanged = 0;
@@ -832,7 +819,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		int playerRanged = 0;
 		int playerLight = 0;
 		int playerWorker = 0;
-		int playerBarracks = 0;
+		int playerIdleBarracks = 0;
 
 		int sol_heavy = 0;
 		int sol_ranged = 0;
@@ -870,7 +857,11 @@ public class MicroPhantom extends AbstractionLayerAI
 						else if( u2.getType().ID == rangedType.ID )
 							++playerRanged;
 						else if( u2.getType().ID == barracksType.ID )
-							++playerBarracks;
+						{
+							UnitAction ua = gs.getUnitAction( u2 );
+							if( ua == null || ua.getType() == UnitAction.TYPE_NONE )
+								++playerIdleBarracks;
+						}
 					}
 			}
 
@@ -951,9 +942,9 @@ public class MicroPhantom extends AbstractionLayerAI
 				writer_log.println( rangedType.cost );
 				writer_log.println( lightType.cost );
 
-				writer.println( playerBarracks );
-				writer_log.println( playerBarracks );
-				
+				writer.println( playerIdleBarracks );
+				writer_log.println( playerIdleBarracks );
+
 				writer.println( playerHeavy );
 				writer.println( playerRanged );
 				writer.println( playerLight );
@@ -976,19 +967,19 @@ public class MicroPhantom extends AbstractionLayerAI
 			{
 				System.out.println( "Exception in printer" );
 			}
-			
+
 			// get solutions
 			boolean no_train = false;
 			try
 			{
 				// System.out.println("Hello Java");
 				Runtime r = Runtime.getRuntime();
-				
+
 				if( pgs.getWidth() >= 20 )
 					solver_name = solver_path + "solver_cpp_optimistic";
 				else
 					solver_name = solver_path + "solver_cpp_pessimistic";
-					
+
 				Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nbSamples ) );
 				process.waitFor();
 

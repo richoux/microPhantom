@@ -7,6 +7,29 @@
 using namespace std;
 using namespace ghost;
 
+/*****************
+ ** Assignment
+ *****************/
+
+Assignment::Assignment( const vector< reference_wrapper<Variable> >& variables,
+                        double possessed_units )
+	: Constraint(variables),
+	  _possessed_units(possessed_units)
+{ }
+
+// assign_XL + assign_XR + assign_XH = possessed_X + to_produce_X
+double Assignment::required_cost() const
+{
+	double assigned = variables[0].get().get_value()
+		+ variables[1].get().get_value()
+		+ variables[2].get().get_value();
+
+	double own = _possessed_units + variables[3].get().get_value();
+
+	return std::abs( assigned - own );
+}
+
+
 /*******************
  ** Stock
  *******************/
@@ -36,24 +59,20 @@ double Stock::required_cost() const
 }
 
 
-/*****************
- ** Assignment
- *****************/
+/**********************
+ ** ProductionCapacity
+ **********************/
 
-Assignment::Assignment( const vector< reference_wrapper<Variable> >& variables,
-                        double possessed_units )
+ProductionCapacity::ProductionCapacity( const vector<reference_wrapper< Variable> >& variables,
+                                        int nb_barracks )
 	: Constraint(variables),
-	  _possessed_units(possessed_units)
+	  _nb_barracks(nb_barracks)
 { }
 
-// assign_XL + assign_XR + assign_XH = possessed_X + to_produce_X
-double Assignment::required_cost() const
+// to_produce_H + to_produce_L + to_produce_R <= barracks production capacity
+double ProductionCapacity::required_cost() const
 {
-	double assigned = variables[0].get().get_value()
-		+ variables[1].get().get_value()
-		+ variables[2].get().get_value();
+	double sum = variables[0].get().get_value() + variables[1].get().get_value() + variables[2].get().get_value();
 
-	double own = _possessed_units + variables[3].get().get_value();
-
-	return std::abs( assigned - own );
+	return std::max( 0., sum - _nb_barracks );
 }
