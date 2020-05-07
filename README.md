@@ -1,4 +1,13 @@
-## Before  doing anything
+## About microPhantom
+
+microPhantom        is         an        AI         bot        playing
+[microRTS](https://github.com/santiontanon/microrts).      It     uses
+[GHOST](https://github.com/richoux/GHOST),  a  Constraint  Programming
+toolkit,  to   design  and   solve  combinatorial  problems   for  all
+decision-making behaviors.
+
+
+## Before doing anything
 
 The version of microRTS used here (with `lib/microrts.jar`) is the one
 from the 
@@ -6,7 +15,7 @@ from the
 
 You may want use a more recent version.  To do so:
 
-1. Clone [microRTS](https://github.com/santiontanon/microrts).
+1. Clone microRTS with `git clone https://github.com/santiontanon/microrts.git`.
 2. Compile      its      JAR      file      following      [these instructions](https://github.com/santiontanon/microrts#generating-a-jar-file).
 3. Copy `microrts_folder/bin/microrts.jar` in `microPhantom/lib`.
 
@@ -20,7 +29,7 @@ Follow this simple procedure:
 
 It will compile two executables `solver_cpp_optimistic` and
 `solver_cpp_pessimistic` and make symbolic links toward them in the
-src/ai/poadaptive folder where our bot is.
+src/ai/microPhantom folder where our bot is.
 
 You can run the script `launch.sh`  to be sure everything is (locally) ok!
 
@@ -57,7 +66,7 @@ comment/uncomment      the      desired      lines      in
 
 ## Downloading and compiling GHOST
 
-POAdaptive uses  the Constraint Programming toolkit  GHOST. The solver
+microPhantom uses  the Constraint Programming toolkit  [GHOST](https://github.com/richoux/GHOST). The solver
 executables  you just  compiled (see  previous intructions  above) are
 using the static library of GHOST in the lib folder.
 
@@ -65,11 +74,11 @@ However if  you prefer to use  the last version of  GHOST, then follow
 these steps:
 
 1. Clone the develop brach of our GHOST framework with:  
-`git clone --single-branch -b develop https://github.com:richoux/GHOST.git`
+`git clone --single-branch -b develop https://github.com/richoux/GHOST.git`
 2. Enter into  the GHOST  folder and  compile it  with the  following
    commands (you need cmake and g++ or clang): `./build.sh`
 3. Copy the file `libghost_static.a` from the lib directory of the GHOST
-   folder to the lib directory of the POAdaptive folder.
+   folder to the lib directory of the microPhantom folder.
 
 ## microRTS
 
