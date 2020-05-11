@@ -59,30 +59,30 @@ public class RandomMicroPhantom extends MicroPhantom {
 	
 	boolean heavy=false;
 	
-	public RandomMicroPhantom(UnitTypeTable a_utt, String distribution_file_b, String distribution_file_wb, String solver)
+	public RandomMicroPhantom( UnitTypeTable a_utt, String distribution_file_b, String distribution_file_wb, String solver )
 	{
-		this(a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver);
+		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver );
 	}
 
-	public RandomMicroPhantom(UnitTypeTable a_utt, PathFinding a_pf, String distribution_file_b, String distribution_file_wb, String solver)
+	public RandomMicroPhantom( UnitTypeTable a_utt, PathFinding a_pf, String distribution_file_b, String distribution_file_wb, String solver )
 	{
-		super(a_utt, a_pf, distribution_file_b, distribution_file_wb, solver);
+		super( a_utt, a_pf, distribution_file_b, distribution_file_wb, solver );
 	}
 
 	@Override
 	public AI clone()
 	{
-		return new RandomMicroPhantom(utt, pf, distribution_file_b, distribution_file_woutb, solver_name);
+		return new RandomMicroPhantom( utt, pf, distribution_file_b, distribution_file_woutb, solver_name );
 	}
 	
 	@Override
-	protected void barracksBehavior(Unit u, Player p, PhysicalGameState pgs, int time)
+	protected void barracksBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, int time )
 	{
 		if( heavy )
 		{
-			if( p.getResources() >= heavyType.cost )
+			if( p.getResources() >= heavy_type.cost )
 			{
-				train( u, heavyType );
+				train( u, heavy_type );
 				heavy = false;
 			}
 		}
@@ -90,23 +90,23 @@ public class RandomMicroPhantom extends MicroPhantom {
 		{
 			if( p.getResources() >= 2 )
 			{
-				int randomNum = ThreadLocalRandom.current().nextInt( 0, 3 );
+				int random_num = ThreadLocalRandom.current().nextInt( 0, 3 );
                 
-				switch( randomNum )
+				switch( random_num )
 				{
 				case 0:
-					if( p.getResources() >= heavyType.cost )
-						train( u, heavyType );
+					if( p.getResources() >= heavy_type.cost )
+						train( u, heavy_type );
 					else
 						heavy=true;
 					break;
 				case 1:
-					if( p.getResources() >= rangedType.cost )
-						train( u, rangedType );
+					if( p.getResources() >= ranged_type.cost )
+						train( u, ranged_type );
 					break;
 				case 2:
-					if( p.getResources() >= lightType.cost )
-						train( u, lightType );
+					if( p.getResources() >= light_type.cost )
+						train( u, light_type );
 					break;
 				}
 			}
