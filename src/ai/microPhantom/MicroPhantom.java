@@ -70,7 +70,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	public static boolean INFO = false;
 	public static boolean DEBUG = false;
 
-	public static int NB_SAMPLE = 50;
+	public static int NB_SAMPLES = 50;
 
 	public static PrintWriter writer_log;
 
@@ -78,31 +78,30 @@ public class MicroPhantom extends AbstractionLayerAI
 	String solver_name;
 	double[][] heat_map;
 
-	int observedWorker = 0;
-	int observedLight = 0;
-	int observedHeavy = 0;
-	int observedRanged = 0;
+	int observed_worker = 0;
+	int observed_light = 0;
+	int observed_heavy = 0;
+	int observed_ranged = 0;
 
 	boolean random_version = false;
 	boolean scout = false;
-	// not BASIC BEHAVIOR
-	// long scout_ID = -1;
+	long scout_ID = -1;
 
 	int my_resource_patches;
 	int number_melee_units;
 	List<Unit> workers;
 
-	int nbSamples;
+	int nb_samples;
 	HashMap<Integer, HashMap> distribution_b;
 	HashMap<Integer, HashMap> distribution_woutb;
 	String distribution_file_b;
 	String distribution_file_woutb;
-	UnitType workerType;
-	UnitType baseType;
-	UnitType barracksType;
-	UnitType lightType;
-	UnitType heavyType;
-	UnitType rangedType;
+	UnitType worker_type;
+	UnitType base_type;
+	UnitType barracks_type;
+	UnitType light_type;
+	UnitType heavy_type;
+	UnitType ranged_type;
 
 	boolean barracks;
 
@@ -139,7 +138,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		super( a_pf );
 		reset( a_utt );
 		this.solver_path = solver_path;
-		this.nbSamples = NB_SAMPLE;
+		this.nb_samples = NB_SAMPLES;
 		this.distribution_file_b = distribution_file_b;
 		this.distribution_file_woutb = distribution_file_wb;
 
@@ -269,22 +268,22 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	public void reset()
 	{
-		observedWorker = 0;
-		observedLight = 0;
-		observedHeavy = 0;
-		observedRanged = 0;
+		observed_worker = 0;
+		observed_light = 0;
+		observed_heavy = 0;
+		observed_ranged = 0;
 		heat_map = null;
-		workerType = utt.getUnitType( "Worker" );
-		baseType = utt.getUnitType( "Base" );
-		barracksType = utt.getUnitType( "Barracks" );
-		lightType = utt.getUnitType( "Light" );
-		heavyType = utt.getUnitType( "Heavy" );
-		rangedType = utt.getUnitType( "Ranged" );
+		worker_type = utt.getUnitType( "Worker" );
+		base_type = utt.getUnitType( "Base" );
+		barracks_type = utt.getUnitType( "Barracks" );
+		light_type = utt.getUnitType( "Light" );
+		heavy_type = utt.getUnitType( "Heavy" );
+		ranged_type = utt.getUnitType( "Ranged" );
 		barracks = false;
 		super.reset();
 	}
 
-	private void init_heat_map( PhysicalGameState pgs, GameState gs )
+	private void initHeatMap( PhysicalGameState pgs, GameState gs )
 	{
 		int map_width = pgs.getWidth();
 		int map_height = pgs.getHeight();
@@ -301,7 +300,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		}
 	}
 
-	private void update_heat_map( PhysicalGameState pgs, GameState gs )
+	private void updateHeatMap( PhysicalGameState pgs, GameState gs )
 	{
 		int map_width = pgs.getWidth();
 		int map_height = pgs.getHeight();
@@ -313,6 +312,16 @@ public class MicroPhantom extends AbstractionLayerAI
 					if( pogs.observable( i, j ) )
 						heat_map[i][j] = gs.getTime();
 		}
+	}
+
+	private double euclidianDistance( Unit u1, Unit u2 )
+	{
+		return Math.sqrt( Math.pow( u2.getX() - u1.getX(), 2 ) + Math.pow( u2.getY() - u1.getY(), 2 ) );
+	}
+	
+	private double manhattanDistance( Unit u1, Unit u2 )
+	{
+		return Math.abs( u2.getX() - u1.getX() ) + Math.abs( u2.getY() - u1.getY() );
 	}
 
 	public void reset( UnitTypeTable a_utt )
@@ -336,13 +345,10 @@ public class MicroPhantom extends AbstractionLayerAI
 		Player p = gs.getPlayer( player );
 
 		if( heat_map == null )
-			init_heat_map( pgs, gs );
+			initHeatMap( pgs, gs );
 		else
-			update_heat_map( pgs, gs );
+			updateHeatMap( pgs, gs );
 
-		// System.out.println("LightRushAI for player " + player + " (cycle " + gs.getTime() + ")");
-
-		// map tiles
 		long map_tiles = pgs.getWidth() * pgs.getHeight();
 		double distance_threshold = Math.sqrt( map_tiles ) / 4;
 
@@ -354,49 +360,47 @@ public class MicroPhantom extends AbstractionLayerAI
 		for( Unit u : pgs.getUnits() )
 		{
 			if( u.getType().isResource )
+			{
 				for( Unit b : pgs.getUnits() )
-					if( b.getType().isStockpile && b.getPlayer() == p.getID() )
-						if( Math.sqrt( Math.pow( b.getX() - u.getX(), 2 ) + Math.pow( b.getY() - u.getY(), 2 ) ) <= distance_threshold )
+					if( b.getType().isStockpile && b.getPlayer() == player )
+						if( euclidianDistance( u, b ) <= distance_threshold )
 							++my_resource_patches;
-
-			if( u.getType().canAttack && !u.getType().canHarvest && u.getPlayer() == player && gs.getActionAssignment(u) == null )
-				++number_melee_units;
-
-			if( u.getType().canHarvest && u.getPlayer() == player )
-				workers.add(u);
+			}
+			else
+				if( u.getPlayer() == player )
+				{
+					if( u.getType().canHarvest )
+						workers.add( u );
+					else
+						if( u.getType().canAttack && gs.getActionAssignment(u) == null )
+							++number_melee_units;
+				}
 		}
 
 		for( Unit u : pgs.getUnits() )
 		{
-			// behavior of bases:
-			if( u.getType() == baseType
-			    && u.getPlayer() == player
-			    && gs.getActionAssignment(u) == null )
+			if( u.getPlayer() == player && gs.getActionAssignment(u) == null )
 			{
-				baseBehavior( u, p, pgs );
-			}
-
-			// behavior of barracks:
-			if( u.getType() == barracksType
-			    && u.getPlayer() == player
-			    && gs.getActionAssignment(u) == null )
-			{
-				barracksBehavior( u, p, gs, pgs, gs.getTime() );
-			}
-
-			// behavior of melee units:
-			if( u.getType().canAttack && !u.getType().canHarvest
-			    && u.getPlayer() == player
-			    && gs.getActionAssignment(u) == null )
-			{
-				// BASIC BEHAVIOR
-				meleeUnitBehavior_heatmap(u, p, gs);
-
-				// not BASIC BEHAVIOR
-				// if( number_melee_units >= 4 )
-				//	 meleeUnitBehavior_heatmap(u, p, gs);
-				// else
-				//	 meleeUnitBehavior(u, p, gs);
+				// behavior of bases:
+				if( u.getType().ID == base_type.ID )
+					baseBehavior( u, p, pgs, workers.size() );
+				else				
+					// behavior of barracks:
+					if( u.getType().ID == barracks_type.ID )
+						barracksBehavior( u, p, gs, pgs, gs.getTime() );
+					else
+						// behavior of melee units:
+						if( u.getType().canAttack && !u.getType().canHarvest )
+						{
+							// BASIC BEHAVIOR
+							meleeUnitBehavior_heatmap( u, p, gs );
+							
+							// not BASIC BEHAVIOR
+							// if( number_melee_units >= 4 )
+							//	 meleeUnitBehavior_heatmap(u, p, gs);
+							// else
+							//	 meleeUnitBehavior(u, p, gs);
+						}
 			}
 		}
 
@@ -404,35 +408,32 @@ public class MicroPhantom extends AbstractionLayerAI
 		workersBehavior( workers, p, gs );
 
 		// This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
-		return translateActions(player, gs);
+		return translateActions( player, gs );
 	}
 
-	public void baseBehavior( Unit u, Player p, PhysicalGameState pgs )
+	protected void baseBehavior( Unit u, Player p, PhysicalGameState pgs, int nb_workers )
 	{
-		int nworkers = 0;
-		for( Unit u2 : pgs.getUnits() )
-			// BASIC BEHAVIOR
-			if( u2.getType().ID == workerType.ID && u2.getPlayer() == p.getID() )
-				// not BASIC BEHAVIOR
-				//if( u2.getType() == workerType && u2.getPlayer() == p.getID() && u2.getID() != scout_ID )
-				nworkers++;
+		if( scout_ID != -1 )
+			--nb_workers;
 
 		// BASIC BEHAVIOR
-		if( nworkers < 1 && p.getResources() >= workerType.cost )
-			train( u, workerType );
+		// if( nb_workers < 1 && p.getResources() >= worker_type.cost )
+		// 	train( u, worker_type );
+
 		// not BASIC BEHAVIOR
 		// train 1 worker for each resource patch, excluding the scout
-		// if( nworkers < my_resource_patches && p.getResources() >= workerType.cost )
+		if( nb_workers < my_resource_patches && p.getResources() >= worker_type.cost )
+			train( u, worker_type );
 
 		// not BASIC BEHAVIOR
 		// else if( !scout )
 		// {
-		//		 train(u, workerType);
+		//		 train(u, worker_type);
 		//		 scout = true;
 		// }
 	}
 
-	public void meleeUnitCommonBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, Unit closestEnemy, int closestDistance )
+	protected void meleeUnitCommonBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, Unit closest_enemy, int closest_distance )
 	{
 		if( DEBUG )
 		{
@@ -440,70 +441,66 @@ public class MicroPhantom extends AbstractionLayerAI
 			System.out.println( "Action: " + currentAction );
 		}
 
-		if( u.getType() == rangedType && closestDistance <= 2 )
+		if( u.getType().ID == ranged_type.ID && closest_distance <= 2 )
 		{
-			// if( DEBUG )
-			//   System.out.println( "RUN" );
-
 			// In case we do not run away
-			UnitActionAssignment ua = gs.getUnitActions().get( closestEnemy );
-			// if( DEBUG )
-			//   System.out.println( ua );
+			UnitActionAssignment ua = gs.getUnitActions().get( closest_enemy );
 
-			if( closestEnemy.getType() == rangedType || ua == null || ( ua.action.getType() != UnitAction.TYPE_MOVE && closestDistance > 1 ) )
-				attack( u, closestEnemy );
+			if( closest_enemy.getType().ID == ranged_type.ID || ua == null || ( ua.action.getType() != UnitAction.TYPE_MOVE && closest_distance > 1 ) )
+				attack( u, closest_enemy );
 			else
 			{
-				// run
+				// run away
 				// we compute for each possible position the danger level
 				int danger_up = 0;
 				int danger_right = 0;
 				int danger_down = 0;
 				int danger_left = 0;
 
-				for( Unit u2:pgs.getUnits() )
+				// for each enemy unit
+				for( Unit eu : pgs.getUnits() )
 				{
-					if( u2.getPlayer() >= 0 && u2.getPlayer() != p.getID() && u2.getType().canAttack )
+					if( eu.getPlayer() >= 0 && eu.getPlayer() != p.getID() && eu.getType().canAttack )
 					{
 						//left
-						if( u2.getX() == u.getX() - 2 && u2.getY() == u.getY() )
+						if( eu.getX() == u.getX() - 2 && eu.getY() == u.getY() )
 							++danger_right;
 
 						//top-left
-						if( u2.getX() == u.getX() - 1 && u2.getY() == u.getY() - 1 )
+						if( eu.getX() == u.getX() - 1 && eu.getY() == u.getY() - 1 )
 						{
 							++danger_right;
 							++danger_up;
 						}
 
 						//top
-						if( u2.getX() == u.getX() && u2.getY() == u.getY() - 2 )
+						if( eu.getX() == u.getX() && eu.getY() == u.getY() - 2 )
 							++danger_up;
 
 						//top-right
-						if( u2.getX() == u.getX() + 1 && u2.getY() == u.getY() - 1 )
+						if( eu.getX() == u.getX() + 1 && eu.getY() == u.getY() - 1 )
 						{
 							++danger_up;
 							++danger_right;
 						}
 
 						//right
-						if( u2.getX() == u.getX() + 2 && u2.getY() == u.getY() )
+						if( eu.getX() == u.getX() + 2 && eu.getY() == u.getY() )
 							++danger_right;
 
 						//bottom-right
-						if( u2.getX() == u.getX() + 1 && u2.getY() == u.getY() + 1 )
+						if( eu.getX() == u.getX() + 1 && eu.getY() == u.getY() + 1 )
 						{
 							++danger_right;
 							++danger_down;
 						}
 
 						//bottom
-						if( u2.getX() == u.getX() && u2.getY() == u.getY() + 2 )
+						if( eu.getX() == u.getX() && eu.getY() == u.getY() + 2 )
 							++danger_down;
 
 						//bottom-left
-						if( u2.getX() == u.getX() - 1 && u2.getY() == u.getY() + 1 )
+						if( eu.getX() == u.getX() - 1 && eu.getY() == u.getY() + 1 )
 						{
 							++danger_down;
 							++danger_left;
@@ -660,51 +657,53 @@ public class MicroPhantom extends AbstractionLayerAI
 				// 	}
 				// }
 			}
-		} //if( u.getType() == rangedType && closestDistance <= 2 )
-		else
+		} 
+		else //ie, if not ( u.getType().ID == ranged_type.ID && closest_distance <= 2 )
 		{
-			UnitAction currentAction = gs.getUnitAction( u );
-			if( currentAction != null && currentAction.getType() == UnitAction.TYPE_ATTACK_LOCATION )
+			UnitAction current_action = gs.getUnitAction( u );
+			boolean attack_closest_enemy = true;
+
+			if( current_action != null && current_action.getType() == UnitAction.TYPE_ATTACK_LOCATION )
 			{
-				int x = currentAction.getLocationX();
-				int y = currentAction.getLocationY();
+				int x = current_action.getLocationX();
+				int y = current_action.getLocationY();
 				int d = Math.abs( x - u.getX() ) + Math.abs( y - u.getY() );
 
 				if( d <= 2 )
 				{
 					Unit enemy = pgs.getUnitAt( x, y );
 					if( enemy != null )
+					{
 						attack( u, enemy );
-					else
-						attack( u, closestEnemy );
+						attack_closest_enemy = false;
+					}
 				}
-				else
-					attack( u, closestEnemy );
 			}
-			else
-				attack( u, closestEnemy );
+
+			if( attack_closest_enemy )
+				attack( u, closest_enemy );
 		}
 	}
 
-	public void meleeUnitBehavior_heatmap( Unit u, Player p, GameState gs )
+	protected void meleeUnitBehavior_heatmap( Unit u, Player p, GameState gs )
 	{
 		PhysicalGameState pgs = gs.getPhysicalGameState();
-		Unit closestEnemy = null;
-		int closestDistance = 0;
+		Unit closest_enemy = null;
+		int closest_distance = 0;
 
-		for( Unit u2 : pgs.getUnits() )
-			if( u2.getPlayer() >= 0 && u2.getPlayer() != p.getID() )
+		for( Unit eu : pgs.getUnits() )
+			if( eu.getPlayer() >= 0 && eu.getPlayer() != p.getID() )
 			{
-				int d = Math.abs( u2.getX() - u.getX() ) + Math.abs( u2.getY() - u.getY() );
-				if( closestEnemy == null || d < closestDistance )
+				int d = manhattanDistance( u, eu );
+				if( closest_enemy == null || d < closest_distance )
 				{
-					closestEnemy = u2;
-					closestDistance = d;
+					closest_enemy = eu;
+					closest_distance = d;
 				}
 			}
 
-		if( closestEnemy != null )
-			meleeUnitCommonBehavior( u, p, gs, pgs, closestEnemy, closestDistance );
+		if( closest_enemy != null )
+			meleeUnitCommonBehavior( u, p, gs, pgs, closest_enemy, closest_distance );
 		else
 			if( gs instanceof PartiallyObservableGameState )
 			{
@@ -712,7 +711,7 @@ public class MicroPhantom extends AbstractionLayerAI
 				// there are no enemies, so we need to explore (find the nearest non-observable place):
 				int min_x = 0;
 				int min_y = 0;
-				// closestDistance = -1;
+				// closest_distance = -1;
 				double heat_point = -10000.0;
 
 				for( int i = 0 ; i < pgs.getWidth() ; ++i )
@@ -751,31 +750,31 @@ public class MicroPhantom extends AbstractionLayerAI
 
 				if( DEBUG )
 				{
-					UnitAction currentAction = gs.getUnitAction( u );
-					System.out.println("Action: " + currentAction );
+					UnitAction current_action = gs.getUnitAction( u );
+					System.out.println("Action: " + current_action );
 				}
 			}
 	}
 
-	public void meleeUnitBehavior( Unit u, Player p, GameState gs )
+	protected void meleeUnitBehavior( Unit u, Player p, GameState gs )
 	{
 		PhysicalGameState pgs = gs.getPhysicalGameState();
-		Unit closestEnemy = null;
-		int closestDistance = 0;
+		Unit closest_enemy = null;
+		int closest_distance = 0;
 
-		for( Unit u2 : pgs.getUnits() )
-			if( u2.getPlayer() >= 0 && u2.getPlayer() != p.getID() )
+		for( Unit eu : pgs.getUnits() )
+			if( eu.getPlayer() >= 0 && eu.getPlayer() != p.getID() )
 			{
-				int d = Math.abs( u2.getX() - u.getX() ) + Math.abs( u2.getY() - u.getY() );
-				if( closestEnemy == null || d < closestDistance )
+				int d = manhattanDistance( u, eu );
+				if( closest_enemy == null || d < closest_distance )
 				{
-					closestEnemy = u2;
-					closestDistance = d;
+					closest_enemy = eu;
+					closest_distance = d;
 				}
 			}
 
-		if( closestEnemy != null )
-			meleeUnitCommonBehavior( u, p, gs, pgs, closestEnemy, closestDistance );
+		if( closest_enemy != null )
+			meleeUnitCommonBehavior( u, p, gs, pgs, closest_enemy, closest_distance );
 		else
 		{
 			if( gs instanceof PartiallyObservableGameState )
@@ -784,28 +783,28 @@ public class MicroPhantom extends AbstractionLayerAI
 				// there are no enemies, so we need to explore (find the nearest non-observable place):
 				int closest_x = 0;
 				int closest_y = 0;
-				closestDistance = -1;
+				closest_distance = -1;
 
 				for( int i = 0 ; i < pgs.getHeight() ; ++i )
 					for( int j = 0 ; j < pgs.getWidth() ; ++j )
 						if( !pogs.observable( j, i ) )
 						{
 							int d = ( u.getX() - j ) * ( u.getX() - j ) + ( u.getY() - i ) * ( u.getY() - i );
-							if( closestDistance == -1 || d < closestDistance )
+							if( closest_distance == -1 || d < closest_distance )
 							{
 								closest_x = j;
 								closest_y = i;
-								closestDistance = d;
+								closest_distance = d;
 							}
 						}
 
-				if( closestDistance != -1 )
+				if( closest_distance != -1 )
 					move( u, closest_x, closest_y );
 			}
 		}
 	}
 
-	private int get_sample( List<Float> distribution, int bypass )
+	private int getSample( List<Float> distribution, int bypass )
 	{
 		double rnd = Math.random();
 		float sum = 0.f;
@@ -830,7 +829,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		return i - 1;
 	}
 
-	public void barracksBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, int time )
+	protected void barracksBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, int time )
 	{
 		int enemyWorker = 0;
 		int enemyRanged = 0;
@@ -858,27 +857,27 @@ public class MicroPhantom extends AbstractionLayerAI
 			{
 				if( u2.getPlayer() >= 0 && u2.getPlayer() != p.getID() )
 				{
-					if( u2.getType().ID == workerType.ID )
+					if( u2.getType().ID == worker_type.ID )
 						++enemyWorker;
-					else if( u2.getType().ID == heavyType.ID )
+					else if( u2.getType().ID == heavy_type.ID )
 						++enemyHeavy;
-					else if( u2.getType().ID == lightType.ID )
+					else if( u2.getType().ID == light_type.ID )
 						++enemyLight;
-					else if( u2.getType().ID == rangedType.ID )
+					else if( u2.getType().ID == ranged_type.ID )
 						++enemyRanged;
 				}
 				else
 					if( u2.getPlayer() >= 0 && u2.getPlayer() == p.getID() )
 					{
-						if( u2.getType().ID == workerType.ID )
+						if( u2.getType().ID == worker_type.ID )
 							++playerWorker;
-						else if( u2.getType().ID == heavyType.ID )
+						else if( u2.getType().ID == heavy_type.ID )
 							++playerHeavy;
-						else if( u2.getType().ID == lightType.ID )
+						else if( u2.getType().ID == light_type.ID )
 							++playerLight;
-						else if( u2.getType().ID == rangedType.ID )
+						else if( u2.getType().ID == ranged_type.ID )
 							++playerRanged;
-						else if( u2.getType().ID == barracksType.ID )
+						else if( u2.getType().ID == barracks_type.ID )
 						{
 							UnitAction ua = gs.getUnitAction( u2 );
 							if( ua == null || ua.getType() == UnitAction.TYPE_NONE )
@@ -887,12 +886,12 @@ public class MicroPhantom extends AbstractionLayerAI
 					}
 			}
 
-			observedWorker =	Math.max( observedWorker, enemyWorker );
-			observedHeavy =	 Math.max( observedHeavy, enemyHeavy );
-			observedRanged =	Math.max( observedRanged, enemyRanged );
-			observedLight =	 Math.max( observedLight, enemyLight );
+			observed_worker =	Math.max( observed_worker, enemyWorker );
+			observed_heavy =	 Math.max( observed_heavy, enemyHeavy );
+			observed_ranged =	Math.max( observed_ranged, enemyRanged );
+			observed_light =	 Math.max( observed_light, enemyLight );
 
-			if( observedHeavy > 0 || observedLight > 0 || observedRanged > 0 )
+			if( observed_heavy > 0 || observed_light > 0 || observed_ranged > 0 )
 				barracks = true;
 
 			if( INFO )
@@ -902,22 +901,22 @@ public class MicroPhantom extends AbstractionLayerAI
 			ArrayList<Integer[]> samples = new ArrayList<Integer[]>();
 			Double[] info = { 0.0, 0.0, 0.0, 0.0 };
 
-			for( int i = 0 ; i <= nbSamples ; ++i )
+			for( int i = 0 ; i <= nb_samples ; ++i )
 			{
 				Integer[] tmp = new Integer[4];
 				if( barracks )
 				{
 					tmp[0] = 1;
-					tmp[1] = get_sample( (List)distribution_b.get( time ).get( "heavy" ), observedHeavy );
-					tmp[2] = get_sample( (List)distribution_b.get( time ).get( "ranged" ), observedRanged );
-					tmp[3] = get_sample( (List)distribution_b.get( time ).get( "light" ), observedLight );
+					tmp[1] = getSample( (List)distribution_b.get( time ).get( "heavy" ), observed_heavy );
+					tmp[2] = getSample( (List)distribution_b.get( time ).get( "ranged" ), observed_ranged );
+					tmp[3] = getSample( (List)distribution_b.get( time ).get( "light" ), observed_light );
 				}
 				else
 				{
-					tmp[0] = get_sample( (List)distribution_woutb.get( time ).get( "worker" ), observedWorker );
-					tmp[1] = get_sample( (List)distribution_woutb.get( time ).get( "heavy" ), observedHeavy );
-					tmp[2] = get_sample( (List)distribution_woutb.get( time ).get( "ranged" ), observedRanged );
-					tmp[3] = get_sample( (List)distribution_woutb.get( time ).get( "light" ), observedLight );
+					tmp[0] = getSample( (List)distribution_woutb.get( time ).get( "worker" ), observed_worker );
+					tmp[1] = getSample( (List)distribution_woutb.get( time ).get( "heavy" ), observed_heavy );
+					tmp[2] = getSample( (List)distribution_woutb.get( time ).get( "ranged" ), observed_ranged );
+					tmp[3] = getSample( (List)distribution_woutb.get( time ).get( "light" ), observed_light );
 				}
 
 				samples.add( tmp );
@@ -929,15 +928,15 @@ public class MicroPhantom extends AbstractionLayerAI
 
 			if( INFO )
 			{
-				System.out.println( "Samples moy = W" + info[0] / nbSamples
-				                    + " / H" + info[1] / nbSamples
-				                    + " / R" + info[2] / nbSamples
-				                    + " / L" + info[3] / nbSamples );
+				System.out.println( "Samples moy = W" + info[0] / nb_samples
+				                    + " / H" + info[1] / nb_samples
+				                    + " / R" + info[2] / nb_samples
+				                    + " / L" + info[3] / nb_samples );
 				System.out.println( " Units player(" + ( playerHeavy + playerRanged + playerLight )
 				                    + "+" + playerWorker + ") : W" + playerWorker + " / H" + playerHeavy+ " / R" + playerRanged + " / L" + playerLight );
-				System.out.println( " Units observed(" + ( observedHeavy + observedRanged + observedLight )
-				                    + "+" + observedWorker + ") : W" + observedWorker + " / H" + observedHeavy + " / R"
-				                    + observedRanged + " / L" + observedLight );
+				System.out.println( " Units observed(" + ( observed_heavy + observed_ranged + observed_light )
+				                    + "+" + observed_worker + ") : W" + observed_worker + " / H" + observed_heavy + " / R"
+				                    + observed_ranged + " / L" + observed_light );
 			}
 
 			// write parameter for solver in a file
@@ -951,18 +950,18 @@ public class MicroPhantom extends AbstractionLayerAI
 				// 1 for heavy
 				// 2 for ranged
 				// 3 for light
-				for( int i = 0 ; i < nbSamples ; ++i )
+				for( int i = 0 ; i < nb_samples ; ++i )
 				{
 					writer.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
 					writer_log.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
 				}
 
-				writer.println( heavyType.cost );
-				writer.println( rangedType.cost );
-				writer.println( lightType.cost );
-				writer_log.println( heavyType.cost );
-				writer_log.println( rangedType.cost );
-				writer_log.println( lightType.cost );
+				writer.println( heavy_type.cost );
+				writer.println( ranged_type.cost );
+				writer.println( light_type.cost );
+				writer_log.println( heavy_type.cost );
+				writer_log.println( ranged_type.cost );
+				writer_log.println( light_type.cost );
 
 				writer.println( playerIdleBarracks );
 				writer_log.println( playerIdleBarracks );
@@ -1002,7 +1001,7 @@ public class MicroPhantom extends AbstractionLayerAI
 				else
 					solver_name = solver_path + "solver_cpp_pessimistic";
 
-				Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nbSamples ) );
+				Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nb_samples ) );
 				process.waitFor();
 
 				BufferedReader b = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
@@ -1044,25 +1043,24 @@ public class MicroPhantom extends AbstractionLayerAI
 				if( sol_light >= sol_ranged )
 				{
 					if( sol_light >= sol_heavy )
-						train( u, lightType );
+						train( u, light_type );
 					else
-						if( p.getResources() >= heavyType.cost )
-							train( u, heavyType );
+						if( p.getResources() >= heavy_type.cost )
+							train( u, heavy_type );
 				}
 				else
 					if( sol_ranged >= sol_heavy )
-						train( u, rangedType );
+						train( u, ranged_type );
 					else
-						if( p.getResources() >= heavyType.cost )
-							train( u, heavyType );
+						if( p.getResources() >= heavy_type.cost )
+							train( u, heavy_type );
 		}
 
-		// if (p.getResources() >= lightType.cost) {
+		// if (p.getResources() >= light_type.cost) {
 
 	}
 
-
-	public void workersBehavior( List<Unit> workers, Player p, GameState gs )
+	protected void workersBehavior( List<Unit> workers, Player p, GameState gs )
 	{
 		PhysicalGameState pgs = gs.getPhysicalGameState();
 		int nbases = 0;
@@ -1097,10 +1095,10 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		for( Unit u2 : pgs.getUnits() )
 		{
-			if( u2.getType() == baseType && u2.getPlayer() == p.getID() )
+			if( u2.getType() == base_type && u2.getPlayer() == p.getID() )
 				nbases++;
 
-			if( u2.getType() == barracksType && u2.getPlayer() == p.getID() )
+			if( u2.getType() == barracks_type && u2.getPlayer() == p.getID() )
 				nbarracks++;
 		}
 
@@ -1108,66 +1106,66 @@ public class MicroPhantom extends AbstractionLayerAI
 		if( nbases == 0 && !freeWorkers.isEmpty() )
 		{
 			// build a base:
-			if( p.getResources() >= baseType.cost + resourcesUsed )
+			if( p.getResources() >= base_type.cost + resourcesUsed )
 			{
 				Unit u = freeWorkers.remove( 0 );
-				buildIfNotAlreadyBuilding( u, baseType, u.getX(), u.getY(), reservedPositions, p, pgs );
-				resourcesUsed += baseType.cost;
+				buildIfNotAlreadyBuilding( u, base_type, u.getX(), u.getY(), reservedPositions, p, pgs );
+				resourcesUsed += base_type.cost;
 			}
 		}
 
 		if( nbarracks == 0 )
 		{
 			// build a barracks:
-			if( p.getResources() >= barracksType.cost + resourcesUsed && !freeWorkers.isEmpty() )
+			if( p.getResources() >= barracks_type.cost + resourcesUsed && !freeWorkers.isEmpty() )
 			{
 				Unit u = freeWorkers.remove( 0 );
-				buildIfNotAlreadyBuilding( u, barracksType, u.getX(), u.getY(), reservedPositions, p, pgs );
-				resourcesUsed += barracksType.cost;
+				buildIfNotAlreadyBuilding( u, barracks_type, u.getX(), u.getY(), reservedPositions, p, pgs );
+				resourcesUsed += barracks_type.cost;
 			}
 		}
 
 		// harvest with all the free workers:
 		for( Unit u : freeWorkers )
 		{
-			Unit closestBase = null;
-			Unit closestResource = null;
-			int closestDistance = 0;
+			Unit closest_base = null;
+			Unit closest_resource = null;
+			int closest_distance = 0;
 
 			for( Unit u2 : pgs.getUnits() )
 				if( u2.getType().isResource )
 				{
-					int d = Math.abs( u2.getX() - u.getX() ) + Math.abs( u2.getY() - u.getY() );
-					if( closestResource == null || d < closestDistance )
+					int d = manhattanDistance( u, u2 );
+					if( closest_resource == null || d < closest_distance )
 					{
-						closestResource = u2;
-						closestDistance = d;
+						closest_resource = u2;
+						closest_distance = d;
 					}
 				}
 
-			closestDistance = 0;
+			closest_distance = 0;
 			for( Unit u2 : pgs.getUnits() )
 				if( u2.getType().isStockpile && u2.getPlayer() == p.getID() )
 				{
-					int d = Math.abs( u2.getX() - u.getX() ) + Math.abs( u2.getY() - u.getY() );
-					if( closestBase == null || d < closestDistance )
+					int d = manhattanDistance( u, u2 );
+					if( closest_base == null || d < closest_distance )
 					{
-						closestBase = u2;
-						closestDistance = d;
+						closest_base = u2;
+						closest_distance = d;
 					}
 				}
 
-			if( closestResource != null && closestBase != null )
+			if( closest_resource != null && closest_base != null )
 			{
 				AbstractAction aa = getAbstractAction( u );
 				if( aa instanceof Harvest )
 				{
 					Harvest h_aa = (Harvest)aa;
-					if( h_aa.getTarget() != closestResource || h_aa.getBase() != closestBase )
-						harvest( u, closestResource, closestBase );
+					if( h_aa.getTarget() != closest_resource || h_aa.getBase() != closest_base )
+						harvest( u, closest_resource, closest_base );
 				}
 				else
-					harvest( u, closestResource, closestBase );
+					harvest( u, closest_resource, closest_base );
 			}
 			// not BASIC behavior
 			// explore if no resource around. Remember where were far resources.

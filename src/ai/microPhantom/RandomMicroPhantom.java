@@ -76,37 +76,37 @@ public class RandomMicroPhantom extends MicroPhantom {
 	}
 	
 	@Override
-	public void barracksBehavior(Unit u, Player p, PhysicalGameState pgs, int time)
+	protected void barracksBehavior(Unit u, Player p, PhysicalGameState pgs, int time)
 	{
-		if(heavy)
+		if( heavy )
 		{
-			if(p.getResources() >= heavyType.cost)
+			if( p.getResources() >= heavyType.cost )
 			{
-				train(u, heavyType);
+				train( u, heavyType );
 				heavy = false;
 			}
 		}
 		else
 		{
-			if(p.getResources() >= 2)
+			if( p.getResources() >= 2 )
 			{
-				int randomNum = ThreadLocalRandom.current().nextInt(0, 3);
+				int randomNum = ThreadLocalRandom.current().nextInt( 0, 3 );
                 
-				switch(randomNum)
+				switch( randomNum )
 				{
 				case 0:
-					if(p.getResources() >= heavyType.cost)
-						train(u, heavyType);
+					if( p.getResources() >= heavyType.cost )
+						train( u, heavyType );
 					else
 						heavy=true;
 					break;
 				case 1:
-					if(p.getResources() >= rangedType.cost)
-						train(u, rangedType);
+					if( p.getResources() >= rangedType.cost )
+						train( u, rangedType );
 					break;
 				case 2:
-					if(p.getResources() >= lightType.cost)
-						train(u, lightType);
+					if( p.getResources() >= lightType.cost )
+						train( u, lightType );
 					break;
 				}
 			}
