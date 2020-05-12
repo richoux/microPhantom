@@ -136,12 +136,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver_path );
 	}
 
-	private MicroPhantom( UnitTypeTable a_utt,
-	                      PathFinding a_pf,
-	                      String distribution_file_b,
-	                      String distribution_file_wb,
-	                      String solver_path,
-	                      int[][] heat_map )
+	protected MicroPhantom( UnitTypeTable a_utt,
+	                        PathFinding a_pf,
+	                        String distribution_file_b,
+	                        String distribution_file_wb,
+	                        String solver_path,
+	                        int[][] heat_map )
 	{
 		this( a_utt, a_pf, distribution_file_b, distribution_file_wb, solver_path );
 		if( heat_map != null )
@@ -152,11 +152,11 @@ public class MicroPhantom extends AbstractionLayerAI
 		}
 	}
 
-	private MicroPhantom( UnitTypeTable a_utt,
-	                      PathFinding a_pf,
-	                      String distribution_file_b,
-	                      String distribution_file_wb,
-	                      String solver_path )
+	protected MicroPhantom( UnitTypeTable a_utt,
+	                        PathFinding a_pf,
+	                        String distribution_file_b,
+	                        String distribution_file_wb,
+	                        String solver_path )
 	{
 		super( a_pf );
 		reset( a_utt );

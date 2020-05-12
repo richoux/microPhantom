@@ -11,7 +11,9 @@ decision-making behaviors.
 
 The version of microRTS used here (with `lib/microrts.jar`) is the one
 from the 
-[commit 083b0081742fd39](https://github.com/santiontanon/microrts/tree/083b0081742fd393db29cf5b626d5ce3f4dee4df) from April 20, 2020.
+[commit
+083b0081742fd39](https://github.com/santiontanon/microrts/tree/083b0081742fd393db29cf5b626d5ce3f4dee4df)
+from April 20, 2020, compiled with Java OpenJDK 11.
 
 You may want use a more recent version.  To do so:
 

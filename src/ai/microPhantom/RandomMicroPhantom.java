@@ -24,6 +24,7 @@
 package ai.microPhantom;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.*;
@@ -76,11 +77,11 @@ public class RandomMicroPhantom extends MicroPhantom {
 	}
 	
 	@Override
-	protected void barracksBehavior( Unit u, Player p, GameState gs, PhysicalGameState pgs, int time )
+	protected void barracksBehavior( Unit u, Player player, GameState gs, PhysicalGameState pgs, int time, AtomicInteger reserved_resources )
 	{
 		if( heavy )
 		{
-			if( p.getResources() >= heavy_type.cost )
+			if( player.getResources() >= heavy_type.cost )
 			{
 				train( u, heavy_type );
 				heavy = false;
@@ -88,24 +89,24 @@ public class RandomMicroPhantom extends MicroPhantom {
 		}
 		else
 		{
-			if( p.getResources() >= 2 )
+			if( player.getResources() >= 2 )
 			{
 				int random_num = ThreadLocalRandom.current().nextInt( 0, 3 );
                 
 				switch( random_num )
 				{
 				case 0:
-					if( p.getResources() >= heavy_type.cost )
+					if( player.getResources() >= heavy_type.cost )
 						train( u, heavy_type );
 					else
 						heavy=true;
 					break;
 				case 1:
-					if( p.getResources() >= ranged_type.cost )
+					if( player.getResources() >= ranged_type.cost )
 						train( u, ranged_type );
 					break;
 				case 2:
-					if( p.getResources() >= light_type.cost )
+					if( player.getResources() >= light_type.cost )
 						train( u, light_type );
 					break;
 				}
