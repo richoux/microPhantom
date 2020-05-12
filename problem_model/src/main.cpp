@@ -40,14 +40,14 @@
 
 using namespace std;
 
-int main( int argv, char *argc[] )
+int main( int argc, char *argv[] )
 {
-	std::ifstream infile(argc[1]);
+	std::ifstream infile(argv[1]);
 
 	std::ofstream outfile;
 	outfile.open("run.log", std::ios::app);
 
-	int nb_samples = std::stoi(argc[2]);
+	int nb_samples = std::stoi(argv[2]);
 	int sampled_worker, sampled_heavy, sampled_range, sampled_light;
 	int heavyCost, rangeCost, lightCost;
 	int nb_barracks;

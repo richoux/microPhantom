@@ -219,7 +219,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		try
 		{
-			writer_log = new PrintWriter( "src/ai/microPhantom/solver.log", "UTF-8" );
+			//writer_log = new PrintWriter( "src/ai/microPhantom/solver.log", "UTF-8" );
+			writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
 		}
 		catch( IOException e1 )
 		{
@@ -285,17 +286,29 @@ public class MicroPhantom extends AbstractionLayerAI
 		int map_width = pgs.getWidth();
 		int map_height = pgs.getHeight();
 		heat_map = new int[ map_width ][ map_height ];
+
+		Unit u;
+		if( !my_workers.isEmpty() )
+			u = my_workers.get( 0 );
+		else if( !my_bases.isEmpty() )
+			u = my_bases.get( 0 );
+		else
+			u = my_units.get( 0 );		
+		
 		if( gs instanceof PartiallyObservableGameState )
 		{
 			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
 			for( int x = 0 ; x < map_width ; ++x )
 				for( int y = 0 ; y < map_height ; ++y )
-					if( pgs.getTerrain( x, y ) == pgs.TERRAIN_WALL )
+				{
+					int target = pgs.getWidth() * y + x;
+					if( pgs.getTerrain( x, y ) == pgs.TERRAIN_WALL || pf.pathExists( u, target, gs, null ) )
 						heat_map[x][y] = Integer.MAX_VALUE;
 					else if( pogs.observable( x, y ) )
 						heat_map[x][y] = gs.getTime();
 					else
 						heat_map[x][y] = -1;
+				}
 		}
 	}
 
@@ -527,7 +540,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	public void gameOver( int winner ) throws Exception
 	{
 		System.out.println("Closing microPhantom");
-		writer_log.close();
+		//writer_log.close();
 		super.gameOver( winner );
 	}
 
@@ -601,12 +614,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		PhysicalGameState pgs = gs.getPhysicalGameState();
 		Player player = gs.getPlayer( p );
 
+		scanUnits( pgs, gs, player );
+
 		if( heat_map == null )
 			initHeatMap( pgs, gs );
 		else
 			updateHeatMap( pgs, gs );
-
-		scanUnits( pgs, gs, player );
 		
 		long map_tiles = pgs.getWidth() * pgs.getHeight();
 		double distance_threshold = Math.sqrt( map_tiles ) / 4;
@@ -617,6 +630,31 @@ public class MicroPhantom extends AbstractionLayerAI
 		AtomicInteger reserved_resources = new AtomicInteger( 0 );
 
 
+		if( 0 <= gs.getTime() && gs.getTime() < 20 )
+		{
+			writer_log.println( "\n\nTime: " + gs.getTime() );
+			for( int x = 0 ; x < pgs.getWidth() ; ++x )
+			{
+				for( int y = 0 ; y < pgs.getHeight() ; ++y )
+				{
+					String heat;
+					if( heat_map[x][y] < Integer.MAX_VALUE )
+						heat = String.format( "%-4s ", heat_map[x][y] );
+					else
+					{
+						int wall = -10;
+						heat = String.format( "%-4s ", wall );
+					}
+					writer_log.print( heat );
+				}
+				writer_log.println("");
+			}
+		}
+		if( gs.getTime() == 20 )
+			writer_log.close();
+		
+
+		
 		for( Unit u : resource_patches )
 		{
 			for( Unit b : my_bases )
@@ -904,7 +942,7 @@ public class MicroPhantom extends AbstractionLayerAI
 					for( int y = 0 ; y < pgs.getHeight() ; ++y )
 					{
 						// check if there is no building, resource patches, ...
-						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE )
+						if( pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
 						{
 							if( heat_map[x][y] < heat_point )
 							{
@@ -921,9 +959,11 @@ public class MicroPhantom extends AbstractionLayerAI
 										min_y = y;
 									}
 						}
+						if( pgs.getUnitAt( x, y ) != null && pgs.getUnitAt( x, y ).getType().isResource )
+							heat_map[x][y] = gs.getTime();
 					}
 				
-				System.out.println( "Unit " + u.getID() + ", currently at (" + u.getX() + "," + u.getY() + "), moves to (" + min_x + "," + min_y + ")" );
+				//System.out.println( "Unit " + u.getID() + ", currently at (" + u.getX() + "," + u.getY() + "), moves to (" + min_x + "," + min_y + ")" );
 				if( !move( u, min_x, min_y, gs ) )
 					heat_map[min_x][min_y] = Integer.MAX_VALUE;
 			}
@@ -948,7 +988,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 				for( int x = 0 ; x < pgs.getWidth() ; ++x )
 					for( int y = 0 ; y < pgs.getHeight() ; ++y )
-						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE )
+						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE || pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
 						{
 							if( !pogs.observable( x, y ) )
 							{
@@ -1028,7 +1068,7 @@ public class MicroPhantom extends AbstractionLayerAI
 			try
 			{
 				PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
-				writer_log.println( "Time: " + time );
+				// writer_log.println( "Time: " + time );
 
 				// Samples indexes:
 				// 0 for worker
@@ -1038,35 +1078,30 @@ public class MicroPhantom extends AbstractionLayerAI
 				for( int i = 0 ; i < nb_samples ; ++i )
 				{
 					writer.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
-					writer_log.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
+					// writer_log.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
 				}
 
 				writer.println( heavy_type.cost );
 				writer.println( ranged_type.cost );
 				writer.println( light_type.cost );
-				writer_log.println( heavy_type.cost );
-				writer_log.println( ranged_type.cost );
-				writer_log.println( light_type.cost );
+				// writer_log.println( heavy_type.cost );
+				// writer_log.println( ranged_type.cost );
+				// writer_log.println( light_type.cost );
 
 				writer.println( player_idle_barracks );
-				writer_log.println( player_idle_barracks );
+				// writer_log.println( player_idle_barracks );
 
 				writer.println( my_heavy_units.size() );
 				writer.println( my_ranged_units.size() );
 				writer.println( my_light_units.size() );
-				writer_log.println( my_heavy_units.size() );
-				writer_log.println( my_ranged_units.size() );
-				writer_log.println( my_light_units.size() );
-
-				// if( player.getResources() <= 2 )
-				// 	writer.println( 3 );
-				// else
-				// 	writer.println( player.getResources() );
+				// writer_log.println( my_heavy_units.size() );
+				// writer_log.println( my_ranged_units.size() );
+				// writer_log.println( my_light_units.size() );
 
 				writer.println( player.getResources() );
-				writer_log.println( player.getResources() );
+				// writer_log.println( player.getResources() );
 
-				writer_log.println("#########\n");
+				// writer_log.println("#########\n");
 				writer.close();
 			}
 			catch( IOException e1 )
