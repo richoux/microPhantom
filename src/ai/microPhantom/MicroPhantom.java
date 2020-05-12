@@ -129,34 +129,34 @@ public class MicroPhantom extends AbstractionLayerAI
 	 * Constructors
 	 */
 	public MicroPhantom( UnitTypeTable a_utt,
-	                     PathFinding a_pf,
 	                     String distribution_file_b,
 	                     String distribution_file_wb,
-	                     String solver_path,
-	                     int[][] heat_map )
+	                     String solver_path )
 	{
 		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver_path );
+	}
+
+	private MicroPhantom( UnitTypeTable a_utt,
+	                      PathFinding a_pf,
+	                      String distribution_file_b,
+	                      String distribution_file_wb,
+	                      String solver_path,
+	                      int[][] heat_map )
+	{
+		this( a_utt, a_pf, distribution_file_b, distribution_file_wb, solver_path );
 		if( heat_map != null )
 		{
 			this.heat_map = new int[ heat_map.length ][];
-			for( int i = 0 ; i < heat_map.length ; ++i )
-				this.heat_map[i] = heat_map[i].clone();
+			for( int x = 0 ; x < heat_map.length ; ++x )
+				this.heat_map[x] = heat_map[x].clone();
 		}
 	}
 
-	public MicroPhantom( UnitTypeTable a_utt,
-	                     String distribution_file_b,
-	                     String distribution_file_wb,
-	                     String solver_path )
-	{
-		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver_path );
-	}
-
-	public MicroPhantom( UnitTypeTable a_utt,
-	                     PathFinding a_pf,
-	                     String distribution_file_b,
-	                     String distribution_file_wb,
-	                     String solver_path )
+	private MicroPhantom( UnitTypeTable a_utt,
+	                      PathFinding a_pf,
+	                      String distribution_file_b,
+	                      String distribution_file_wb,
+	                      String solver_path )
 	{
 		super( a_pf );
 		reset( a_utt );
@@ -288,12 +288,14 @@ public class MicroPhantom extends AbstractionLayerAI
 		if( gs instanceof PartiallyObservableGameState )
 		{
 			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
-			for( int i = 0 ; i < map_width ; ++i )
-				for( int j = 0 ; j < map_height ; ++j )
-					if( pogs.observable( i, j ) )
-						heat_map[i][j] = gs.getTime();
+			for( int x = 0 ; x < map_width ; ++x )
+				for( int y = 0 ; y < map_height ; ++y )
+					if( pgs.getTerrain( x, y ) == pgs.TERRAIN_WALL )
+						heat_map[x][y] = Integer.MAX_VALUE;
+					else if( pogs.observable( x, y ) )
+						heat_map[x][y] = gs.getTime();
 					else
-						heat_map[i][j] = -1;
+						heat_map[x][y] = -1;
 		}
 	}
 
@@ -304,10 +306,10 @@ public class MicroPhantom extends AbstractionLayerAI
 		if( gs instanceof PartiallyObservableGameState )
 		{
 			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
-			for( int i = 0 ; i < map_width ; ++i )
-				for( int j = 0 ; j < map_height ; ++j )
-					if( pogs.observable( i, j ) )
-						heat_map[i][j] = gs.getTime();
+			for( int x = 0 ; x < map_width ; ++x )
+				for( int y = 0 ; y < map_height ; ++y )
+					if( pogs.observable( x, y ) && heat_map[x][y] < Integer.MAX_VALUE )
+						heat_map[x][y] = gs.getTime();
 		}
 	}
 
@@ -526,6 +528,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	{
 		System.out.println("Closing microPhantom");
 		writer_log.close();
+		super.gameOver( winner );
 	}
 
 	public AI clone()
@@ -533,6 +536,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		return new MicroPhantom( utt, pf, distribution_file_b, distribution_file_woutb, solver_path, heat_map );
 	}
 
+	@Override
 	public void reset()
 	{
 		observed_worker = 0;
@@ -671,6 +675,19 @@ public class MicroPhantom extends AbstractionLayerAI
 	/*
 	 * Protected methods
 	 */
+	protected boolean move( Unit u, int x, int y, GameState gs )
+	{
+		PhysicalGameState pgs = gs.getPhysicalGameState();
+		int target = pgs.getWidth() * y + x;
+		if( pf.pathExists( u, target, gs, null ) )
+		{
+			super.move( u, x, y );
+			return true;
+		}
+		else
+			return false;
+	}
+
 	protected void baseBehavior( Unit u, Player player, PhysicalGameState pgs, AtomicInteger reserved_resources )
 	{
 		int nb_workers = my_workers.size();
@@ -788,12 +805,12 @@ public class MicroPhantom extends AbstractionLayerAI
 						if( danger_up <= danger_right )
 						{
 							// move up
-							move( u, u.getX(), u.getY() - 1 );
+							move( u, u.getX(), u.getY() - 1, gs );
 						}
 						else
 						{
 							// move right
-							move( u, u.getX() + 1, u.getY() );
+							move( u, u.getX() + 1, u.getY(), gs );
 						}
 					}
 					else
@@ -801,12 +818,12 @@ public class MicroPhantom extends AbstractionLayerAI
 						if( danger_down <= danger_right )
 						{
 							// move down
-							move( u, u.getX(), u.getY() + 1 );
+							move( u, u.getX(), u.getY() + 1, gs );
 						}
 						else
 						{
 							// move right
-							move( u, u.getX() + 1, u.getY() );
+							move( u, u.getX() + 1, u.getY(), gs );
 						}
 					}
 				}
@@ -817,12 +834,12 @@ public class MicroPhantom extends AbstractionLayerAI
 						if( danger_left <= danger_right )
 						{
 							// move left
-							move( u, u.getX() - 1, u.getY() );
+							move( u, u.getX() - 1, u.getY(), gs );
 						}
 						else
 						{
 							// move right
-							move( u, u.getX() + 1, u.getY() );
+							move( u, u.getX() + 1, u.getY(), gs );
 						}
 					}
 					else
@@ -830,12 +847,12 @@ public class MicroPhantom extends AbstractionLayerAI
 						if( danger_down <= danger_right )
 						{
 							// move down
-							move( u, u.getX(), u.getY() + 1 );
+							move( u, u.getX(), u.getY() + 1, gs );
 						}
 						else
 						{
 							// move right
-							move( u, u.getX() + 1, u.getY() );
+							move( u, u.getX() + 1, u.getY(), gs );
 						}
 					}
 				}
@@ -883,26 +900,32 @@ public class MicroPhantom extends AbstractionLayerAI
 				int min_y = 0;
 				int heat_point = Integer.MAX_VALUE;
 
-				for( int i = 0 ; i < pgs.getWidth() ; ++i )
-					for( int j = 0 ; j < pgs.getHeight() ; ++j )
+				for( int x = 0 ; x < pgs.getWidth() ; ++x )
+					for( int y = 0 ; y < pgs.getHeight() ; ++y )
 					{
-						if( heat_map[i][j] < heat_point )
+						// check if there is no building, resource patches, ...
+						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE )
 						{
-							heat_point = heat_map[i][j];
-							min_x = i;
-							min_y = j;
+							if( heat_map[x][y] < heat_point )
+							{
+								heat_point = heat_map[x][y];
+								min_x = x;
+								min_y = y;
+							}
+							else
+								if( heat_map[x][y] == heat_point )
+									if( Math.random() <= 0.5 )
+									{
+										heat_point = heat_map[x][y];
+										min_x = x;
+										min_y = y;
+									}
 						}
-						else
-							if( heat_map[i][j] == heat_point )
-								if( Math.random() <= 0.5 )
-								{
-									heat_point = heat_map[i][j];
-									min_x = i;
-									min_y = j;
-								}
 					}
-
-				move( u, min_x, min_y );
+				
+				System.out.println( "Unit " + u.getID() + ", currently at (" + u.getX() + "," + u.getY() + "), moves to (" + min_x + "," + min_y + ")" );
+				if( !move( u, min_x, min_y, gs ) )
+					heat_map[min_x][min_y] = Integer.MAX_VALUE;
 			}
 	}
 
@@ -923,20 +946,25 @@ public class MicroPhantom extends AbstractionLayerAI
 				int closest_y = 0;
 				int closest_distance = Integer.MAX_VALUE;
 
-				for( int i = 0 ; i < pgs.getHeight() ; ++i )
-					for( int j = 0 ; j < pgs.getWidth() ; ++j )
-						if( !pogs.observable( j, i ) )
+				for( int x = 0 ; x < pgs.getWidth() ; ++x )
+					for( int y = 0 ; y < pgs.getHeight() ; ++y )
+						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE )
 						{
-							int d = ( u.getX() - j ) * ( u.getX() - j ) + ( u.getY() - i ) * ( u.getY() - i );
-							if( d < closest_distance )
+							if( !pogs.observable( x, y ) )
 							{
-								closest_x = j;
-								closest_y = i;
-								closest_distance = d;
+								int d = ( u.getX() - x ) * ( u.getX() - x ) + ( u.getY() - y ) * ( u.getY() - y );
+								if( d < closest_distance )
+								{
+									closest_x = x;
+									closest_y = y;
+									closest_distance = d;
+								}
 							}
 						}
 
-				move( u, closest_x, closest_y );
+				// If no paths exist to go to this (x,y) position, move randomly
+				if( !move( u, closest_x, closest_y, gs ) )
+					move( u, (int)(pgs.getWidth() * Math.random() ), (int)(pgs.getHeight() * Math.random() ), gs );
 			}
 		}
 	}
