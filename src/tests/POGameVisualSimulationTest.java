@@ -35,7 +35,7 @@ public class POGameVisualSimulationTest {
 	public static void main(String args[]) throws Exception {
 		UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_ORIGINAL_FINETUNED);
 
-		// microRTS competition maps
+		// microRTS competition public maps
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
@@ -45,9 +45,21 @@ public class POGameVisualSimulationTest {
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
 
+		// microRTS competition hidden maps
+		// 2019
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/noBases8x8.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/GardenOfWar64x64.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/barricades24x24.xml", utt);
+		// 2018
+		PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16noResources.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/itsNotSafe.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/letMeOut.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/chambers32x32.xml", utt);
+
 		// not in the competition
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/12x12/basesWorkers12x12A.xml", utt);
-		PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/64x64/basesWorkers64x64A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(2)Benzene.scxA.xml", utt);

@@ -522,9 +522,9 @@ public class MicroPhantom extends AbstractionLayerAI
 	 * Public methods
 	 */
 	@Override
-	public void gameOver(int winner) throws Exception
+	public void gameOver( int winner ) throws Exception
 	{
-		System.out.println("Closing microPhantom AI");
+		System.out.println("Closing microPhantom");
 		writer_log.close();
 	}
 
