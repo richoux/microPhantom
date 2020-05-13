@@ -41,7 +41,7 @@ public class POGameVisualSimulationTest {
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
-		PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
 
@@ -49,7 +49,7 @@ public class POGameVisualSimulationTest {
 		// 2019
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/noBases8x8.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/GardenOfWar64x64.xml", utt);
-		//PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
+		PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/barricades24x24.xml", utt);
 		// 2018
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16noResources.xml", utt);
