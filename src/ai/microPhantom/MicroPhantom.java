@@ -72,28 +72,32 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	//public static PrintWriter writer_log;
 
-	Player player = null;
-	GameState gs = null;
-	PhysicalGameState pgs = null;
+	Player player;
+	GameState gs;
+	PhysicalGameState pgs;
 	
 	String solver_path;
 	String solver_name;
 	int[][] heat_map;
 
-	int observed_worker = 0;
-	int observed_light = 0;
-	int observed_heavy = 0;
-	int observed_ranged = 0;
+	int observed_worker;
+	int observed_light;
+	int observed_heavy;
+	int observed_ranged;
 
-	int initial_base_position_x = -1;
-	int initial_base_position_y = -1;
+	int initial_base_position_x;
+	int initial_base_position_y;
 	
-	boolean random_version = false;
-	boolean scout = false;
-	long scout_ID = -1;
+	boolean random_version;
+	boolean scout;
+	long scout_ID;
 
 	int number_units_can_attack;
 
+	int map_width;
+	int map_height;
+	int map_surface;
+	
 	List<Unit> resource_patches;
 	List<Unit> my_resource_patches;
 	
@@ -129,6 +133,12 @@ public class MicroPhantom extends AbstractionLayerAI
 	UnitType heavy_type;
 	UnitType light_type;
 	UnitType ranged_type;
+
+	UnitType most_expensive_type;
+	UnitType cheapest_type;
+	// Don't delete: Not used yet, but can be useful
+	// UnitType fastest_to_train_type;
+	// UnitType longest_to_train_type;
 
 	boolean enemy_has_barracks;
 
@@ -168,7 +178,6 @@ public class MicroPhantom extends AbstractionLayerAI
 		super( a_pf );
 		reset( a_utt );
 		this.solver_path = solver_path;
-		this.nb_samples = NB_SAMPLES;
 		this.distribution_file_b = distribution_file_b;
 		this.distribution_file_woutb = distribution_file_wb;
 
@@ -288,10 +297,11 @@ public class MicroPhantom extends AbstractionLayerAI
 	/*
 	 * Private methods
 	 */
-	private void initHeatMap()
+	private void initMapAnalysis()
 	{
-		int map_width = pgs.getWidth();
-		int map_height = pgs.getHeight();
+		map_width = pgs.getWidth();
+		map_height = pgs.getHeight();
+		map_surface = map_width * map_height;
 		heat_map = new int[ map_height ][ map_width ];
 
 		// Commented, because pf.pathExists behavior really is incomprehensible
@@ -309,7 +319,7 @@ public class MicroPhantom extends AbstractionLayerAI
 			for( int y = 0 ; y < map_height ; ++y )
 				for( int x = 0 ; x < map_width ; ++x )
 				{
-					int target = pgs.getWidth() * y + x;
+					int target = map_width * y + x;
 					if( pgs.getTerrain( x, y ) == pgs.TERRAIN_WALL ) //|| pf.pathExists( u, target, gs, null ) )
 						heat_map[y][x] = Integer.MAX_VALUE;
 					else if( pogs.observable( x, y ) )
@@ -322,8 +332,6 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	private void updateHeatMap()
 	{
-		int map_width = pgs.getWidth();
-		int map_height = pgs.getHeight();
 		if( gs instanceof PartiallyObservableGameState )
 		{
 			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
@@ -482,12 +490,17 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	private boolean notOnBorder( int x, int y )
 	{
-		return x + 1 < pgs.getWidth() && x - 1 >= 0 && y + 1 < pgs.getHeight() && y - 1 >= 0;
+		return x + 1 < map_width && x - 1 >= 0 && y + 1 < map_height && y - 1 >= 0;
 	}
 	
 	private boolean freeAround( int x, int y )
 	{
 		return notOnBorder( x, y )
+			&& ( pgs.getUnitAt( x    , y     ) == null || pgs.getUnitAt( x    , y     ).getType().canMove )
+			&& ( pgs.getUnitAt( x + 1, y     ) == null || pgs.getUnitAt( x + 1, y     ).getType().canMove )
+			&& ( pgs.getUnitAt( x - 1, y     ) == null || pgs.getUnitAt( x - 1, y     ).getType().canMove )
+			&& ( pgs.getUnitAt( x    , y + 1 ) == null || pgs.getUnitAt( x    , y + 1 ).getType().canMove )
+			&& ( pgs.getUnitAt( x    , y - 1 ) == null || pgs.getUnitAt( x    , y - 1 ).getType().canMove )
 			&& gs.free( x    , y     )
 			&& gs.free( x + 1, y     )
 			&& gs.free( x - 1, y     )
@@ -584,7 +597,9 @@ public class MicroPhantom extends AbstractionLayerAI
 		player = null;
 		gs = null;
 		pgs = null;
-		
+
+		heat_map = null;
+
 		observed_worker = 0;
 		observed_light = 0;
 		observed_heavy = 0;
@@ -592,17 +607,10 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		initial_base_position_x = -1;
 		initial_base_position_y = -1;
-		
-		heat_map = null;
 
-		worker_type = utt.getUnitType( "Worker" );
-		base_type = utt.getUnitType( "Base" );
-		barracks_type = utt.getUnitType( "Barracks" );
-		light_type = utt.getUnitType( "Light" );
-		heavy_type = utt.getUnitType( "Heavy" );
-		ranged_type = utt.getUnitType( "Ranged" );
-
-		enemy_has_barracks = false;
+		random_version = false;
+		scout = false;
+		scout_ID = -1;
 
 		resource_patches = new ArrayList<Unit>();
 		my_resource_patches = new ArrayList<Unit>();
@@ -626,6 +634,68 @@ public class MicroPhantom extends AbstractionLayerAI
 		enemy_heavy_units = new ArrayList<Unit>();
 		enemy_light_units = new ArrayList<Unit>();
 		enemy_ranged_units = new ArrayList<Unit>();
+
+		nb_samples = NB_SAMPLES;
+		
+		base_type = utt.getUnitType( "Base" );
+		barracks_type = utt.getUnitType( "Barracks" );
+		worker_type = utt.getUnitType( "Worker" );
+		heavy_type = utt.getUnitType( "Heavy" );
+		light_type = utt.getUnitType( "Light" );
+		ranged_type = utt.getUnitType( "Ranged" );
+
+		if( heavy_type.cost >= light_type.cost )
+		{
+			if( heavy_type.cost >= ranged_type.cost )
+				most_expensive_type = heavy_type;
+			else
+				most_expensive_type = ranged_type;
+
+			if( ranged_type.cost >= light_type.cost )
+				cheapest_type = light_type;
+			else
+				cheapest_type = ranged_type;
+		}
+		else
+		{
+			if( ranged_type.cost >= light_type.cost )
+				most_expensive_type = ranged_type;
+			else
+				most_expensive_type = light_type;
+
+			if( heavy_type.cost >= ranged_type.cost )
+				cheapest_type = ranged_type;
+			else
+				cheapest_type = heavy_type;
+		}
+
+		// Don't delete: Not used yet, but can be useful
+		// if( heavy_type.produceTime >= light_type.produceTime )
+		// {
+		// 	if( heavy_type.produceTime >= ranged_type.produceTime )
+		// 		longest_to_train_type = heavy_type;
+		// 	else
+		// 		longest_to_train_type = ranged_type;
+
+		// 	if( ranged_type.produceTime >= light_type.produceTime )
+		// 		fastest_to_train_type = light_type;
+		// 	else
+		// 		fastest_to_train_type = ranged_type;
+		// }
+		// else
+		// {
+		// 	if( ranged_type.produceTime >= light_type.produceTime )
+		// 		longest_to_train_type = ranged_type;
+		// 	else
+		// 		longest_to_train_type = light_type;
+
+		// 	if( heavy_type.produceTime >= ranged_type.produceTime )
+		// 		fastest_to_train_type = ranged_type;
+		// 	else
+		// 		fastest_to_train_type = heavy_type;
+		// }
+				
+		enemy_has_barracks = false;
 
 		super.reset();
 	}
@@ -656,12 +726,11 @@ public class MicroPhantom extends AbstractionLayerAI
 		scanUnits();
 
 		if( heat_map == null )
-			initHeatMap();
+			initMapAnalysis();
 		else
 			updateHeatMap();
 		
-		long map_tiles = pgs.getWidth() * pgs.getHeight();
-		double distance_threshold = Math.max( Math.sqrt( map_tiles ) / 4, worker_type.sightRadius );
+		double distance_threshold = Math.max( Math.sqrt( map_surface ) / 4, worker_type.sightRadius );
 
 		// determine how many resource patches I have near my bases, given a distance threshold
 		my_resource_patches.clear();
@@ -671,9 +740,9 @@ public class MicroPhantom extends AbstractionLayerAI
 		// if( gs.getTime() % 500 == 0 )
 		// {
 		// 	writer_log.println( "\n\nTime: " + gs.getTime() );
-		// 	for( int y = 0 ; y < pgs.getHeight() ; ++y )
+		// 	for( int y = 0 ; y < map_height ; ++y )
 		// 	{
-		// 		for( int x = 0 ; x < pgs.getWidth() ; ++x )
+		// 		for( int x = 0 ; x < map_width ; ++x )
 		// 		{
 		// 			String heat;
 		// 			if( heat_map[y][x] < Integer.MAX_VALUE )
@@ -749,7 +818,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	 */
 	protected boolean moveIfPathExists( Unit u, int x, int y )
 	{
-		int target = pgs.getWidth() * y + x;
+		int target = map_width * y + x;
 		if( pf.pathExists( u, target, gs, null ) )
 		{
 			super.move( u, x, y );
@@ -771,7 +840,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		// not BASIC BEHAVIOR
 		// train 1 worker for each resource patch, excluding the scout
-		if( ( nb_workers < my_resource_patches.size() || nb_workers <= 0 ) && player.getResources() >= worker_type.cost )
+		if( ( nb_workers < my_resource_patches.size() || nb_workers <= 0 ) && player.getResources() >= worker_type.cost && nb_workers < 4 )
 		{
 			train( u, worker_type );
 			reserved_resources.addAndGet( worker_type.cost );
@@ -917,8 +986,8 @@ public class MicroPhantom extends AbstractionLayerAI
 				int heat_point = Integer.MAX_VALUE;
 				double tiebreak_distance = Double.MAX_VALUE;
 				
-				for( int y = 0 ; y < pgs.getHeight() ; ++y )
-					for( int x = 0 ; x < pgs.getWidth() ; ++x )
+				for( int y = 0 ; y < map_height ; ++y )
+					for( int x = 0 ; x < map_width ; ++x )
 					{
 						if( heat_map[y][x] < heat_point )
 						{
@@ -932,7 +1001,7 @@ public class MicroPhantom extends AbstractionLayerAI
 								// as a tiebreaker, take the point closest to the mirror position of our base, if any
 								if( initial_base_position_x != -1 )
 								{
-									double distance = euclidianDistance( pgs.getWidth() - initial_base_position_x, pgs.getHeight() - initial_base_position_y, x, y );
+									double distance = euclidianDistance( map_width - initial_base_position_x, map_height - initial_base_position_y, x, y );
 									if( distance < tiebreak_distance )
 									{
 										tiebreak_distance = distance;
@@ -975,8 +1044,8 @@ public class MicroPhantom extends AbstractionLayerAI
 				int closest_y = 0;
 				int closest_distance = Integer.MAX_VALUE;
 
-				for( int y = 0 ; y < pgs.getHeight() ; ++y )
-					for( int x = 0 ; x < pgs.getWidth() ; ++x )
+				for( int y = 0 ; y < map_height ; ++y )
+					for( int x = 0 ; x < map_width ; ++x )
 						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE || pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
 						{
 							if( !pogs.observable( x, y ) )
@@ -994,7 +1063,7 @@ public class MicroPhantom extends AbstractionLayerAI
 				move( u, closest_x, closest_y );
 				// If no paths exist to go to this (x,y) position, move randomly
 				// if( !moveIfPathExists( u, closest_x, closest_y ) )
-				// 	move( u, (int)(pgs.getWidth() * Math.random() ), (int)(pgs.getHeight() * Math.random() ) );
+				// 	move( u, (int)(map_width * Math.random() ), (int)(map_height * Math.random() ) );
 			}
 		}
 	}
@@ -1009,7 +1078,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		int time = gs.getTime();
 		time -= ( time % 10 );
-		if( player.getResources() >= 2 )
+		if( player.getResources() >= cheapest_type.cost )
 		{
 			for( Unit b : my_barracks )
 			{
@@ -1078,9 +1147,13 @@ public class MicroPhantom extends AbstractionLayerAI
 				// writer_log.println( heavy_type.cost );
 				// writer_log.println( ranged_type.cost );
 				// writer_log.println( light_type.cost );
-
-				writer.println( player_idle_barracks );
-				// writer_log.println( player_idle_barracks );
+				
+				writer.println( heavy_type.produceTime );
+				writer.println( ranged_type.produceTime );
+				writer.println( light_type.produceTime );
+				// writer_log.println( heavy_type.produceTime );
+				// writer_log.println( ranged_type.produceTime );
+				// writer_log.println( light_type.produceTime );
 
 				writer.println( my_heavy_units.size() );
 				writer.println( my_ranged_units.size() );
@@ -1089,8 +1162,14 @@ public class MicroPhantom extends AbstractionLayerAI
 				// writer_log.println( my_ranged_units.size() );
 				// writer_log.println( my_light_units.size() );
 
+				writer.println( player_idle_barracks );
+				// writer_log.println( player_idle_barracks );
+
 				writer.println( player.getResources() );
 				// writer_log.println( player.getResources() );
+
+				writer.println( map_surface );
+				// writer_log.println( map_surface );
 
 				// writer_log.println("#########\n");
 				writer.close();
@@ -1107,7 +1186,7 @@ public class MicroPhantom extends AbstractionLayerAI
 				// System.out.println("Hello Java");
 				Runtime r = Runtime.getRuntime();
 
-				if( pgs.getWidth() >= 20 )
+				if( map_surface >= 400 )
 					solver_name = solver_path + "solver_cpp_optimistic";
 				else
 					solver_name = solver_path + "solver_cpp_pessimistic";
@@ -1142,7 +1221,7 @@ public class MicroPhantom extends AbstractionLayerAI
 			if( !no_train )
 				if( sol_light >= sol_ranged )
 				{
-					if( sol_light >= sol_heavy )
+					if( sol_light >= sol_heavy && player.getResources() >= light_type.cost )
 					{
 						train( u, light_type );
 						reserved_resources.addAndGet( light_type.cost );
@@ -1155,7 +1234,7 @@ public class MicroPhantom extends AbstractionLayerAI
 						}
 				}
 				else
-					if( sol_ranged >= sol_heavy )
+					if( sol_ranged >= sol_heavy && player.getResources() >= ranged_type.cost)
 					{
 						train( u, ranged_type );
 						reserved_resources.addAndGet( ranged_type.cost );
@@ -1212,17 +1291,45 @@ public class MicroPhantom extends AbstractionLayerAI
 			}
 		}
 
-		// if no barracks or plainty of money
-		if( my_barracks.size() == 0 || player.getResources() >= barracks_type.cost + reserved_resources.get() + heavy_type.cost )
+		// if no barracks or plainty of money (on maps larger than 12x12)
+		if( my_barracks.size() == 0 || ( player.getResources() >= barracks_type.cost + reserved_resources.get() + most_expensive_type.cost && map_surface > 144 ) )
 		{
 			// build a barracks:
 			if( player.getResources() >= barracks_type.cost + reserved_resources.get() && !free_workers.isEmpty() )
 			{
-				Unit u = free_workers.remove( 0 );
-				AtomicInteger new_building_x = new AtomicInteger( u.getX() );
-				AtomicInteger new_building_y = new AtomicInteger( u.getY() );
-				spiralSearch( new_building_x, new_building_y );
-				buildIfNotAlreadyBuilding( u, barracks_type, new_building_x.get(), new_building_y.get(), reserved_positions, player, pgs );
+				// get the worker the farther away from a barracks, if any
+				Unit u = free_workers.get( 0 ) ;
+				if( my_barracks.size() == 0 )
+					u = free_workers.remove( 0 );
+				else
+				{
+					double distance_from_barracks = -1;
+					for( Unit w : free_workers )
+						for( Unit b : my_barracks )
+						{
+							double distance = euclidianDistance( w, b );
+							if( distance > distance_from_barracks )
+							{
+								distance = distance_from_barracks;
+								u = w;
+							}
+						}
+					free_workers.remove( u );
+				}
+
+				// on very small maps, build anywhere
+				// otherwise, find a good place for the barracks
+				if( map_surface <= 144 )
+				{
+					buildIfNotAlreadyBuilding( u, barracks_type, u.getX(), u.getY(), reserved_positions, player, pgs );
+				}
+				else
+				{
+					AtomicInteger new_building_x = new AtomicInteger( u.getX() );
+					AtomicInteger new_building_y = new AtomicInteger( u.getY() );
+					spiralSearch( new_building_x, new_building_y );
+					buildIfNotAlreadyBuilding( u, barracks_type, new_building_x.get(), new_building_y.get(), reserved_positions, player, pgs );
+				}
 				reserved_resources.addAndGet( barracks_type.cost );
 			}
 		}
