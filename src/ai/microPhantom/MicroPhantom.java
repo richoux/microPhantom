@@ -70,7 +70,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	public static int NB_SAMPLES = 50;
 
-	public static PrintWriter writer_log;
+	//public static PrintWriter writer_log;
 
 	String solver_path;
 	String solver_name;
@@ -81,6 +81,9 @@ public class MicroPhantom extends AbstractionLayerAI
 	int observed_heavy = 0;
 	int observed_ranged = 0;
 
+	int initial_base_position_x = -1;
+	int initial_base_position_y = -1;
+	
 	boolean random_version = false;
 	boolean scout = false;
 	long scout_ID = -1;
@@ -147,8 +150,8 @@ public class MicroPhantom extends AbstractionLayerAI
 		if( heat_map != null )
 		{
 			this.heat_map = new int[ heat_map.length ][];
-			for( int x = 0 ; x < heat_map.length ; ++x )
-				this.heat_map[x] = heat_map[x].clone();
+			for( int y = 0 ; y < heat_map.length ; ++y )
+				this.heat_map[y] = heat_map[y].clone();
 		}
 	}
 
@@ -217,15 +220,15 @@ public class MicroPhantom extends AbstractionLayerAI
 			distribution_b.put( Integer.parseInt( item.getAttribute( "time" ).getValue() ), tmp );
 		}
 
-		try
-		{
-			//writer_log = new PrintWriter( "src/ai/microPhantom/solver.log", "UTF-8" );
-			writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
-		}
-		catch( IOException e1 )
-		{
-			System.out.println( "Exception with writer log" );
-		}
+		// try
+		// {
+		// 	//writer_log = new PrintWriter( "src/ai/microPhantom/solver.log", "UTF-8" );
+		// 	writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
+		// }
+		// catch( IOException e1 )
+		// {
+		// 	System.out.println( "Exception with writer log" );
+		// }
 
 		try
 		{
@@ -285,29 +288,30 @@ public class MicroPhantom extends AbstractionLayerAI
 	{
 		int map_width = pgs.getWidth();
 		int map_height = pgs.getHeight();
-		heat_map = new int[ map_width ][ map_height ];
+		heat_map = new int[ map_height ][ map_width ];
 
-		Unit u;
-		if( !my_workers.isEmpty() )
-			u = my_workers.get( 0 );
-		else if( !my_bases.isEmpty() )
-			u = my_bases.get( 0 );
-		else
-			u = my_units.get( 0 );		
+		// Commented, because pf.pathExists behavior really is incomprehensible
+		// Unit u;
+		// if( !my_workers.isEmpty() )
+		// 	u = my_workers.get( 0 );
+		// else if( !my_bases.isEmpty() )
+		// 	u = my_bases.get( 0 );
+		// else
+		// 	u = my_units.get( 0 );		
 		
 		if( gs instanceof PartiallyObservableGameState )
 		{
 			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
-			for( int x = 0 ; x < map_width ; ++x )
-				for( int y = 0 ; y < map_height ; ++y )
+			for( int y = 0 ; y < map_height ; ++y )
+				for( int x = 0 ; x < map_width ; ++x )
 				{
 					int target = pgs.getWidth() * y + x;
-					if( pgs.getTerrain( x, y ) == pgs.TERRAIN_WALL || pf.pathExists( u, target, gs, null ) )
-						heat_map[x][y] = Integer.MAX_VALUE;
+					if( pgs.getTerrain( x, y ) == pgs.TERRAIN_WALL ) //|| pf.pathExists( u, target, gs, null ) )
+						heat_map[y][x] = Integer.MAX_VALUE;
 					else if( pogs.observable( x, y ) )
-						heat_map[x][y] = gs.getTime();
+						heat_map[y][x] = gs.getTime();
 					else
-						heat_map[x][y] = -1;
+						heat_map[y][x] = -1;
 				}
 		}
 	}
@@ -319,10 +323,10 @@ public class MicroPhantom extends AbstractionLayerAI
 		if( gs instanceof PartiallyObservableGameState )
 		{
 			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
-			for( int x = 0 ; x < map_width ; ++x )
-				for( int y = 0 ; y < map_height ; ++y )
-					if( pogs.observable( x, y ) && heat_map[x][y] < Integer.MAX_VALUE )
-						heat_map[x][y] = gs.getTime();
+			for( int y = 0 ; y < map_height ; ++y )
+				for( int x = 0 ; x < map_width ; ++x )
+					if( pogs.observable( x, y ) && heat_map[y][x] < Integer.MAX_VALUE )
+						heat_map[y][x] = gs.getTime();
 		}
 	}
 
@@ -360,7 +364,14 @@ public class MicroPhantom extends AbstractionLayerAI
 				{
 					my_units.add( u );
 					if( u.getType().ID == base_type.ID )
+					{
+						if( initial_base_position_x == -1 )
+						{
+							initial_base_position_x = u.getX();
+							initial_base_position_y = u.getY();
+						}
 						my_bases.add( u );
+					}
 					else if( u.getType().ID == barracks_type.ID )
 						my_barracks.add( u );
 					else if( u.getType().ID == worker_type.ID )
@@ -418,6 +429,11 @@ public class MicroPhantom extends AbstractionLayerAI
 	private double euclidianDistance( Unit u1, Unit u2 )
 	{
 		return Math.sqrt( Math.pow( u2.getX() - u1.getX(), 2 ) + Math.pow( u2.getY() - u1.getY(), 2 ) );
+	}
+
+	private double euclidianDistance( int x1, int y1, int x2, int y2 )
+	{
+		return Math.sqrt( Math.pow( x2 - x1, 2 ) + Math.pow( y2 - y1, 2 ) );
 	}
 	
 	private int manhattanDistance( Unit u1, Unit u2 )
@@ -557,6 +573,9 @@ public class MicroPhantom extends AbstractionLayerAI
 		observed_heavy = 0;
 		observed_ranged = 0;
 
+		initial_base_position_x = -1;
+		initial_base_position_y = -1;
+		
 		heat_map = null;
 
 		worker_type = utt.getUnitType( "Worker" );
@@ -630,30 +649,26 @@ public class MicroPhantom extends AbstractionLayerAI
 		AtomicInteger reserved_resources = new AtomicInteger( 0 );
 
 
-		if( 0 <= gs.getTime() && gs.getTime() < 20 )
-		{
-			writer_log.println( "\n\nTime: " + gs.getTime() );
-			for( int x = 0 ; x < pgs.getWidth() ; ++x )
-			{
-				for( int y = 0 ; y < pgs.getHeight() ; ++y )
-				{
-					String heat;
-					if( heat_map[x][y] < Integer.MAX_VALUE )
-						heat = String.format( "%-4s ", heat_map[x][y] );
-					else
-					{
-						int wall = -10;
-						heat = String.format( "%-4s ", wall );
-					}
-					writer_log.print( heat );
-				}
-				writer_log.println("");
-			}
-		}
-		if( gs.getTime() == 20 )
-			writer_log.close();
-		
-
+		// if( gs.getTime() % 500 == 0 )
+		// {
+		// 	writer_log.println( "\n\nTime: " + gs.getTime() );
+		// 	for( int y = 0 ; y < pgs.getHeight() ; ++y )
+		// 	{
+		// 		for( int x = 0 ; x < pgs.getWidth() ; ++x )
+		// 		{
+		// 			String heat;
+		// 			if( heat_map[y][x] < Integer.MAX_VALUE )
+		// 				heat = String.format( "%-4s ", heat_map[y][x] );
+		// 			else
+		// 			{
+		// 				int wall = -10;
+		// 				heat = String.format( "%-4s ", wall );
+		// 			}
+		// 			writer_log.print( heat );
+		// 		}
+		// 		writer_log.println("");
+		// 	}
+		// }
 		
 		for( Unit u : resource_patches )
 		{
@@ -937,35 +952,47 @@ public class MicroPhantom extends AbstractionLayerAI
 				int min_x = 0;
 				int min_y = 0;
 				int heat_point = Integer.MAX_VALUE;
-
-				for( int x = 0 ; x < pgs.getWidth() ; ++x )
-					for( int y = 0 ; y < pgs.getHeight() ; ++y )
+				double tiebreak_distance = Double.MAX_VALUE;
+				
+				for( int y = 0 ; y < pgs.getHeight() ; ++y )
+					for( int x = 0 ; x < pgs.getWidth() ; ++x )
 					{
-						// check if there is no building, resource patches, ...
-						if( pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
+						if( heat_map[y][x] < heat_point )
 						{
-							if( heat_map[x][y] < heat_point )
+							heat_point = heat_map[y][x];
+							min_x = x;
+							min_y = y;
+						}
+						else
+							if( heat_map[y][x] == heat_point )
 							{
-								heat_point = heat_map[x][y];
-								min_x = x;
-								min_y = y;
-							}
-							else
-								if( heat_map[x][y] == heat_point )
-									if( Math.random() <= 0.5 )
+								// as a tiebreaker, take the point closest to the mirror position of our base, if any
+								if( initial_base_position_x != -1 )
+								{
+									double distance = euclidianDistance( pgs.getWidth() - initial_base_position_x, pgs.getHeight() - initial_base_position_y, x, y );
+									if( distance < tiebreak_distance )
 									{
-										heat_point = heat_map[x][y];
+										tiebreak_distance = distance;
 										min_x = x;
 										min_y = y;
 									}
-						}
-						if( pgs.getUnitAt( x, y ) != null && pgs.getUnitAt( x, y ).getType().isResource )
-							heat_map[x][y] = gs.getTime();
+								}
+								else
+									if( Math.random() <= 0.5 )
+									{
+										heat_point = heat_map[y][x];
+										min_x = x;
+										min_y = y;
+									}
+							}
 					}
-				
-				//System.out.println( "Unit " + u.getID() + ", currently at (" + u.getX() + "," + u.getY() + "), moves to (" + min_x + "," + min_y + ")" );
-				if( !move( u, min_x, min_y, gs ) )
-					heat_map[min_x][min_y] = Integer.MAX_VALUE;
+				// if( pgs.getUnitAt( x, y ) != null && pgs.getUnitAt( x, y ).getType().isResource )
+				// 	heat_map[y][x] = gs.getTime();
+							
+				System.out.println( "Unit " + u.getType().name + " num. " + u.getID() + ", currently at (" + u.getX() + "," + u.getY() + "), moves to (" + min_x + "," + min_y + ")" );
+				//if( !move( u, min_x, min_y, gs ) )
+				// 	heat_map[min_y][min_x] = Integer.MAX_VALUE;
+				move( u, min_x, min_y );
 			}
 	}
 
@@ -986,8 +1013,8 @@ public class MicroPhantom extends AbstractionLayerAI
 				int closest_y = 0;
 				int closest_distance = Integer.MAX_VALUE;
 
-				for( int x = 0 ; x < pgs.getWidth() ; ++x )
-					for( int y = 0 ; y < pgs.getHeight() ; ++y )
+				for( int y = 0 ; y < pgs.getHeight() ; ++y )
+					for( int x = 0 ; x < pgs.getWidth() ; ++x )
 						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE || pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
 						{
 							if( !pogs.observable( x, y ) )
@@ -1002,9 +1029,10 @@ public class MicroPhantom extends AbstractionLayerAI
 							}
 						}
 
+				move( u, closest_x, closest_y );
 				// If no paths exist to go to this (x,y) position, move randomly
-				if( !move( u, closest_x, closest_y, gs ) )
-					move( u, (int)(pgs.getWidth() * Math.random() ), (int)(pgs.getHeight() * Math.random() ), gs );
+				// if( !move( u, closest_x, closest_y, gs ) )
+				// 	move( u, (int)(pgs.getWidth() * Math.random() ), (int)(pgs.getHeight() * Math.random() ), gs );
 			}
 		}
 	}
@@ -1223,7 +1251,8 @@ public class MicroPhantom extends AbstractionLayerAI
 			}
 		}
 
-		if( my_barracks.size() == 0 )
+		// if no barracks or plainty of money
+		if( my_barracks.size() == 0 || player.getResources() >= barracks_type.cost + reserved_resources.get() + heavy_type.cost )
 		{
 			// build a barracks:
 			if( player.getResources() >= barracks_type.cost + reserved_resources.get() && !free_workers.isEmpty() )
