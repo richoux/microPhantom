@@ -58,15 +58,15 @@ double Assignment::required_cost() const
  *******************/
 
 Stock::Stock( const vector<reference_wrapper< Variable> >& variables,
-              int heavyCost,
-              int lightCost,
-              int rangedCost,
+              int heavy_cost,
+              int light_cost,
+              int ranged_cost,
               int nb_barracks,
               double stock )
 	: Constraint(variables),
-	  _heavyCost(heavyCost),
-	  _lightCost(lightCost),
-	  _rangedCost(rangedCost),
+	  _heavy_cost(heavy_cost),
+	  _light_cost(light_cost),
+	  _ranged_cost(ranged_cost),
 	  _nb_barracks(nb_barracks),
 	  _stock(stock)
 { }
@@ -74,9 +74,9 @@ Stock::Stock( const vector<reference_wrapper< Variable> >& variables,
 // H_cost*to_produce_H + L_cost*to_produce_L + R_cost*to_produce_R <= stock
 double Stock::required_cost() const
 {
-	double sum = _heavyCost * variables[0].get().get_value()
-	           + _lightCost * variables[1].get().get_value()
-	           + _rangedCost * variables[2].get().get_value();
+	double sum = _heavy_cost * variables[0].get().get_value()
+	           + _light_cost * variables[1].get().get_value()
+	           + _ranged_cost * variables[2].get().get_value();
 
 	return std::max( 0., sum - ( _stock + _nb_barracks ) );
 }

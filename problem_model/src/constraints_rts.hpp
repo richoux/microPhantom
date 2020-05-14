@@ -44,7 +44,7 @@ public:
 
 class Stock : public Constraint
 {
-	int _heavyCost, _lightCost, _rangeCost;
+	int _heavy_cost, _light_cost, _ranged_cost;
 	int _nb_barracks;
 	double _stock;
 
@@ -52,9 +52,9 @@ class Stock : public Constraint
 
 public:
 	Stock( const vector< reference_wrapper<Variable> >& variables,
-	       int heavyCost,
-	       int lightCost,
-	       int rangeCost,
+	       int heavy_cost,
+	       int light_cost,
+	       int ranged_cost,
 	       int nb_barracks,
 	       double stock );
 };

@@ -89,6 +89,12 @@ public class MicroPhantom extends AbstractionLayerAI
 	int initial_base_position_x;
 	int initial_base_position_y;
 	int initial_number_workers;
+	int min_distance_resource_base;
+	int max_distance_resource_base;
+	boolean has_initial_base;
+	boolean has_initial_barracks;
+
+	int initial_resources;
 	
 	boolean random_version;
 	boolean scout;
@@ -295,6 +301,7 @@ public class MicroPhantom extends AbstractionLayerAI
 						{
 							initial_base_position_x = u.getX();
 							initial_base_position_y = u.getY();
+							has_initial_base = true;
 						}
 						my_bases.add( u );
 					}
@@ -551,6 +558,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		initial_base_position_x = -1;
 		initial_base_position_y = -1;
 		initial_number_workers = -1;
+		min_distance_resource_base = -1;
+		max_distance_resource_base = -1;
+		has_initial_base = false;
+		has_initial_barracks = false;
+
+		initial_resources = 0;
 		
 		random_version = false;
 		scout = false;
@@ -673,7 +686,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		scanUnits();
 		
 		if( heat_map == null )
+		{
 			initMapAnalysis();
+			if( !my_barracks.isEmpty() )
+				has_initial_barracks = true;
+			initial_resources = player.getResources();
+		}
 		else
 			updateHeatMap();
 		
@@ -712,6 +730,21 @@ public class MicroPhantom extends AbstractionLayerAI
 					my_resource_patches.add( u );
 					break; // don't check it for another base
 				}
+		}
+
+		if( min_distance_resource_base == -1 && !my_bases.isEmpty() )
+		{
+			int max_distance = Integer.MAX_VALUE;
+			for( Unit r : my_resource_patches )
+			{
+				int d = manhattanDistance( my_bases.get( 0 ), r );
+				if( d < max_distance )
+					max_distance = d;
+				else if ( d > min_distance_resource_base )
+					min_distance_resource_base = d;
+			}
+			if( max_distance < Integer.MAX_VALUE )
+				max_distance_resource_base = max_distance;
 		}
 		
 		for( Unit u : my_bases )
@@ -1028,25 +1061,33 @@ public class MicroPhantom extends AbstractionLayerAI
 			PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
 			// writer_log.println( "Time: " + time );
 
+			int no_initial_base_int = has_initial_base ? 0 : 1;
+			int no_initial_barracks_int = has_initial_barracks ? 0 : 1;
+			
+			writer.println( gs.getTime() );
 			writer.println( number_idle_barracks );
-			// writer_log.println( number_idle_barracks );
+			writer.println( min_distance_resource_base );
+			writer.println( max_distance_resource_base );
+			writer.println( no_initial_base_int );
+			writer.println( no_initial_barracks_int );
 
 			writer.println( player.getResources() );
-			// writer_log.println( player.getResources() );
+			writer.println( initial_resources );
+			writer.println( enemy_cost_loss );
+			
+			writer.println( worker_type.moveTime );
+			writer.println( worker_type.harvestTime );
+			writer.println( worker_type.returnTime );
 
+			writer.println( base_type.cost );
+			writer.println( barracks_type.cost );
 			writer.println( heavy_type.cost );
 			writer.println( light_type.cost );
 			writer.println( ranged_type.cost );
-			// writer_log.println( heavy_type.cost );
-			// writer_log.println( light_type.cost );
-			// writer_log.println( ranged_type.cost );
-				
+			
 			writer.println( my_heavy_units.size() );
 			writer.println( my_light_units.size() );
 			writer.println( my_ranged_units.size() );
-			// writer_log.println( my_heavy_units.size() );
-			// writer_log.println( my_light_units.size() );
-			// writer_log.println( my_ranged_units.size() );
 			
 			writer.println( initial_number_workers );
 			writer.println( observed_worker );
@@ -1054,7 +1095,6 @@ public class MicroPhantom extends AbstractionLayerAI
 			writer.println( observed_light );
 			writer.println( observed_ranged );
 					
-			// writer_log.println("#########\n");
 			writer.close();
 		}
 		catch( IOException e1 )
@@ -1180,7 +1220,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		// }
 
 		List<Integer> reserved_positions = new LinkedList<Integer>();
-		if( my_bases.size() == 0 && !free_workers.isEmpty() )
+		if( my_bases.isEmpty() && !free_workers.isEmpty() )
 		{
 			// build a base, and don't count reserved_resources: it's top priority
 			if( player.getResources() >= base_type.cost )
@@ -1195,14 +1235,14 @@ public class MicroPhantom extends AbstractionLayerAI
 		}
 
 		// if no barracks or plainty of money (on maps larger than 12x12)
-		if( my_barracks.size() == 0 || ( player.getResources() >= barracks_type.cost + reserved_resources.get() + most_expensive_type.cost && map_surface > 144 ) )
+		if( my_barracks.isEmpty() || ( player.getResources() >= barracks_type.cost + reserved_resources.get() + most_expensive_type.cost && map_surface > 144 ) )
 		{
 			// build a barracks:
 			if( player.getResources() >= barracks_type.cost + reserved_resources.get() && !free_workers.isEmpty() )
 			{
 				// get the worker the farther away from a barracks, if any
 				Unit u = free_workers.get( 0 ) ;
-				if( my_barracks.size() == 0 )
+				if( my_barracks.isEmpty() )
 					u = free_workers.remove( 0 );
 				else
 				{

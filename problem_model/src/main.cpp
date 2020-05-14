@@ -51,20 +51,41 @@ int main( int argc, char *argv[] )
 	outfile.open( "run.log", std::ios::app );
 
 	int nb_samples = std::stoi( argv[2] );
-	int nb_barracks, resources;
-	int heavy_cost, ranged_cost, light_cost;
+	int time;
+	int nb_barracks, min_distance_resource_base, max_distance_resource_base;
+	int no_initial_base, no_initial_barracks;
+	int resources, initial_resources, enemy_resources_loss;
+	int worker_move_time, worker_harvest_time, worker_return_time;
+	int base_cost, barracks_cost, heavy_cost, ranged_cost, light_cost;
 	int my_heavy_units, my_light_units, my_ranged_units;
 	int initial_enemy_worker;
 	int observed_enemy_worker, observed_enemy_heavy, observed_enemy_light, observed_enemy_ranged;
 
+	infile >> time;
 	infile >> nb_barracks;
+	infile >> min_distance_resource_base;
+	infile >> max_distance_resource_base;
+	infile >> no_initial_base;
+	infile >> no_initial_barracks;
+	
 	infile >> resources;
+	infile >> initial_resources;
+	infile >> enemy_resources_loss;
+	
+	infile >> worker_move_time;
+	infile >> worker_harvest_time;
+	infile >> worker_return_time;
+
+	infile >> base_cost;
+	infile >> barracks_cost;
 	infile >> heavy_cost;
 	infile >> light_cost;
 	infile >> ranged_cost;
+
 	infile >> my_heavy_units;
 	infile >> my_light_units;
 	infile >> my_ranged_units;
+
 	infile >> initial_enemy_worker;
 	infile >> observed_enemy_worker;
 	infile >> observed_enemy_heavy;
@@ -72,12 +93,83 @@ int main( int argc, char *argv[] )
 	infile >> observed_enemy_ranged;
 
 	observed_enemy_worker = std::max( initial_enemy_worker, observed_enemy_worker );
-	
-	vector<Variable> variables;
-	auto distribution = { 1 + observed_enemy_heavy, 1 + observed_enemy_light, 1 + observed_enemy_ranged };
+
+	// Estimate how much resources the opponent has.
+	int mean_distance;
+	if( min_distance_resource_base != -1 )
+		mean_distance = ( min_distance_resource_base + max_distance_resource_base ) / 2;
+	else
+		mean_distance = 30; // let's consider resources are far away
+
+	// 20 * ( initial_enemy_worker - 1 ) is to express a penalty when there are more than one worker: they tend to hinder each other.
+	int gathered_resources = initial_enemy_worker * ( time / ( mean_distance * worker_move_time * 2 + worker_harvest_time + worker_return_time + ( 20 * ( initial_enemy_worker - 1 ) ) ) );
+	int estimated_cumulated_resources = initial_resources + gathered_resources;
+	int value_enemy_army = observed_enemy_heavy * heavy_cost + observed_enemy_light * light_cost + observed_enemy_ranged * ranged_cost;
+	int estimated_remaining_resources = std::max( 0, estimated_cumulated_resources - ( no_initial_base * base_cost + no_initial_barracks * barracks_cost + enemy_resources_loss + value_enemy_army ) );
+
+	// after estimating how much resources we haven't seen used from the opponent, we need to estimate how the opponent spent it!
+	int min_cost = heavy_cost;
+	if( light_cost < min_cost )
+	{
+		if( ranged_cost < light_cost )
+			min_cost = ranged_cost;
+		else
+			min_cost = light_cost;
+	}
+	else
+		if( ranged_cost < min_cost )
+			min_cost = ranged_cost;
+
+	// +1 to each unit type to never have a probability = 0 of producing any type of unit.
+	int total = 3 + observed_enemy_heavy + observed_enemy_light + observed_enemy_ranged;
+	auto distribution = { ( 1 + observed_enemy_heavy ) * 100.0 / total, ( 1 + observed_enemy_light ) * 100.0 / total, ( 1 + observed_enemy_ranged ) * 100.0 / total };
 	randutils::mt19937_rng rng;
-	rng.variate< int, std::discrete_distribution >( distribution );
-	//discrete_distribution<> distribution( { 1 + observed_enemy_heavy, 1 + observed_enemy_light, 1 + observed_enemy_ranged } );
+	vector< vector<int> > samples;
+
+	for( int counter = 0; counter < nb_samples; ++counter )
+	{
+		int estimated_resources = estimated_remaining_resources;
+		int unit_produced = -1;
+		int number_estimated_heavy = 0;
+		int number_estimated_light = 0;
+		int number_estimated_ranged = 0;
+		
+		// while the opponent can produce something, we consider he or she will
+		while( estimated_resources >= min_cost )
+		{
+			unit_produced	= rng.variate< int, std::discrete_distribution >( distribution );
+			switch( unit_produced )
+			{
+			case 0: // heavy
+				if( estimated_resources >= heavy_cost )
+				{
+					++number_estimated_heavy;
+					estimated_resources -= heavy_cost;
+				}
+				break;
+			case 1: // light
+				if( estimated_resources >= light_cost )
+				{
+					++number_estimated_light;
+					estimated_resources -= light_cost;
+				}
+				break;
+			case 2: // ranged
+				if( estimated_resources >= ranged_cost )
+				{
+					++number_estimated_ranged;
+					estimated_resources -= ranged_cost;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		samples.push_back( { number_estimated_heavy, number_estimated_light, number_estimated_ranged } );
+	}
+			
+	vector<Variable> variables;
 	
 	// Our units assigned to enemy units
 	variables.push_back( Variable( "Heavy assigned to heavy", "assign_Hh", 0, 20 + my_heavy_units ) ); //0
