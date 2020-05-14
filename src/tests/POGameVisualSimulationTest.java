@@ -36,7 +36,7 @@ public class POGameVisualSimulationTest {
 		UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_ORIGINAL_FINETUNED);
 
 		// microRTS competition public maps
-		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+		PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
@@ -49,7 +49,7 @@ public class POGameVisualSimulationTest {
 		// 2019
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/noBases8x8.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/GardenOfWar64x64.xml", utt);
-		PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/barricades24x24.xml", utt);
 		// 2018
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16noResources.xml", utt);
