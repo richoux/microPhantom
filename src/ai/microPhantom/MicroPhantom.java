@@ -136,9 +136,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	UnitType most_expensive_type;
 	UnitType cheapest_type;
-	// Don't delete: Not used yet, but can be useful
-	// UnitType fastest_to_train_type;
-	// UnitType longest_to_train_type;
+	UnitType fastest_to_train_type;
+	UnitType slowest_to_train_type;
 
 	boolean enemy_has_barracks;
 
@@ -669,32 +668,31 @@ public class MicroPhantom extends AbstractionLayerAI
 				cheapest_type = heavy_type;
 		}
 
-		// Don't delete: Not used yet, but can be useful
-		// if( heavy_type.produceTime >= light_type.produceTime )
-		// {
-		// 	if( heavy_type.produceTime >= ranged_type.produceTime )
-		// 		longest_to_train_type = heavy_type;
-		// 	else
-		// 		longest_to_train_type = ranged_type;
+		if( heavy_type.produceTime >= light_type.produceTime )
+		{
+			if( heavy_type.produceTime >= ranged_type.produceTime )
+				slowest_to_train_type = heavy_type;
+			else
+				slowest_to_train_type = ranged_type;
 
-		// 	if( ranged_type.produceTime >= light_type.produceTime )
-		// 		fastest_to_train_type = light_type;
-		// 	else
-		// 		fastest_to_train_type = ranged_type;
-		// }
-		// else
-		// {
-		// 	if( ranged_type.produceTime >= light_type.produceTime )
-		// 		longest_to_train_type = ranged_type;
-		// 	else
-		// 		longest_to_train_type = light_type;
+			if( ranged_type.produceTime >= light_type.produceTime )
+				fastest_to_train_type = light_type;
+			else
+				fastest_to_train_type = ranged_type;
+		}
+		else
+		{
+			if( ranged_type.produceTime >= light_type.produceTime )
+				slowest_to_train_type = ranged_type;
+			else
+				slowest_to_train_type = light_type;
 
-		// 	if( heavy_type.produceTime >= ranged_type.produceTime )
-		// 		fastest_to_train_type = ranged_type;
-		// 	else
-		// 		fastest_to_train_type = heavy_type;
-		// }
-				
+			if( heavy_type.produceTime >= ranged_type.produceTime )
+				fastest_to_train_type = ranged_type;
+			else
+				fastest_to_train_type = heavy_type;
+		}
+			
 		enemy_has_barracks = false;
 
 		super.reset();
@@ -1077,175 +1075,184 @@ public class MicroPhantom extends AbstractionLayerAI
 		int sol_light = 0;
 
 		int time = gs.getTime();
-		time -= ( time % 10 );
-		if( player.getResources() >= cheapest_type.cost )
+		
+		// if we are on a very small map, we must play quickly
+		if( map_surface <= 144 && time <= 400 && my_army.size() <= 2 && player.getResources() >= fastest_to_train_type.cost )
 		{
-			for( Unit b : my_barracks )
-			{
-				UnitAction ua = gs.getUnitAction( b );
-				if( ua == null || ua.getType() == UnitAction.TYPE_NONE )
-					++player_idle_barracks;
-			}
-				
-			observed_worker =	Math.max( observed_worker, enemy_workers.size() );
-			observed_heavy = Math.max( observed_heavy, enemy_heavy_units.size() );
-			observed_ranged =	Math.max( observed_ranged, enemy_ranged_units.size() );
-			observed_light = Math.max( observed_light, enemy_light_units.size() );
-
-			if( enemy_army.size() > 0 || enemy_barracks.size() > 0 )
-				enemy_has_barracks = true;
-
-			// Draws
-			ArrayList<Integer[]> samples = new ArrayList<Integer[]>();
-			Double[] info = { 0.0, 0.0, 0.0, 0.0 };
-
-			for( int i = 0 ; i <= nb_samples ; ++i )
-			{
-				Integer[] tmp = new Integer[4];
-				if( enemy_has_barracks )
-				{
-					tmp[0] = 1;
-					tmp[1] = getSample( (List)distribution_b.get( time ).get( "heavy" ), observed_heavy );
-					tmp[2] = getSample( (List)distribution_b.get( time ).get( "ranged" ), observed_ranged );
-					tmp[3] = getSample( (List)distribution_b.get( time ).get( "light" ), observed_light );
-				}
-				else
-				{
-					tmp[0] = getSample( (List)distribution_woutb.get( time ).get( "worker" ), observed_worker );
-					tmp[1] = getSample( (List)distribution_woutb.get( time ).get( "heavy" ), observed_heavy );
-					tmp[2] = getSample( (List)distribution_woutb.get( time ).get( "ranged" ), observed_ranged );
-					tmp[3] = getSample( (List)distribution_woutb.get( time ).get( "light" ), observed_light );
-				}
-
-				samples.add( tmp );
-				info[0] += tmp[0];
-				info[1] += tmp[1];
-				info[2] += tmp[2];
-				info[3] += tmp[3];
-			}
-
-			// write parameter for solver in a file
-			try
-			{
-				PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
-				// writer_log.println( "Time: " + time );
-
-				// Samples indexes:
-				// 0 for worker
-				// 1 for heavy
-				// 2 for ranged
-				// 3 for light
-				for( int i = 0 ; i < nb_samples ; ++i )
-				{
-					writer.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
-					// writer_log.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
-				}
-
-				writer.println( heavy_type.cost );
-				writer.println( ranged_type.cost );
-				writer.println( light_type.cost );
-				// writer_log.println( heavy_type.cost );
-				// writer_log.println( ranged_type.cost );
-				// writer_log.println( light_type.cost );
-				
-				writer.println( heavy_type.produceTime );
-				writer.println( ranged_type.produceTime );
-				writer.println( light_type.produceTime );
-				// writer_log.println( heavy_type.produceTime );
-				// writer_log.println( ranged_type.produceTime );
-				// writer_log.println( light_type.produceTime );
-
-				writer.println( my_heavy_units.size() );
-				writer.println( my_ranged_units.size() );
-				writer.println( my_light_units.size() );
-				// writer_log.println( my_heavy_units.size() );
-				// writer_log.println( my_ranged_units.size() );
-				// writer_log.println( my_light_units.size() );
-
-				writer.println( player_idle_barracks );
-				// writer_log.println( player_idle_barracks );
-
-				writer.println( player.getResources() );
-				// writer_log.println( player.getResources() );
-
-				writer.println( map_surface );
-				// writer_log.println( map_surface );
-
-				// writer_log.println("#########\n");
-				writer.close();
-			}
-			catch( IOException e1 )
-			{
-				System.out.println( "Exception in printer" );
-			}
-
-			// get solutions
-			boolean no_train = false;
-			try
-			{
-				// System.out.println("Hello Java");
-				Runtime r = Runtime.getRuntime();
-
-				if( map_surface >= 400 )
-					solver_name = solver_path + "solver_cpp_optimistic";
-				else
-					solver_name = solver_path + "solver_cpp_pessimistic";
-
-				Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nb_samples ) );
-				process.waitFor();
-
-				BufferedReader buffer = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
-
-				sol_heavy = Integer.parseInt( buffer.readLine() );
-				sol_ranged = Integer.parseInt( buffer.readLine() );
-				sol_light = Integer.parseInt( buffer.readLine() );
-
-				System.out.println( "H" + sol_heavy + " R" + sol_ranged + " L" + sol_light + "\n" );
-				buffer.close();
-			}
-			catch( IOException e1 )
-			{
-				System.out.println( "IO exception in process" );
-				System.out.println( e1.getMessage() );
-			}
-			catch( InterruptedException e2 )
-			{
-				System.out.println( "interupt exception in process" );
-			}
-			catch( NumberFormatException e3 )
-			{
-				no_train = true;
-				System.out.println( "No train" );
-			}
-
-			if( !no_train )
-				if( sol_light >= sol_ranged )
-				{
-					if( sol_light >= sol_heavy && player.getResources() >= light_type.cost )
-					{
-						train( u, light_type );
-						reserved_resources.addAndGet( light_type.cost );
-					}
-					else
-						if( player.getResources() >= heavy_type.cost )
-						{
-							train( u, heavy_type );
-							reserved_resources.addAndGet( heavy_type.cost );
-						}
-				}
-				else
-					if( sol_ranged >= sol_heavy && player.getResources() >= ranged_type.cost)
-					{
-						train( u, ranged_type );
-						reserved_resources.addAndGet( ranged_type.cost );
-					}
-					else
-						if( player.getResources() >= heavy_type.cost )
-						{
-							train( u, heavy_type );
-							reserved_resources.addAndGet( heavy_type.cost );							
-						}
+			train( u, fastest_to_train_type );
+			reserved_resources.addAndGet( fastest_to_train_type.cost );
 		}
+		else
+			if( player.getResources() >= cheapest_type.cost )
+			{
+				// make time ticks 10 by 10
+				time -= ( time % 10 );
+				for( Unit b : my_barracks )
+				{
+					UnitAction ua = gs.getUnitAction( b );
+					if( ua == null || ua.getType() == UnitAction.TYPE_NONE )
+						++player_idle_barracks;
+				}
+				
+				observed_worker =	Math.max( observed_worker, enemy_workers.size() );
+				observed_heavy = Math.max( observed_heavy, enemy_heavy_units.size() );
+				observed_ranged =	Math.max( observed_ranged, enemy_ranged_units.size() );
+				observed_light = Math.max( observed_light, enemy_light_units.size() );
+
+				if( enemy_army.size() > 0 || enemy_barracks.size() > 0 )
+					enemy_has_barracks = true;
+
+				// Draws
+				ArrayList<Integer[]> samples = new ArrayList<Integer[]>();
+				Double[] info = { 0.0, 0.0, 0.0, 0.0 };
+
+				for( int i = 0 ; i <= nb_samples ; ++i )
+				{
+					Integer[] tmp = new Integer[4];
+					if( enemy_has_barracks )
+					{
+						tmp[0] = 1;
+						tmp[1] = getSample( (List)distribution_b.get( time ).get( "heavy" ), observed_heavy );
+						tmp[2] = getSample( (List)distribution_b.get( time ).get( "ranged" ), observed_ranged );
+						tmp[3] = getSample( (List)distribution_b.get( time ).get( "light" ), observed_light );
+					}
+					else
+					{
+						tmp[0] = getSample( (List)distribution_woutb.get( time ).get( "worker" ), observed_worker );
+						tmp[1] = getSample( (List)distribution_woutb.get( time ).get( "heavy" ), observed_heavy );
+						tmp[2] = getSample( (List)distribution_woutb.get( time ).get( "ranged" ), observed_ranged );
+						tmp[3] = getSample( (List)distribution_woutb.get( time ).get( "light" ), observed_light );
+					}
+
+					samples.add( tmp );
+					info[0] += tmp[0];
+					info[1] += tmp[1];
+					info[2] += tmp[2];
+					info[3] += tmp[3];
+				}
+
+				// write parameter for solver in a file
+				try
+				{
+					PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
+					// writer_log.println( "Time: " + time );
+
+					// Samples indexes:
+					// 0 for worker
+					// 1 for heavy
+					// 2 for ranged
+					// 3 for light
+					for( int i = 0 ; i < nb_samples ; ++i )
+					{
+						writer.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
+						// writer_log.println( samples.get(i)[0] + " " + samples.get(i)[1] + " " + samples.get(i)[2] + " " + samples.get(i)[3] );
+					}
+
+					writer.println( heavy_type.cost );
+					writer.println( ranged_type.cost );
+					writer.println( light_type.cost );
+					// writer_log.println( heavy_type.cost );
+					// writer_log.println( ranged_type.cost );
+					// writer_log.println( light_type.cost );
+				
+					writer.println( heavy_type.produceTime );
+					writer.println( ranged_type.produceTime );
+					writer.println( light_type.produceTime );
+					// writer_log.println( heavy_type.produceTime );
+					// writer_log.println( ranged_type.produceTime );
+					// writer_log.println( light_type.produceTime );
+
+					writer.println( my_heavy_units.size() );
+					writer.println( my_ranged_units.size() );
+					writer.println( my_light_units.size() );
+					// writer_log.println( my_heavy_units.size() );
+					// writer_log.println( my_ranged_units.size() );
+					// writer_log.println( my_light_units.size() );
+
+					writer.println( player_idle_barracks );
+					// writer_log.println( player_idle_barracks );
+
+					writer.println( player.getResources() );
+					// writer_log.println( player.getResources() );
+
+					writer.println( map_surface );
+					// writer_log.println( map_surface );
+
+					// writer_log.println("#########\n");
+					writer.close();
+				}
+				catch( IOException e1 )
+				{
+					System.out.println( "Exception in printer" );
+				}
+
+				// get solutions
+				boolean no_train = false;
+				try
+				{
+					// System.out.println("Hello Java");
+					Runtime r = Runtime.getRuntime();
+
+					if( map_surface >= 400 )
+						solver_name = solver_path + "solver_cpp_optimistic";
+					else
+						solver_name = solver_path + "solver_cpp_pessimistic";
+
+					Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nb_samples ) );
+					process.waitFor();
+
+					BufferedReader buffer = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
+
+					sol_heavy = Integer.parseInt( buffer.readLine() );
+					sol_ranged = Integer.parseInt( buffer.readLine() );
+					sol_light = Integer.parseInt( buffer.readLine() );
+
+					System.out.println( "H" + sol_heavy + " R" + sol_ranged + " L" + sol_light + "\n" );
+					buffer.close();
+				}
+				catch( IOException e1 )
+				{
+					System.out.println( "IO exception in process" );
+					System.out.println( e1.getMessage() );
+				}
+				catch( InterruptedException e2 )
+				{
+					System.out.println( "interupt exception in process" );
+				}
+				catch( NumberFormatException e3 )
+				{
+					no_train = true;
+					System.out.println( "No train" );
+				}
+
+				if( !no_train )
+					if( sol_light >= sol_ranged )
+					{
+						if( sol_light >= sol_heavy && player.getResources() >= light_type.cost )
+						{
+							train( u, light_type );
+							reserved_resources.addAndGet( light_type.cost );
+						}
+						else
+							if( player.getResources() >= heavy_type.cost )
+							{
+								train( u, heavy_type );
+								reserved_resources.addAndGet( heavy_type.cost );
+							}
+					}
+					else
+						if( sol_ranged >= sol_heavy && player.getResources() >= ranged_type.cost)
+						{
+							train( u, ranged_type );
+							reserved_resources.addAndGet( ranged_type.cost );
+						}
+						else
+							if( player.getResources() >= heavy_type.cost )
+							{
+								train( u, heavy_type );
+								reserved_resources.addAndGet( heavy_type.cost );							
+							}
+			}
 	}
 
 	protected void workersBehavior( AtomicInteger reserved_resources )
