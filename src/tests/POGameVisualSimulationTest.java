@@ -36,8 +36,8 @@ public class POGameVisualSimulationTest {
 		UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_ORIGINAL_FINETUNED);
 
 		// microRTS competition public maps
-		PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+		PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
@@ -69,8 +69,8 @@ public class POGameVisualSimulationTest {
 		int PERIOD = 50;
 		boolean gameover = false;
 
-		AI ai1 = new MicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/");
-		//AI ai1 = new RandomMicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/");
+		AI ai1 = new MicroPhantom(utt, "src/ai/microPhantom/");
+		//AI ai1 = new RandomMicroPhantom(utt, "src/ai/microPhantom/");
 
 		//AI ai2 = new POLightRush(utt, new BFSPathFinding());
 		AI ai2 = new POLightRush(utt);

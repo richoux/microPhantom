@@ -48,22 +48,16 @@ double BestComposition::required_cost( const vector< Variable >& vecVariables ) 
 
 	int N = (int)_samples.size();
 
-	// Samples indexes:
-	// 0 for worker
-	// 1 for heavy
-	// 2 for ranged
-	// 3 for light
-
 	// vecVariables:
-	// L vs H, H vs H, R vs H
-	// L vs L, H vs L, R vs L
-	// L vs R, H vs R, R vs R	
+	// H vs H, L vs H, R vs H
+	// H vs L, L vs L, R vs L
+	// H vs R, L vs R, R vs R	
 	// + 'to produce' variables, but we don't care here
 	
 	// Coefficients:
-	// L vs H, H vs H, R vs H
-	// L vs L, H vs L, R vs L
-	// L vs R, H vs R, R vs R	
+	// H vs H, L vs H, R vs H
+	// H vs L, L vs L, R vs L
+	// H vs R, L vs R, R vs R	
 
 	for( int i = 0 ; i < N ; ++i )
 	{
