@@ -61,13 +61,11 @@ Stock::Stock( const vector<reference_wrapper< Variable> >& variables,
               int heavy_cost,
               int light_cost,
               int ranged_cost,
-              int nb_barracks,
               double stock )
 	: Constraint(variables),
 	  _heavy_cost(heavy_cost),
 	  _light_cost(light_cost),
 	  _ranged_cost(ranged_cost),
-	  _nb_barracks(nb_barracks),
 	  _stock(stock)
 { }
 
@@ -78,7 +76,7 @@ double Stock::required_cost() const
 	           + _light_cost * variables[1].get().get_value()
 	           + _ranged_cost * variables[2].get().get_value();
 
-	return std::max( 0., sum - ( _stock + _nb_barracks ) );
+	return std::max( 0., sum - _stock );
 }
 
 

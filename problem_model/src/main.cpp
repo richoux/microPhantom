@@ -55,58 +55,56 @@ int main( int argc, char *argv[] )
 	int nb_barracks, min_distance_resource_base, max_distance_resource_base;
 	int no_initial_base, no_initial_barracks;
 	int resources, initial_resources, enemy_resources_loss;
-	int worker_move_time, worker_harvest_time, worker_return_time;
+	int worker_move_time, worker_harvest_time, worker_return_time, harvest_amount;
 	int base_cost, barracks_cost, heavy_cost, ranged_cost, light_cost;
 	int my_heavy_units, my_light_units, my_ranged_units;
 	int initial_enemy_worker;
 	int observed_enemy_worker, observed_enemy_heavy, observed_enemy_light, observed_enemy_ranged;
+	int observed_enemy_worker_in_total, observed_enemy_heavy_in_total, observed_enemy_light_in_total, observed_enemy_ranged_in_total;
 
-	infile >> time;
-	infile >> nb_barracks;
-	infile >> min_distance_resource_base;
-	infile >> max_distance_resource_base;
-	infile >> no_initial_base;
-	infile >> no_initial_barracks;
+	infile >> time >> nb_barracks >> min_distance_resource_base >> max_distance_resource_base >> no_initial_base >> no_initial_barracks;
+	infile >> resources >> initial_resources >> enemy_resources_loss;
+	infile >> worker_move_time >> worker_harvest_time >> worker_return_time >> harvest_amount;
+	infile >> base_cost >> barracks_cost >> heavy_cost >> light_cost >> ranged_cost;
+	infile >> my_heavy_units >> my_light_units >> my_ranged_units;
+	infile >> initial_enemy_worker >> observed_enemy_worker >> observed_enemy_heavy >> observed_enemy_light >> observed_enemy_ranged;
+	infile >> observed_enemy_worker_in_total >> observed_enemy_heavy_in_total >> observed_enemy_light_in_total >> observed_enemy_ranged_in_total;
+
+	outfile << "######################\n" << "Time: " << time << "\n";
+	outfile << observed_enemy_heavy << "/" << observed_enemy_heavy_in_total << ", "
+	        << observed_enemy_light << "/" << observed_enemy_light_in_total << ", "
+	        << observed_enemy_ranged << "/" << observed_enemy_ranged_in_total << "\n";
 	
-	infile >> resources;
-	infile >> initial_resources;
-	infile >> enemy_resources_loss;
-	
-	infile >> worker_move_time;
-	infile >> worker_harvest_time;
-	infile >> worker_return_time;
-
-	infile >> base_cost;
-	infile >> barracks_cost;
-	infile >> heavy_cost;
-	infile >> light_cost;
-	infile >> ranged_cost;
-
-	infile >> my_heavy_units;
-	infile >> my_light_units;
-	infile >> my_ranged_units;
-
-	infile >> initial_enemy_worker;
-	infile >> observed_enemy_worker;
-	infile >> observed_enemy_heavy;
-	infile >> observed_enemy_light;
-	infile >> observed_enemy_ranged;
-
 	observed_enemy_worker = std::max( initial_enemy_worker, observed_enemy_worker );
 
 	// Estimate how much resources the opponent has.
-	int mean_distance;
+	double mean_distance;
 	if( min_distance_resource_base != -1 )
-		mean_distance = ( min_distance_resource_base + max_distance_resource_base ) / 2;
+		mean_distance = static_cast<double>( min_distance_resource_base + max_distance_resource_base ) / 2;
 	else
-		mean_distance = 30; // let's consider resources are far away
+		mean_distance = 20.0; // let's consider resources are far away
 
+	outfile << "distances (min, mean, max): (" << min_distance_resource_base << ", " << mean_distance << ", " << max_distance_resource_base << "), move time: " << worker_move_time << ", harvest time: " << worker_harvest_time << ", return time: " << worker_return_time << "\n";
+	
 	// 20 * ( initial_enemy_worker - 1 ) is to express a penalty when there are more than one worker: they tend to hinder each other.
-	int gathered_resources = initial_enemy_worker * ( time / ( mean_distance * worker_move_time * 2 + worker_harvest_time + worker_return_time + ( 20 * ( initial_enemy_worker - 1 ) ) ) );
+	int gathered_resources = harvest_amount * initial_enemy_worker * ( time / ( mean_distance * worker_move_time * 2 + worker_harvest_time + worker_return_time + ( 20 * ( initial_enemy_worker - 1 ) ) ) );
 	int estimated_cumulated_resources = initial_resources + gathered_resources;
 	int value_enemy_army = observed_enemy_heavy * heavy_cost + observed_enemy_light * light_cost + observed_enemy_ranged * ranged_cost;
 	int estimated_remaining_resources = std::max( 0, estimated_cumulated_resources - ( no_initial_base * base_cost + no_initial_barracks * barracks_cost + enemy_resources_loss + value_enemy_army ) );
 
+	if( no_initial_base )
+		outfile << "No initial base (" << base_cost << "), ";
+	else
+		outfile << "Has base (" << base_cost << "), ";
+
+	if( no_initial_barracks )
+		outfile << "no initial barracks (" << barracks_cost << ").\n";
+	else
+		outfile << "has barracks (" << barracks_cost << ").\n";
+
+	outfile << "Enemy loss: " << enemy_resources_loss << "\n";
+	outfile << "Resources estimations: gathered=" << gathered_resources << ", initial=" << initial_resources << ", value army=" << value_enemy_army << ", remaining=" << estimated_remaining_resources << "\n";
+	
 	// after estimating how much resources we haven't seen used from the opponent, we need to estimate how the opponent spent it!
 	int min_cost = heavy_cost;
 	if( light_cost < min_cost )
@@ -120,12 +118,24 @@ int main( int argc, char *argv[] )
 		if( ranged_cost < min_cost )
 			min_cost = ranged_cost;
 
+	// Enemy units currently seen count double. Enemy units unseen but we saw before (so dead or returned under the fog) count simple.
+	observed_enemy_heavy_in_total -= observed_enemy_heavy;
+	observed_enemy_light_in_total -= observed_enemy_light;
+	observed_enemy_ranged_in_total -= observed_enemy_ranged;
+	
 	// +1 to each unit type to never have a probability = 0 of producing any type of unit.
-	int total = 3 + observed_enemy_heavy + observed_enemy_light + observed_enemy_ranged;
-	auto distribution = { ( 1 + observed_enemy_heavy ) * 100.0 / total, ( 1 + observed_enemy_light ) * 100.0 / total, ( 1 + observed_enemy_ranged ) * 100.0 / total };
+	int total = 3 + 2 * ( observed_enemy_heavy + observed_enemy_light + observed_enemy_ranged ) + ( observed_enemy_heavy_in_total + observed_enemy_light_in_total + observed_enemy_ranged_in_total );
+	auto distribution = { ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total,
+	                      ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total,
+	                      ( 1 + 2 * observed_enemy_ranged + observed_enemy_ranged_in_total ) * 100.0 / total };
+	outfile << "Distribution: "
+	        << ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total << ", "
+	        << ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total << ", "
+	        << ( 1 + 2 * observed_enemy_ranged + observed_enemy_ranged_in_total ) * 100.0 / total  << "\nSamples:\n";
+
 	randutils::mt19937_rng rng;
 	vector< vector<int> > samples;
-
+	
 	for( int counter = 0; counter < nb_samples; ++counter )
 	{
 		int estimated_resources = estimated_remaining_resources;
@@ -165,8 +175,8 @@ int main( int argc, char *argv[] )
 				break;
 			}
 		}
-
-		samples.push_back( { number_estimated_heavy, number_estimated_light, number_estimated_ranged } );
+		outfile << number_estimated_heavy + observed_enemy_heavy << ", " << number_estimated_light + observed_enemy_light << ", " << number_estimated_ranged + observed_enemy_ranged << "\n";
+		samples.push_back( { number_estimated_heavy + observed_enemy_heavy, number_estimated_light + observed_enemy_light, number_estimated_ranged + observed_enemy_ranged } );
 	}
 			
 	vector<Variable> variables;
@@ -196,7 +206,7 @@ int main( int argc, char *argv[] )
 	shared_ptr<Constraint> assign_heavy = make_shared<Assignment>( variables_heavy, my_heavy_units );
 	shared_ptr<Constraint> assign_light = make_shared<Assignment>( variables_light, my_light_units );
 	shared_ptr<Constraint> assign_ranged = make_shared<Assignment>( variables_ranged, my_ranged_units );
-	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, heavy_cost, light_cost, ranged_cost, nb_barracks, resources );
+	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, heavy_cost, light_cost, ranged_cost, resources );
 	shared_ptr<Constraint> capacity = make_shared<ProductionCapacity>( variables_stock, nb_barracks );
 
 	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_ranged, stock, capacity };
@@ -232,9 +242,10 @@ int main( int argc, char *argv[] )
 	// cout << "Solve ..." << "\n";
 	// cout << solver_p.solve( cost_p, solution, 10000, 100000 ) << " : " << cost_p << " / " << obj->cost( variables ) << "\n";
 	solver_p.solve( cost_p, solution, 10000, 100000 );
-	cout << solution[9] << "\n" << solution[11] << "\n" << solution[10] << "\n";
+	cout << solution[9] << "\n" << solution[10] << "\n" << solution[11] << "\n";
 
-	outfile << solution[0] << ", "
+	outfile << "Solution: "
+	        << solution[0] << ", "
 	        << solution[1] << ", "
 	        << solution[2] << ", "
 	        << solution[3] << ", "
@@ -245,7 +256,7 @@ int main( int argc, char *argv[] )
 	        << solution[8] << ", "
 	        << solution[9] << ", "
 	        << solution[10] << ", "
-	        << solution[11] << "\n";
+	        << solution[11] << "\n\n";
 	
 	return 0;
 }

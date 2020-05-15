@@ -23,10 +23,6 @@
 
 package ai.microPhantom;
 
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.lang.NumberFormatException;
-
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.*;
 import ai.abstraction.pathfinding.PathFinding;
@@ -42,17 +38,17 @@ import rts.units.*;
 import rts.UnitActionAssignment;
 import rts.UnitAction;
 
-import org.jdom.*;
+import java.lang.NumberFormatException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -71,7 +67,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	public static int NB_SAMPLES = 50;
 
-	//public static PrintWriter writer_log;
+	// public static PrintWriter writer_log;
 
 	Player player;
 	GameState gs;
@@ -85,6 +81,11 @@ public class MicroPhantom extends AbstractionLayerAI
 	int observed_heavy;
 	int observed_light;
 	int observed_ranged;
+
+	int observed_worker_in_total;
+	int observed_heavy_in_total;
+	int observed_light_in_total;
+	int observed_ranged_in_total;
 
 	int initial_base_position_x;
 	int initial_base_position_y;
@@ -150,7 +151,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	HashMap<Long, TrackUnit> track_my_army;
 	HashMap<Long, TrackUnit> track_enemy;
-	HashMap<Integer, AtomicInteger> count_enemy;
+	HashMap<Integer, AtomicInteger> count_current_enemy; // observed, of course
+	HashMap<Integer, AtomicInteger> count_total_enemy;   // observed, of course
 
 	int my_cost_loss;
 	int enemy_cost_loss;
@@ -200,7 +202,6 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		// try
 		// {
-		// 	//writer_log = new PrintWriter( "src/ai/microPhantom/solver.log", "UTF-8" );
 		// 	writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
 		// }
 		// catch( IOException e1 )
@@ -259,7 +260,17 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	private void scanUnits()
 	{
-		resource_patches.clear();
+		// remove empty resource patches
+		Iterator<Unit> iter = resource_patches.iterator();
+		while( iter.hasNext() )
+		{
+			Unit r = iter.next();
+			if( r.getResources() <= 0 )
+			{
+				iter.remove();
+				// System.out.println( "Resource patch at " + r.getX() + "," + r.getY() + " is now empty." );
+			}
+		}
 		
 		my_units.clear();
 		my_bases.clear();
@@ -286,9 +297,11 @@ public class MicroPhantom extends AbstractionLayerAI
 		
 		for( Unit u : pgs.getUnits() )
 		{
-			if( u.getType().isResource )
+			if( u.getType().isResource && !resource_patches.contains( u ) )
+			{
 				resource_patches.add( u );
-			
+				// System.out.println( "New resource patch at " + u.getX() + "," + u.getY() + "!" );
+			}
 			else
 			{
 				if( u.getPlayer() == player.getID() )
@@ -353,10 +366,16 @@ public class MicroPhantom extends AbstractionLayerAI
 							// If it is a unit we never saw before, count it.
 							if( !track_enemy.containsKey( u.getID() ) )
 							{
-								if( count_enemy.containsKey( u.getType().ID ) )
-									count_enemy.get( u.getType().ID ).incrementAndGet();
+								if( count_current_enemy.containsKey( u.getType().ID ) )
+								{
+									count_current_enemy.get( u.getType().ID ).incrementAndGet();
+									count_total_enemy.get( u.getType().ID ).incrementAndGet();
+								}
 								else
-									count_enemy.put( u.getType().ID, new AtomicInteger( 1 ) );
+								{
+									count_current_enemy.put( u.getType().ID, new AtomicInteger( 1 ) );
+									count_total_enemy.put( u.getType().ID, new AtomicInteger( 1 ) );
+								}
 							}
 							
 							track_enemy.put( u.getID(), new TrackUnit( u, true ) );
@@ -408,7 +427,7 @@ public class MicroPhantom extends AbstractionLayerAI
 				if( track.unit.getType().ID != worker_type.ID )
 					enemy_cost_loss += track.unit.getType().cost;
 				track.alive = false;
-				count_enemy.get( track.unit.getType().ID ).decrementAndGet();
+				count_current_enemy.get( track.unit.getType().ID ).decrementAndGet();
 			}
 		}
 	}
@@ -507,6 +526,103 @@ public class MicroPhantom extends AbstractionLayerAI
 		iY.set( y );
 	}
 
+	private boolean reveal_enough_fog( Unit u, int x, int y )
+	{
+		int sight = u.getType().sightRadius;
+		int count = 0;
+		
+		for( int y_sight = y - sight ; y_sight <= y + sight ; ++y_sight )
+			for( int x_sight = x - sight ; x_sight <= x + sight ; ++x_sight )
+				if( y_sight >= 0 && y_sight < map_height && x_sight >= 0 && x_sight < map_width && manhattanDistance( x, y, x_sight, y_sight ) <= sight && heat_map[y_sight][x_sight] == -1 )
+					++count;
+
+		if( gs.getTime() < 2000 )
+			return count >= 12;
+		else
+			return count > 0;
+	}
+
+	// Search the closest coordinates (x,y) to the initial base revealing at least one case of fog
+	// Tiebreaker: closest point to self
+	private void searchResources( Unit u )
+	{
+		int move_x = u.getX() + (int)( 20 * Math.random() - 10 );
+		int move_y = u.getY() + (int)( 20 * Math.random() - 10 );
+
+		if( initial_base_position_x != -1 )
+		{
+			int distance_base = Integer.MAX_VALUE;
+			int distance_self = Integer.MAX_VALUE;
+			for( int x = 0 ; x < map_width ; ++x )
+				for( int y = 0 ; y < map_height ; ++y )
+					if( reveal_enough_fog( u, x, y ) )
+					{
+						int distance_base_tiebreak = manhattanDistance( initial_base_position_x, initial_base_position_y, x, y );
+						if( distance_base_tiebreak < distance_base )
+						{
+							distance_base = distance_base_tiebreak;
+							move_x = x;
+							move_y = y;
+							//System.out.println("Shorter point at " + move_x + "," + move_y + " from base (" + distance_base + ")" );
+						}
+						else if( distance_base_tiebreak == distance_base )
+						{
+							int distance_self_tiebreak = manhattanDistance( u.getX(), u.getY(), x, y );
+							if( distance_self_tiebreak < distance_self )
+							{
+								distance_self = distance_self_tiebreak;
+								move_x = x;
+								move_y = y;
+								//System.out.println("Shorter point at " + move_x + "," + move_y + " from me (" + distance_self + ")" );
+							}
+						}
+					}
+		}
+		// if( gs.getTime() % 50 == 0)
+		// 	System.out.println("Looking for resource at " + move_x + "," + move_y );
+
+		move( u, move_x, move_y );
+	}
+
+	// spiralSearch around the base, with greater targets
+	// private void searchResources( Unit u, AtomicInteger iX, AtomicInteger iY, AtomicInteger step, AtomicInteger target, AtomicBoolean x_turn )
+	// {
+	// 	iX.set( u.getX() + (int)( 20 * Math.random() - 10 ) );
+	// 	iY.set( u.getY() + (int)( 20 * Math.random() - 10 ) );
+
+	// 	if( initial_base_position_x != -1 )
+	// 	{
+	// 		do
+	// 		{
+	// 			step.addAndGet( target.get() ) ;
+	// 			if( x_turn.get() )
+	// 			{
+	// 				if( target.get() %2 == 0 )
+	// 					iX.addAndGet( - step.get() );
+	// 				else
+	// 					iX.addAndGet( step.get() );
+	// 				if( step.get() == target.get() )
+	// 				{
+	// 					step.set( 0 );
+	// 					x_turn.set( false );
+	// 				}
+	// 			}
+	// 			else
+	// 			{
+	// 				if( target.get() %2 == 0 )
+	// 					iY.addAndGet( - step.get() );
+	// 				else
+	// 					iY.addAndGet( step.get() );
+	// 				if( step.get() == target.get() )
+	// 				{
+	// 					step.set( 0 );
+	// 				x_turn.set( true );
+	// 				target.addAndGet( u.getType().sightRadius );
+	// 			}
+	// 		}
+	// 	}
+	// }
+		
 	private Unit getClosestEnemy( Unit u )
 	{
 		Unit closest_enemy = null;
@@ -555,6 +671,11 @@ public class MicroPhantom extends AbstractionLayerAI
 		observed_light = 0;
 		observed_ranged = 0;
 
+		observed_worker_in_total = 0;
+		observed_heavy_in_total = 0;
+		observed_light_in_total = 0;
+		observed_ranged_in_total = 0;
+
 		initial_base_position_x = -1;
 		initial_base_position_y = -1;
 		initial_number_workers = -1;
@@ -596,7 +717,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		track_my_army = new HashMap<Long, TrackUnit>();
 		track_enemy = new HashMap<Long, TrackUnit>();		
-		count_enemy = new HashMap<Integer, AtomicInteger>();
+		count_current_enemy = new HashMap<Integer, AtomicInteger>();
+		count_total_enemy = new HashMap<Integer, AtomicInteger>();
 		my_cost_loss = 0;
 		enemy_cost_loss = 0;
 		
@@ -694,6 +816,30 @@ public class MicroPhantom extends AbstractionLayerAI
 		}
 		else
 			updateHeatMap();
+
+		// if( gs.getTime() == 1000 )
+		// 	writer_log.close();
+
+		// if( gs.getTime() % 100 == 0 )
+		// {
+		// 	writer_log.println( "Time: " + gs.getTime() );
+		// 	for( int y = 0 ; y < map_height ; ++y )
+		// 	{
+		// 		for( int x = 0 ; x < map_width ; ++x )
+		// 		{
+		// 			String heat;
+		// 			if( heat_map[y][x] < Integer.MAX_VALUE )
+		// 				heat = String.format( "%-3s ", heat_map[y][x] );
+		// 			else
+		// 			{
+		// 				int wall = -10;
+		// 				heat = String.format( "%-3s ", wall );
+		// 			}
+		// 			writer_log.print( heat );
+		// 		}
+		// 		writer_log.println("\n");
+		// 	}
+		// }
 		
 		double distance_threshold = Math.max( Math.sqrt( map_surface ) / 4, worker_type.sightRadius );
 
@@ -701,32 +847,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		my_resource_patches.clear();
 		AtomicInteger reserved_resources = new AtomicInteger( 0 );
 
-		// if( gs.getTime() % 500 == 0 )
-		// {
-		// 	writer_log.println( "\n\nTime: " + gs.getTime() );
-		// 	for( int y = 0 ; y < map_height ; ++y )
-		// 	{
-		// 		for( int x = 0 ; x < map_width ; ++x )
-		// 		{
-		// 			String heat;
-		// 			if( heat_map[y][x] < Integer.MAX_VALUE )
-		// 				heat = String.format( "%-4s ", heat_map[y][x] );
-		// 			else
-		// 			{
-		// 				int wall = -10;
-		// 				heat = String.format( "%-4s ", wall );
-		// 			}
-		// 			writer_log.print( heat );
-		// 		}
-		// 		writer_log.println("");
-		// 	}
-		// }
-
 		for( Unit u : resource_patches )
 		{
 			for( Unit b : my_bases )
 				if( euclidianDistance( u, b ) <= distance_threshold )
 				{
+					// System.out.println( "My resource patch found at " + u.getX() + "," + u.getY() );
 					my_resource_patches.add( u );
 					break; // don't check it for another base
 				}
@@ -734,17 +860,17 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		if( min_distance_resource_base == -1 && !my_bases.isEmpty() )
 		{
-			int max_distance = Integer.MAX_VALUE;
+			int min_distance = Integer.MAX_VALUE;
 			for( Unit r : my_resource_patches )
 			{
 				int d = manhattanDistance( my_bases.get( 0 ), r );
-				if( d < max_distance )
-					max_distance = d;
-				else if ( d > min_distance_resource_base )
-					min_distance_resource_base = d;
+				if( d < min_distance )
+					min_distance = d;
+				if ( d > max_distance_resource_base )
+					max_distance_resource_base = d;
 			}
-			if( max_distance < Integer.MAX_VALUE )
-				max_distance_resource_base = max_distance;
+			if( min_distance < Integer.MAX_VALUE )
+				min_distance_resource_base = min_distance;
 		}
 		
 		for( Unit u : my_bases )
@@ -830,10 +956,10 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitCommonBehavior( Unit u, Unit closest_enemy )
 	{
-		double closest_distance = euclidianDistance( u, closest_enemy );
-		if( u.getType().ID == ranged_type.ID && closest_distance < 2 )
+		int closest_distance = manhattanDistance( u, closest_enemy );
+		if( u.getType().ID == ranged_type.ID && closest_distance <= 2 )
 		{
-			if( closest_enemy.getType().ID == ranged_type.ID ) //|| closest_enemy_action == null || ( closest_enemy_action.action.getType() != UnitAction.TYPE_MOVE && closest_distance > 1 ) )
+			if( closest_enemy.getType().ID == ranged_type.ID )
 				attack( u, closest_enemy );
 			else
 			{
@@ -854,7 +980,7 @@ public class MicroPhantom extends AbstractionLayerAI
 					++danger[UP];
 					++danger[LEFT];
 				}
-				if( isPotentialThreat( pgs.getUnitAt( x    , y - 1 ) ) )
+				if( isPotentialThreat( pgs.getUnitAt( x    , y - 1 ) ) || isPotentialThreat( pgs.getUnitAt( x    , y - 2 ) ) )
 				{
 					++danger[UP];
 				}
@@ -863,11 +989,11 @@ public class MicroPhantom extends AbstractionLayerAI
 					++danger[UP];
 					++danger[RIGHT];
 				}
-				if( isPotentialThreat( pgs.getUnitAt( x - 1, y     ) ) )
+				if( isPotentialThreat( pgs.getUnitAt( x - 1, y     ) ) || isPotentialThreat( pgs.getUnitAt( x - 2, y     ) ) )
 				{
 					++danger[LEFT];
 				}
-				if( isPotentialThreat( pgs.getUnitAt( x + 1, y     ) ) )
+				if( isPotentialThreat( pgs.getUnitAt( x + 1, y     ) ) || isPotentialThreat( pgs.getUnitAt( x + 2, y     ) ) )
 				{
 					++danger[RIGHT];
 				}
@@ -876,7 +1002,7 @@ public class MicroPhantom extends AbstractionLayerAI
 					++danger[DOWN];
 					++danger[LEFT];
 				}
-				if( isPotentialThreat( pgs.getUnitAt( x    , y + 1 ) ) )
+				if( isPotentialThreat( pgs.getUnitAt( x    , y + 1 ) ) || isPotentialThreat( pgs.getUnitAt( x    , y + 2 ) ) )
 				{
 					++danger[DOWN];
 				}
@@ -960,38 +1086,38 @@ public class MicroPhantom extends AbstractionLayerAI
 				int heat_point = Integer.MAX_VALUE;
 				double tiebreak_distance = Double.MAX_VALUE;
 				
-				for( int y = 0 ; y < map_height ; ++y )
-					for( int x = 0 ; x < map_width ; ++x )
-					{
-						if( heat_map[y][x] < heat_point )
+				// Visit first the point closest to the mirror position of our base, if any
+				if( initial_base_position_x != -1 && heat_map[map_height - initial_base_position_y][map_width - initial_base_position_x] == -1 )
+				{
+					min_x = map_width - initial_base_position_x;
+					min_y = map_height - initial_base_position_y;
+				}
+				else
+				{				
+					for( int y = 0 ; y < map_height ; ++y )
+						for( int x = 0 ; x < map_width ; ++x )
 						{
-							heat_point = heat_map[y][x];
-							min_x = x;
-							min_y = y;
-						}
-						else
-							if( heat_map[y][x] == heat_point )
+							if( heat_map[y][x] < heat_point )
 							{
-								// as a tiebreaker, take the point closest to the mirror position of our base, if any
-								if( initial_base_position_x != -1 )
+								heat_point = heat_map[y][x];
+								min_x = x;
+								min_y = y;
+							}
+							else
+								if( heat_map[y][x] == heat_point )
 								{
-									double distance = euclidianDistance( map_width - initial_base_position_x, map_height - initial_base_position_y, x, y );
-									if( distance < tiebreak_distance )
+									// as a tiebreaker, take the point closest to the unit
+									double distance = euclidianDistance( u.getX(), u.getY(), x, y );
+									if( distance < tiebreak_distance && distance > 0 )
 									{
 										tiebreak_distance = distance;
 										min_x = x;
 										min_y = y;
 									}
 								}
-								else
-									if( Math.random() <= 0.5 )
-									{
-										heat_point = heat_map[y][x];
-										min_x = x;
-										min_y = y;
-									}
-							}
-					}
+						}
+				}
+				
 				move( u, min_x, min_y );
 			}
 	}
@@ -1035,31 +1161,50 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void decideProduction()
 	{
-		if( count_enemy.get( worker_type.ID ) != null )
-			observed_worker = count_enemy.get( worker_type.ID ).get();
+		if( count_current_enemy.get( worker_type.ID ) != null )
+			observed_worker = count_current_enemy.get( worker_type.ID ).get();
 		else
 			observed_worker = 0;
 
-		if( count_enemy.get( heavy_type.ID ) != null )
-			observed_heavy = count_enemy.get( heavy_type.ID ).get();
+		if( count_current_enemy.get( heavy_type.ID ) != null )
+			observed_heavy = count_current_enemy.get( heavy_type.ID ).get();
 		else
 			observed_heavy = 0;
 
-		if( count_enemy.get( light_type.ID ) != null )
-			observed_light = count_enemy.get( light_type.ID ).get();
+		if( count_current_enemy.get( light_type.ID ) != null )
+			observed_light = count_current_enemy.get( light_type.ID ).get();
 		else
 			observed_light = 0;
 
-		if( count_enemy.get( ranged_type.ID ) != null )
-			observed_ranged =	count_enemy.get( ranged_type.ID ).get();
+		if( count_current_enemy.get( ranged_type.ID ) != null )
+			observed_ranged =	count_current_enemy.get( ranged_type.ID ).get();
 		else
 			observed_ranged =	0;
-		
+
+		if( count_total_enemy.get( worker_type.ID ) != null )
+			observed_worker_in_total = count_total_enemy.get( worker_type.ID ).get();
+		else
+			observed_worker_in_total = 0;
+
+		if( count_total_enemy.get( heavy_type.ID ) != null )
+			observed_heavy_in_total = count_total_enemy.get( heavy_type.ID ).get();
+		else
+			observed_heavy_in_total = 0;
+
+		if( count_total_enemy.get( light_type.ID ) != null )
+			observed_light_in_total = count_total_enemy.get( light_type.ID ).get();
+		else
+			observed_light_in_total = 0;
+
+		if( count_total_enemy.get( ranged_type.ID ) != null )
+			observed_ranged_in_total =	count_total_enemy.get( ranged_type.ID ).get();
+		else
+			observed_ranged_in_total =	0;
+
 		// write parameter for solver in a file
 		try
 		{
 			PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
-			// writer_log.println( "Time: " + time );
 
 			int no_initial_base_int = has_initial_base ? 0 : 1;
 			int no_initial_barracks_int = has_initial_barracks ? 0 : 1;
@@ -1078,6 +1223,7 @@ public class MicroPhantom extends AbstractionLayerAI
 			writer.println( worker_type.moveTime );
 			writer.println( worker_type.harvestTime );
 			writer.println( worker_type.returnTime );
+			writer.println( worker_type.harvestAmount );
 
 			writer.println( base_type.cost );
 			writer.println( barracks_type.cost );
@@ -1094,6 +1240,10 @@ public class MicroPhantom extends AbstractionLayerAI
 			writer.println( observed_heavy );
 			writer.println( observed_light );
 			writer.println( observed_ranged );
+			writer.println( observed_worker_in_total );
+			writer.println( observed_heavy_in_total );
+			writer.println( observed_light_in_total );
+			writer.println( observed_ranged_in_total );
 					
 			writer.close();
 		}
@@ -1123,7 +1273,7 @@ public class MicroPhantom extends AbstractionLayerAI
 			number_light_to_produce = Integer.parseInt( buffer.readLine() );
 			number_ranged_to_produce = Integer.parseInt( buffer.readLine() );
 
-			System.out.println( "H" + number_heavy_to_produce + " L" + number_light_to_produce + " R" + number_ranged_to_produce + "\n" );
+			// System.out.println( "H" + number_heavy_to_produce + " L" + number_light_to_produce + " R" + number_ranged_to_produce + "\n" );
 			buffer.close();
 		}
 		catch( IOException e1 )
@@ -1160,13 +1310,16 @@ public class MicroPhantom extends AbstractionLayerAI
 			{
 				if( number_light_to_produce >= number_ranged_to_produce )
 				{
-					if( number_light_to_produce >= number_heavy_to_produce && player.getResources() >= light_type.cost )
+					if( number_light_to_produce >= number_heavy_to_produce ) // number_light_to_produce higher than others
 					{
-						train( u, light_type );
-						reserved_resources.addAndGet( light_type.cost );
-						--number_light_to_produce;
+						if( player.getResources() >= light_type.cost )
+						{
+							train( u, light_type );
+							reserved_resources.addAndGet( light_type.cost );
+							--number_light_to_produce;
+						}
 					}
-					else
+					else // number_heavy_to_produce higher than others
 						if( player.getResources() >= heavy_type.cost )
 						{
 							train( u, heavy_type );
@@ -1174,14 +1327,17 @@ public class MicroPhantom extends AbstractionLayerAI
 							--number_heavy_to_produce;
 						}
 				}
-				else
-					if( number_ranged_to_produce >= number_heavy_to_produce && player.getResources() >= ranged_type.cost)
+				else // more ranged than light
+					if( number_ranged_to_produce >= number_heavy_to_produce ) // number_ranged_to_produce higher than others
 					{
-						train( u, ranged_type );
-						reserved_resources.addAndGet( ranged_type.cost );
-						--number_ranged_to_produce;
+						if( player.getResources() >= ranged_type.cost )
+						{
+							train( u, ranged_type );
+							reserved_resources.addAndGet( ranged_type.cost );
+							--number_ranged_to_produce;
+						}
 					}
-					else
+					else // number_heavy_to_produce higher than others
 						if( player.getResources() >= heavy_type.cost )
 						{
 							train( u, heavy_type );
@@ -1199,7 +1355,10 @@ public class MicroPhantom extends AbstractionLayerAI
 		List<Unit> free_workers = new ArrayList<Unit>();
 
 		// BASIC BEHAVIOR
-		free_workers.addAll( my_workers );
+		//free_workers.addAll( my_workers );
+		for( Unit w : my_workers )
+			if( gs.getUnitAction( w ) == null )
+				free_workers.add( w );
 
 		// not BASIC BEHAVIOR
 		// for( Unit w : my_workers )
@@ -1234,8 +1393,8 @@ public class MicroPhantom extends AbstractionLayerAI
 			}
 		}
 
-		// if no barracks or plainty of money (on maps larger than 12x12)
-		if( my_barracks.isEmpty() || ( player.getResources() >= barracks_type.cost + reserved_resources.get() + most_expensive_type.cost && map_surface > 144 ) )
+		// if no barracks or plainty of money (on maps larger than 12x12 and if we have known resources around us)
+		if( my_barracks.isEmpty() || ( player.getResources() >= barracks_type.cost + reserved_resources.get() + most_expensive_type.cost && map_surface > 144 && !my_resource_patches.isEmpty() ) )
 		{
 			// build a barracks:
 			if( player.getResources() >= barracks_type.cost + reserved_resources.get() && !free_workers.isEmpty() )
@@ -1293,6 +1452,7 @@ public class MicroPhantom extends AbstractionLayerAI
 					closest_resource = r;
 					closest_distance = d;
 				}
+				//System.out.println("My resource at " + r.getX() + "," + r.getY() );
 			}
 
 			// Assign closest resource patches we know
@@ -1305,32 +1465,69 @@ public class MicroPhantom extends AbstractionLayerAI
 						closest_resource = r;
 						closest_distance = d;
 					}
+					//System.out.println("Resource at " + r.getX() + "," + r.getY() );
 				}
 
 			// Search for resource patches
 			if( closest_resource == null )
 			{
-				// not BASIC behavior
-				//TODO
+				// AtomicInteger step = new AtomicInteger( 0 );
+				// AtomicInteger target = new AtomicInteger( u.getType().sightRadius );
+				// AtomicBoolean x_turn = AtomicInteger( true );
+				// searchResources( u, iX, iY, step, target, x_turn );
+				searchResources( u );
 			}
-
-			// Spot the closest base
-			closest_distance = Integer.MAX_VALUE;
-			for( Unit b : my_bases )
+			else
 			{
-				int d = manhattanDistance( u, b );
-				if( d < closest_distance )
+				// Spot the closest base
+				closest_distance = Integer.MAX_VALUE;
+				for( Unit b : my_bases )
 				{
-					closest_base = b;
-					closest_distance = d;
+					int d = manhattanDistance( u, b );
+					if( d < closest_distance )
+					{
+						closest_base = b;
+						closest_distance = d;
+					}
+				}
+
+				if( closest_resource != null && closest_base != null )
+				{
+					harvest( u, closest_resource, closest_base );
+					// if( u.getResources() > 0 )
+					// {
+					// 	harvest( u, null, closest_base );
+					// 	System.out.println("Return to base " + closest_base.getX() + "," + closest_base.getY() );
+					// }
+					// else
+					// 	harvest( u, closest_resource, null );
+					
+					// if( u.getResources() > 0 )
+					// 	if( manhattanDistance( u, closest_base ) <= 2 )
+					// 	{
+					// 		harvest( u, null, closest_base );
+					// 		System.out.println("Go harvest");
+					// 	}
+					// 	else
+					// 	{
+					// 		move( u, closest_base.getX() - 1, closest_base.getY() - 1 );
+					// 		System.out.println("Go return to base");
+					// 	}
+					// else
+					// 	if( manhattanDistance( u, closest_resource ) <= 2 )
+					// 	{
+					// 		harvest( u, closest_resource, null );
+					// 		System.out.println("Go gather resource");
+					// 	}
+					// 	else
+					// 	{
+					// 		move( u, closest_resource.getX() - 1, closest_resource.getY() - 1 );
+					// 		System.out.println("Go to resource");
+					// 	}
+						
+					//System.out.println("Bring it to base at " + closest_base.getX() + "," + closest_base.getY() );
 				}
 			}
-
-			if( closest_resource != null && closest_base != null )
-					harvest( u, closest_resource, closest_base );
-			
-			// not BASIC behavior
-			// explore if no resource around. Remember where were far resources.
 		}
 	}
 }

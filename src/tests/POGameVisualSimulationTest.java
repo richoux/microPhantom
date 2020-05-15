@@ -37,11 +37,11 @@ public class POGameVisualSimulationTest {
 
 		// microRTS competition public maps
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-		PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
-		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
+		PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
 
@@ -74,14 +74,15 @@ public class POGameVisualSimulationTest {
 
 		//AI ai2 = new POLightRush(utt, new BFSPathFinding());
 		AI ai2 = new POLightRush(utt);
-		// AI ai2 = new RandomAI();
-		// AI ai2 = new POWorkerRush(utt, new BFSPathFinding());
-		// AI ai2 = new POHeavyRush(utt, new BFSPathFinding());
-		// AI ai2 = new PORangedRush(utt, new BFSPathFinding());
-		// AI ai2 = new ContinuingNaiveMC(PERIOD, 200, 0.33f, 0.2f, new RandomBiasedAI(), new SimpleEvaluationFunction());
-		// AI ai2 = new RandomBiasedAI();
-		// AI ai2 = new LightRush();
-		// AI ai2 = new BS3_NaiveMCTS(utt);
+		//AI ai2 = new RandomAI();
+		//AI ai2 = new POWorkerRush(utt, new BFSPathFinding());
+		//AI ai2 = new POHeavyRush(utt, new BFSPathFinding());
+		//AI ai2 = new PORangedRush(utt, new BFSPathFinding());
+		//AI ai2 = new ContinuingNaiveMC(PERIOD, 200, 0.33f, 0.2f, new RandomBiasedAI(), new SimpleEvaluationFunction());
+		//AI ai2 = new RandomBiasedAI();
+		//AI ai2 = new LightRush();
+		//AI ai2 = new BS3_NaiveMCTS(utt);
+		//AI ai2 = new RandomMicroPhantom(utt, "src/ai/microPhantom/");
 		ai2.preGameAnalysis(gs, 100);
 
 

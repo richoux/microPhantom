@@ -45,7 +45,6 @@ public:
 class Stock : public Constraint
 {
 	int _heavy_cost, _light_cost, _ranged_cost;
-	int _nb_barracks;
 	double _stock;
 
 	double required_cost() const override;
@@ -55,7 +54,6 @@ public:
 	       int heavy_cost,
 	       int light_cost,
 	       int ranged_cost,
-	       int nb_barracks,
 	       double stock );
 };
 

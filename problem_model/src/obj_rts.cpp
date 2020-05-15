@@ -23,6 +23,7 @@
 
 #include <numeric>
 #include <iostream>
+#include <algorithm>
 
 #include "obj_rts.hpp"
 
@@ -61,15 +62,24 @@ double BestComposition::required_cost( const vector< Variable >& vecVariables ) 
 
 	for( int i = 0 ; i < N ; ++i )
 	{
-		double tmp = regulation( _coeff[0] * vecVariables[0].get_value() + _coeff[1] * vecVariables[1].get_value() + _coeff[2] * vecVariables[2].get_value() - _samples[i][1] ) //vs heavy
-			+ regulation( _coeff[3] * vecVariables[3].get_value() + _coeff[4] * vecVariables[4].get_value() + _coeff[5] * vecVariables[5].get_value() - _samples[i][3] ) //vs light
-			+ regulation( _coeff[6] * vecVariables[6].get_value() + _coeff[7] * vecVariables[7].get_value() + _coeff[8] * vecVariables[8].get_value() - _samples[i][2] ); //vs ranged
+		// min( 1, number ) to forbid overkilling, ie, thinking for instance we can defeat 10 lights when the opponent can just have 3 of them (while having other kinds of unit)
+		double tmp = regulation( std::min( 1.0, _coeff[0] * vecVariables[0].get_value() + _coeff[1] * vecVariables[1].get_value() + _coeff[2] * vecVariables[2].get_value() - _samples[i][0] ) ) //vs heavy
+			+ regulation( std::min( 1.0, _coeff[3] * vecVariables[3].get_value() + _coeff[4] * vecVariables[4].get_value() + _coeff[5] * vecVariables[5].get_value() - _samples[i][1] ) ) //vs light
+			+ regulation( std::min( 1.0, _coeff[6] * vecVariables[6].get_value() + _coeff[7] * vecVariables[7].get_value() + _coeff[8] * vecVariables[8].get_value() - _samples[i][2] ) ); //vs ranged
 
 		sols.push_back(tmp);
 	}
 
 	std::sort( sols.begin(), sols.end() );
+	// // // normalize
+	// auto min_value = std::min_element( sols.begin(), sols.end() );
+	// auto max_value = std::max_element( sols.begin(), sols.end() );
+	// cout << "Unnormalized sample (" << *min_value << ", " << *max_value << "): ";
+	// // std::transform( sols.begin(), sols.end(), sols.begin(), [&](auto &x){ return ( x - *min_value ) / ( *min_value + *max_value ); } );
 
+	// std::copy( sols.begin(), sols.end(), std::ostream_iterator<double>(std::cout, " ") );
+	// cout << "\n";
+	
 	double RDU = sols[0];
 
 	for( int i = 1 ; i < sols.size() ; ++i )
