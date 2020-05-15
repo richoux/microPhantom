@@ -1,5 +1,6 @@
 EXEC_PESSIMISTIC=solver_cpp_pessimistic
 EXEC_OPTIMISTIC=solver_cpp_optimistic
+EXEC_NEUTRAL=solver_cpp_neutral
 
 # Compiler flags
 CXXFIRSTFLAGS= -O3 -DBENCH -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter
@@ -23,6 +24,7 @@ SRCDIR=src
 OBJDIR=obj
 OBJ_PESSIMISTIC=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main_pessimistic.o)
 OBJ_OPTIMISTIC=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main_optimistic.o)
+OBJ_NEUTRAL=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main_neutral.o)
 #BINDIR=../src/ai/microPhantom
 BINDIR=.
 INCLUDEDIR=../include
@@ -46,7 +48,7 @@ vpath %.cpp $(SRCDIR)
 # $< is the first item in the dependencies list
 
 # Rules
-all: $(BINDIR)/$(EXEC_PESSIMISTIC) $(BINDIR)/$(EXEC_OPTIMISTIC) 
+all: $(BINDIR)/$(EXEC_PESSIMISTIC) $(BINDIR)/$(EXEC_OPTIMISTIC) $(BINDIR)/$(EXEC_NEUTRAL)
 
 debug: CXXFLAGS= $(CXXFLAGSDEBUG)
 debug: $(BINDIR)/$(EXEC)
@@ -59,17 +61,25 @@ $(BINDIR)/$(EXEC_OPTIMISTIC): $(OBJ_OPTIMISTIC)
 	$(CXX) -o $@ $^ -L$(LIBDIR) $(LDFLAGS)
 	ln -sf ../../../problem_model/$(EXEC_OPTIMISTIC) ../src/ai/microPhantom/
 
+$(BINDIR)/$(EXEC_NEUTRAL): $(OBJ_NEUTRAL)
+	$(CXX) -o $@ $^ -L$(LIBDIR) $(LDFLAGS)
+	ln -sf ../../../problem_model/$(EXEC_NEUTRAL) ../src/ai/microPhantom/
+
 $(OBJDIR)/main_pessimistic.o: $(SRCDIR)/main.cpp
 	$(CXX) $(CXXFLAGS) -c -DPESSIMISTIC -I$(INCLUDEDIR) $< -o $@
 
 $(OBJDIR)/main_optimistic.o: $(SRCDIR)/main.cpp
 	$(CXX) $(CXXFLAGS) -c -DOPTIMISTIC -I$(INCLUDEDIR) $< -o $@
 
+$(OBJDIR)/main_neutral.o: $(SRCDIR)/main.cpp
+	$(CXX) $(CXXFLAGS) -c -DNEUTRAL -I$(INCLUDEDIR) $< -o $@
+
 $(OBJDIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) $< -o $@
 
 $(OBJ_PESSIMISTIC): | $(OBJDIR)
 $(OBJ_OPTIMISTIC): | $(OBJDIR)
+$(OBJ_NEUTRAL): | $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
@@ -77,4 +87,4 @@ $(OBJDIR):
 .PHONY: clean 
 
 clean:
-	rm -fr core *~ $(EXEC_PESSIMISTIC) $(EXEC_OPTIMISTIC) $(OBJDIR)/*.o $(SOURCESTILDE) 
+	rm -fr core *~ $(EXEC_PESSIMISTIC) $(EXEC_OPTIMISTIC) $(EXEC_NEUTRAL) $(OBJDIR)/*.o $(SOURCESTILDE) 

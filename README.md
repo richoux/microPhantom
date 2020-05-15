@@ -29,8 +29,8 @@ Follow this simple procedure:
 `$> cd problem_model`  
 `$> make`
 
-It will compile two executables `solver_cpp_optimistic` and
-`solver_cpp_pessimistic` and make symbolic links toward them in
+It   will    compile   three    executables   `solver_cpp_optimistic`,
+`solver_cpp_pessimistic` and `solver_cpp_neutral`, and make symbolic links toward them in
 `microPhantom/src/ai/microPhantom`.
 
 You can run the script `launch.sh`  to be sure everything is (locally) ok!

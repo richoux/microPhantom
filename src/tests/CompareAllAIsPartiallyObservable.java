@@ -113,8 +113,8 @@ public class CompareAllAIsPartiallyObservable {
 
 		GameState gs = new GameState(pgs, utt);
 
-		bots.add(new MicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/"));
-		//bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/"));
+		bots.add(new MicroPhantom(utt, "src/ai/microPhantom/"));
+		//bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/"));
 
 		// bots.add(new StrategyTactics(utt));
 		// bots.add(new RandomAI(utt));
@@ -208,7 +208,7 @@ public class CompareAllAIsPartiallyObservable {
 
 		// bots.clear();
 
-		// bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/distributions.xml", "src/ai/microPhantom/distribution_woutb.xml", "src/ai/microPhantom/solver_cpp"));
+		// bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
 
 		// bots.add(new POLightRush(utt));
 		// bots.add(new PORangedRush(utt));

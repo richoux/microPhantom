@@ -44,18 +44,16 @@ public:
 
 class Stock : public Constraint
 {
-	int _heavyCost, _lightCost, _rangeCost;
-	int _nb_barracks;
+	int _heavy_cost, _light_cost, _ranged_cost;
 	double _stock;
 
 	double required_cost() const override;
 
 public:
 	Stock( const vector< reference_wrapper<Variable> >& variables,
-	       int heavyCost,
-	       int lightCost,
-	       int rangeCost,
-	       int nb_barracks,
+	       int heavy_cost,
+	       int light_cost,
+	       int ranged_cost,
 	       double stock );
 };
 
