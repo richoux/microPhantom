@@ -74,7 +74,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	PhysicalGameState pgs;
 	
 	String solver_path;
-	String solver_name;
+	int solver_type;
 	int[][] heat_map;
 
 	int observed_worker;
@@ -664,6 +664,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		gs = null;
 		pgs = null;
 
+		solver_type = -1;
 		heat_map = null;
 
 		observed_worker = 0;
@@ -1258,13 +1259,13 @@ public class MicroPhantom extends AbstractionLayerAI
 			Runtime r = Runtime.getRuntime();
 
 			if( my_cost_loss + 2 * cheapest_type.cost <= enemy_cost_loss )
-				solver_name = solver_path + "solver_cpp_optimistic";
+				solver_type = 1;
 			else if( my_cost_loss >= enemy_cost_loss + 2 * cheapest_type.cost )
-				solver_name = solver_path + "solver_cpp_pessimistic";
+				solver_type = 2;
 			else
-				solver_name = solver_path + "solver_cpp_neutral";
+				solver_type = 0;
 
-			Process process = r.exec( String.format( "%s %s %d", solver_name, "src/ai/microPhantom/data_solver", nb_samples ) );
+			Process process = r.exec( String.format( "%s %d %s %d", solver_path, solver_type, "src/ai/microPhantom/data_solver", nb_samples ) );
 			process.waitFor();
 
 			BufferedReader buffer = new BufferedReader( new InputStreamReader( process.getInputStream() ) );

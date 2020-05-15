@@ -69,8 +69,8 @@ public class POGameVisualSimulationTest {
 		int PERIOD = 50;
 		boolean gameover = false;
 
-		AI ai1 = new MicroPhantom(utt, "src/ai/microPhantom/");
-		//AI ai1 = new RandomMicroPhantom(utt, "src/ai/microPhantom/");
+		AI ai1 = new MicroPhantom(utt, "src/ai/microPhantom/solver_cpp");
+		//AI ai1 = new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp");
 
 		//AI ai2 = new POLightRush(utt, new BFSPathFinding());
 		AI ai2 = new POLightRush(utt);

@@ -46,11 +46,12 @@ using namespace std;
 
 int main( int argc, char *argv[] )
 {
-	std::ifstream infile( argv[1] );
-	std::ofstream outfile;
-	outfile.open( "run.log", std::ios::app );
+	int solver_type = std::stoi( argv[1] );
+	std::ifstream infile( argv[2] );
+	// std::ofstream outfile;
+	// outfile.open( "run.log", std::ios::app );
 
-	int nb_samples = std::stoi( argv[2] );
+	int nb_samples = std::stoi( argv[3] );
 	int time;
 	int nb_barracks, min_distance_resource_base, max_distance_resource_base;
 	int no_initial_base, no_initial_barracks;
@@ -70,10 +71,10 @@ int main( int argc, char *argv[] )
 	infile >> initial_enemy_worker >> observed_enemy_worker >> observed_enemy_heavy >> observed_enemy_light >> observed_enemy_ranged;
 	infile >> observed_enemy_worker_in_total >> observed_enemy_heavy_in_total >> observed_enemy_light_in_total >> observed_enemy_ranged_in_total;
 
-	outfile << "######################\n" << "Time: " << time << "\n";
-	outfile << observed_enemy_heavy << "/" << observed_enemy_heavy_in_total << ", "
-	        << observed_enemy_light << "/" << observed_enemy_light_in_total << ", "
-	        << observed_enemy_ranged << "/" << observed_enemy_ranged_in_total << "\n";
+	// outfile << "######################\n" << "Time: " << time << "\n";
+	// outfile << observed_enemy_heavy << "/" << observed_enemy_heavy_in_total << ", "
+	//         << observed_enemy_light << "/" << observed_enemy_light_in_total << ", "
+	//         << observed_enemy_ranged << "/" << observed_enemy_ranged_in_total << "\n";
 	
 	observed_enemy_worker = std::max( initial_enemy_worker, observed_enemy_worker );
 
@@ -84,7 +85,7 @@ int main( int argc, char *argv[] )
 	else
 		mean_distance = 20.0; // let's consider resources are far away
 
-	outfile << "distances (min, mean, max): (" << min_distance_resource_base << ", " << mean_distance << ", " << max_distance_resource_base << "), move time: " << worker_move_time << ", harvest time: " << worker_harvest_time << ", return time: " << worker_return_time << "\n";
+	// outfile << "distances (min, mean, max): (" << min_distance_resource_base << ", " << mean_distance << ", " << max_distance_resource_base << "), move time: " << worker_move_time << ", harvest time: " << worker_harvest_time << ", return time: " << worker_return_time << "\n";
 	
 	// 20 * ( initial_enemy_worker - 1 ) is to express a penalty when there are more than one worker: they tend to hinder each other.
 	int gathered_resources = harvest_amount * initial_enemy_worker * ( time / ( mean_distance * worker_move_time * 2 + worker_harvest_time + worker_return_time + ( 20 * ( initial_enemy_worker - 1 ) ) ) );
@@ -92,18 +93,18 @@ int main( int argc, char *argv[] )
 	int value_enemy_army = observed_enemy_heavy * heavy_cost + observed_enemy_light * light_cost + observed_enemy_ranged * ranged_cost;
 	int estimated_remaining_resources = std::max( 0, estimated_cumulated_resources - ( no_initial_base * base_cost + no_initial_barracks * barracks_cost + enemy_resources_loss + value_enemy_army ) );
 
-	if( no_initial_base )
-		outfile << "No initial base (" << base_cost << "), ";
-	else
-		outfile << "Has base (" << base_cost << "), ";
+	// if( no_initial_base )
+	// 	outfile << "No initial base (" << base_cost << "), ";
+	// else
+	// 	outfile << "Has base (" << base_cost << "), ";
 
-	if( no_initial_barracks )
-		outfile << "no initial barracks (" << barracks_cost << ").\n";
-	else
-		outfile << "has barracks (" << barracks_cost << ").\n";
+	// if( no_initial_barracks )
+	// 	outfile << "no initial barracks (" << barracks_cost << ").\n";
+	// else
+	// 	outfile << "has barracks (" << barracks_cost << ").\n";
 
-	outfile << "Enemy loss: " << enemy_resources_loss << "\n";
-	outfile << "Resources estimations: gathered=" << gathered_resources << ", initial=" << initial_resources << ", value army=" << value_enemy_army << ", remaining=" << estimated_remaining_resources << "\n";
+	// outfile << "Enemy loss: " << enemy_resources_loss << "\n";
+	// outfile << "Resources estimations: gathered=" << gathered_resources << ", initial=" << initial_resources << ", value army=" << value_enemy_army << ", remaining=" << estimated_remaining_resources << "\n";
 	
 	// after estimating how much resources we haven't seen used from the opponent, we need to estimate how the opponent spent it!
 	int min_cost = heavy_cost;
@@ -128,10 +129,10 @@ int main( int argc, char *argv[] )
 	auto distribution = { ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total,
 	                      ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total,
 	                      ( 1 + 2 * observed_enemy_ranged + observed_enemy_ranged_in_total ) * 100.0 / total };
-	outfile << "Distribution: "
-	        << ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total << ", "
-	        << ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total << ", "
-	        << ( 1 + 2 * observed_enemy_ranged + observed_enemy_ranged_in_total ) * 100.0 / total  << "\nSamples:\n";
+	// outfile << "Distribution: "
+	//         << ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total << ", "
+	//         << ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total << ", "
+	//         << ( 1 + 2 * observed_enemy_ranged + observed_enemy_ranged_in_total ) * 100.0 / total  << "\nSamples:\n";
 
 	randutils::mt19937_rng rng;
 	vector< vector<int> > samples;
@@ -175,7 +176,7 @@ int main( int argc, char *argv[] )
 				break;
 			}
 		}
-		outfile << number_estimated_heavy + observed_enemy_heavy << ", " << number_estimated_light + observed_enemy_light << ", " << number_estimated_ranged + observed_enemy_ranged << "\n";
+		// outfile << number_estimated_heavy + observed_enemy_heavy << ", " << number_estimated_light + observed_enemy_light << ", " << number_estimated_ranged + observed_enemy_ranged << "\n";
 		samples.push_back( { number_estimated_heavy + observed_enemy_heavy, number_estimated_light + observed_enemy_light, number_estimated_ranged + observed_enemy_ranged } );
 	}
 			
@@ -211,13 +212,13 @@ int main( int argc, char *argv[] )
 
 	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_ranged, stock, capacity };
 
-#if defined(PESSIMISTIC)
-	auto phi_callback = pessimistic();
-#elif defined(OPTIMISTIC)
-	auto phi_callback = optimistic();
-#else
-	auto phi_callback = identity();
-#endif
+	std::function<double(double)> phi_callback;
+	if( solver_type == 2)
+		phi_callback = pessimistic();
+	else if( solver_type == 1)
+		phi_callback = optimistic();
+	else
+		phi_callback = identity();
 
 	// Coefficients:
 	// H vs H, L vs H, R vs H
@@ -244,19 +245,19 @@ int main( int argc, char *argv[] )
 	solver_p.solve( cost_p, solution, 10000, 100000 );
 	cout << solution[9] << "\n" << solution[10] << "\n" << solution[11] << "\n";
 
-	outfile << "Solution: "
-	        << solution[0] << ", "
-	        << solution[1] << ", "
-	        << solution[2] << ", "
-	        << solution[3] << ", "
-	        << solution[4] << ", "
-	        << solution[5] << ", "
-	        << solution[6] << ", "
-	        << solution[7] << ", "
-	        << solution[8] << ", "
-	        << solution[9] << ", "
-	        << solution[10] << ", "
-	        << solution[11] << "\n\n";
+	// outfile << "Solution: "
+	//         << solution[0] << ", "
+	//         << solution[1] << ", "
+	//         << solution[2] << ", "
+	//         << solution[3] << ", "
+	//         << solution[4] << ", "
+	//         << solution[5] << ", "
+	//         << solution[6] << ", "
+	//         << solution[7] << ", "
+	//         << solution[8] << ", "
+	//         << solution[9] << ", "
+	//         << solution[10] << ", "
+	//         << solution[11] << "\n\n";
 	
 	return 0;
 }
