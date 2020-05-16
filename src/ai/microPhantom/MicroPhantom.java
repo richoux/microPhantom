@@ -72,6 +72,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	Player player;
 	GameState gs;
 	PhysicalGameState pgs;
+	PartiallyObservableGameState pogs;
 	
 	String solver_path;
 	int solver_type;
@@ -229,9 +230,8 @@ public class MicroPhantom extends AbstractionLayerAI
 		// else
 		// 	u = my_units.get( 0 );		
 		
-		if( gs instanceof PartiallyObservableGameState )
+		if( pogs != null )
 		{
-			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
 			for( int y = 0 ; y < map_height ; ++y )
 				for( int x = 0 ; x < map_width ; ++x )
 				{
@@ -248,9 +248,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	private void updateHeatMap()
 	{
-		if( gs instanceof PartiallyObservableGameState )
+		if( pogs != null )
 		{
-			PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
 			for( int y = 0 ; y < map_height ; ++y )
 				for( int x = 0 ; x < map_width ; ++x )
 					if( pogs.observable( x, y ) && heat_map[y][x] < Integer.MAX_VALUE )
@@ -563,7 +562,6 @@ public class MicroPhantom extends AbstractionLayerAI
 							distance_base = distance_base_tiebreak;
 							move_x = x;
 							move_y = y;
-							//System.out.println("Shorter point at " + move_x + "," + move_y + " from base (" + distance_base + ")" );
 						}
 						else if( distance_base_tiebreak == distance_base )
 						{
@@ -573,55 +571,13 @@ public class MicroPhantom extends AbstractionLayerAI
 								distance_self = distance_self_tiebreak;
 								move_x = x;
 								move_y = y;
-								//System.out.println("Shorter point at " + move_x + "," + move_y + " from me (" + distance_self + ")" );
 							}
 						}
 					}
 		}
-		// if( gs.getTime() % 50 == 0)
-		// 	System.out.println("Looking for resource at " + move_x + "," + move_y );
 
 		move( u, move_x, move_y );
 	}
-
-	// spiralSearch around the base, with greater targets
-	// private void searchResources( Unit u, AtomicInteger iX, AtomicInteger iY, AtomicInteger step, AtomicInteger target, AtomicBoolean x_turn )
-	// {
-	// 	iX.set( u.getX() + (int)( 20 * Math.random() - 10 ) );
-	// 	iY.set( u.getY() + (int)( 20 * Math.random() - 10 ) );
-
-	// 	if( initial_base_position_x != -1 )
-	// 	{
-	// 		do
-	// 		{
-	// 			step.addAndGet( target.get() ) ;
-	// 			if( x_turn.get() )
-	// 			{
-	// 				if( target.get() %2 == 0 )
-	// 					iX.addAndGet( - step.get() );
-	// 				else
-	// 					iX.addAndGet( step.get() );
-	// 				if( step.get() == target.get() )
-	// 				{
-	// 					step.set( 0 );
-	// 					x_turn.set( false );
-	// 				}
-	// 			}
-	// 			else
-	// 			{
-	// 				if( target.get() %2 == 0 )
-	// 					iY.addAndGet( - step.get() );
-	// 				else
-	// 					iY.addAndGet( step.get() );
-	// 				if( step.get() == target.get() )
-	// 				{
-	// 					step.set( 0 );
-	// 				x_turn.set( true );
-	// 				target.addAndGet( u.getType().sightRadius );
-	// 			}
-	// 		}
-	// 	}
-	// }
 		
 	private Unit getClosestEnemy( Unit u )
 	{
@@ -663,6 +619,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		player = null;
 		gs = null;
 		pgs = null;
+		pogs = null;
 
 		solver_type = -1;
 		heat_map = null;
@@ -802,6 +759,8 @@ public class MicroPhantom extends AbstractionLayerAI
 	{
 		gs = game_state;
 		pgs = gs.getPhysicalGameState();
+		if( gs instanceof PartiallyObservableGameState )
+			pogs = (PartiallyObservableGameState)gs;
 
 		if( player == null )
 			player = gs.getPlayer( p );
@@ -1131,9 +1090,8 @@ public class MicroPhantom extends AbstractionLayerAI
 			armyUnitCommonBehavior( u, closest_enemy );
 		else
 		{
-			if( gs instanceof PartiallyObservableGameState )
+			if( pogs != null )
 			{
-				PartiallyObservableGameState pogs = (PartiallyObservableGameState)gs;
 				// there are no enemies, so we need to explore (find the nearest non-observable place):
 				int closest_x = 0;
 				int closest_y = 0;
@@ -1471,13 +1429,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 			// Search for resource patches
 			if( closest_resource == null )
-			{
-				// AtomicInteger step = new AtomicInteger( 0 );
-				// AtomicInteger target = new AtomicInteger( u.getType().sightRadius );
-				// AtomicBoolean x_turn = AtomicInteger( true );
-				// searchResources( u, iX, iY, step, target, x_turn );
 				searchResources( u );
-			}
 			else
 			{
 				// Spot the closest base
@@ -1494,39 +1446,15 @@ public class MicroPhantom extends AbstractionLayerAI
 
 				if( closest_resource != null && closest_base != null )
 				{
-					harvest( u, closest_resource, closest_base );
-					// if( u.getResources() > 0 )
-					// {
-					// 	harvest( u, null, closest_base );
-					// 	System.out.println("Return to base " + closest_base.getX() + "," + closest_base.getY() );
-					// }
-					// else
-					// 	harvest( u, closest_resource, null );
-					
-					// if( u.getResources() > 0 )
-					// 	if( manhattanDistance( u, closest_base ) <= 2 )
-					// 	{
-					// 		harvest( u, null, closest_base );
-					// 		System.out.println("Go harvest");
-					// 	}
-					// 	else
-					// 	{
-					// 		move( u, closest_base.getX() - 1, closest_base.getY() - 1 );
-					// 		System.out.println("Go return to base");
-					// 	}
-					// else
-					// 	if( manhattanDistance( u, closest_resource ) <= 2 )
-					// 	{
-					// 		harvest( u, closest_resource, null );
-					// 		System.out.println("Go gather resource");
-					// 	}
-					// 	else
-					// 	{
-					// 		move( u, closest_resource.getX() - 1, closest_resource.getY() - 1 );
-					// 		System.out.println("Go to resource");
-					// 	}
-						
-					//System.out.println("Bring it to base at " + closest_base.getX() + "," + closest_base.getY() );
+					if( pogs != null && u.getResources() == 0 )
+					{
+						if( pogs.observable( closest_resource.getX(), closest_resource.getY() ) )
+							harvest( u, closest_resource, closest_base );
+						else
+							move( u, closest_resource.getX(), closest_resource.getY() );
+					}
+					else
+						harvest( u, closest_resource, closest_base );
 				}
 			}
 		}
