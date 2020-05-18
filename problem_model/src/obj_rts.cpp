@@ -71,15 +71,7 @@ double BestComposition::required_cost( const vector< Variable >& vecVariables ) 
 	}
 
 	std::sort( sols.begin(), sols.end() );
-	// // // normalize
-	// auto min_value = std::min_element( sols.begin(), sols.end() );
-	// auto max_value = std::max_element( sols.begin(), sols.end() );
-	// cout << "Unnormalized sample (" << *min_value << ", " << *max_value << "): ";
-	// // std::transform( sols.begin(), sols.end(), sols.begin(), [&](auto &x){ return ( x - *min_value ) / ( *min_value + *max_value ); } );
 
-	// std::copy( sols.begin(), sols.end(), std::ostream_iterator<double>(std::cout, " ") );
-	// cout << "\n";
-	
 	double RDU = sols[0];
 
 	for( int i = 1 ; i < sols.size() ; ++i )
