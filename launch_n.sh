@@ -11,6 +11,7 @@
 # $1 number of runs
 # $2 result file path 
 # $3 timeout
+# $4 number of meta-runs (usually = 1, except for non-deterministic experiments)
 
 javac -cp src/:lib/microrts.jar src/tests/CompareAllAIsPartiallyObservable.java
-java -cp src:lib/microrts.jar tests.CompareAllAIsPartiallyObservable $1 $2 $3
+java -cp src:lib/microrts.jar tests.CompareAllAIsPartiallyObservable $1 $2 $3 $4

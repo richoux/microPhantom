@@ -62,7 +62,7 @@ double BestComposition::required_cost( const vector< Variable >& vecVariables ) 
 
 	for( int i = 0 ; i < N ; ++i )
 	{
-		// min( 1, number ) to forbid overkilling, ie, thinking for instance we can defeat 10 lights when the opponent can just have 3 of them (while having other kinds of unit)
+		// min( 1, number ) to forbid overkill, ie, thinking for instance we can defeat 10 lights when the opponent can just have 3 of them (while having other kinds of unit)
 		double tmp = regulation( std::min( 1.0, _coeff[0] * vecVariables[0].get_value() + _coeff[1] * vecVariables[1].get_value() + _coeff[2] * vecVariables[2].get_value() - _samples[i][0] ) ) //vs heavy
 			+ regulation( std::min( 1.0, _coeff[3] * vecVariables[3].get_value() + _coeff[4] * vecVariables[4].get_value() + _coeff[5] * vecVariables[5].get_value() - _samples[i][1] ) ) //vs light
 			+ regulation( std::min( 1.0, _coeff[6] * vecVariables[6].get_value() + _coeff[7] * vecVariables[7].get_value() + _coeff[8] * vecVariables[8].get_value() - _samples[i][2] ) ); //vs ranged

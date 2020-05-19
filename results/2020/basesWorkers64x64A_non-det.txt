@@ -1,0 +1,3250 @@
+Base cost: 15
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2649.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2649.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3084.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3084.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2866.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2866.5, -, 
+Base cost: 15
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3113.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3113.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 15
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3183.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3183.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 5994.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+5994.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 4588.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+4588.5, -, 
+Base cost: 6
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 2, 
+2, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 10
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2761.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2761.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3512.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3512.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3136.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3136.5, -, 
+Base cost: 11
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 2, 
+2, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 14
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2714.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2714.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3199.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3199.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2956.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2956.5, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2588.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2588.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 8
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2296.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2296.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2868.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2868.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2582.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2582.0, -, 
+Base cost: 8
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2681.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2681.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3649.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3649.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3165.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3165.0, -, 
+Base cost: 9
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3353.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3353.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 13
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2772.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2772.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 10
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3349.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3349.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 12
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3146.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3146.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3355.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3355.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3250.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3250.5, -, 
+Base cost: 9
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2822.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2822.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3084.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3084.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2624.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2624.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2854.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2854.0, -, 
+Base cost: 14
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2946.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2946.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 11
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2046.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2046.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2642.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2642.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2344.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2344.0, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3206.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3206.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 15
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 2, 
+2, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 5755.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+5755.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3799.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3799.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 4777.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+4777.0, -, 
+Base cost: 12
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3380.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3380.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 9
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2587.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2587.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3214.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3214.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2900.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2900.5, -, 
+Base cost: 13
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3120.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3120.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2797.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2797.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2958.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2958.5, -, 
+Base cost: 13
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2780.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2780.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 9
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2947.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2947.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2947.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2947.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2947.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2947.0, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3117.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3117.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3547.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3547.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3332.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3332.0, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2749.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2749.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3075.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3075.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2912.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2912.0, -, 
+Base cost: 6
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2678.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2678.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3229.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3229.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 15
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2361.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2361.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2846.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2846.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2603.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2603.5, -, 
+Base cost: 8
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+1, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 1, 
+0, 0, 
+Win average time: 
+-, -, 
+6330.0, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, 6330.0, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 0, 
+1, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 1, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 12
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3593.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3593.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3781.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3781.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3687.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3687.0, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2771.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2771.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3060.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3060.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2915.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2915.5, -, 
+Base cost: 10
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 2, 
+2, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 13
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 4248.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+4248.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 13
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2765.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2765.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 13
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2459.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2459.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3029.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3029.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2744.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2744.0, -, 
+Base cost: 15
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2976.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2976.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3460.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3460.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3218.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3218.0, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2585.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2585.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3220.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3220.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2902.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2902.5, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2670.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2670.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3040.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3040.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2664.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2664.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2852.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2852.0, -, 
+Base cost: 6
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3371.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3371.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3219.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3219.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2886.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2886.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 9
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2408.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2408.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+Base cost: 12
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 2477.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2477.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3014.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3014.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 2745.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+2745.5, -, 
+Base cost: 9
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3194.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3194.0, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3183.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3183.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 2, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+2, 0, 
+Win average time: 
+-, 3188.5, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3188.5, -, 
+Base cost: 5
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 0, 
+0, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3035.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3035.0, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 1, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+1, 0, 
+Win average time: 
+-, 3035.0, 
+-, -, 
+Tie average time: 
+-, -, 
+-, -, 
+Lose average time: 
+-, -, 
+3035.0, -, 
+Base cost: 7
+Timeout: 8000
+AI top
+MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
+AI bottom
+MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
+RESULT TOP
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+RESULT BOTTOM
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 1, 
+1, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
+#####
+GLOBAL RESULTS
+Wins: 
+0, 0, 
+0, 0, 
+Ties: 
+0, 2, 
+2, 0, 
+Loses: 
+0, 0, 
+0, 0, 
+Win average time: 
+-, -, 
+-, -, 
+Tie average time: 
+-, 8000.0, 
+8000.0, -, 
+Lose average time: 
+-, -, 
+-, -, 
