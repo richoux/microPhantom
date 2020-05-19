@@ -64,6 +64,10 @@ To change the map or the list of opponents,
 comment/uncomment      the      desired      lines      in
 `src/tests/CompareAllAIsPartiallyObservable.java`.
 
+**However**,  you need  a modifed  version  of microRTS  to run  these
+experiments     (it     need     modifications     in     the     file
+`src/tests/Experimenter.java`). You can found it here: TODO.
+
 ## Downloading and compiling GHOST
 
 microPhantom uses  the Constraint Programming toolkit  [GHOST](https://github.com/richoux/GHOST). The solver

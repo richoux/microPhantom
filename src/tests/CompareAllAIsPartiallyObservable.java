@@ -33,7 +33,7 @@ import java.util.List;
 
 import rts.GameState;
 import rts.PhysicalGameState;
-import rts.units.UnitTypeTable;
+import rts.units.*;
 import ai.core.InterruptibleAI;
 
 /**
@@ -79,18 +79,19 @@ public class CompareAllAIsPartiallyObservable {
 		*/
 
 		List<AI> bots = new LinkedList<AI>();
-		UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_ORIGINAL_FINETUNED); // Advanced parameters
+		UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_ORIGINAL_FINETUNED ); // Advanced parameters
+		//UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_NON_DETERMINISTIC );
 		// UnitTypeTable utt = new UnitTypeTable();
-
+		
 		// microRTS competition public maps
-		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+		PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
-		PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
+		//PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
 
 		// microRTS competition hidden maps
 		// 2019
@@ -111,9 +112,9 @@ public class CompareAllAIsPartiallyObservable {
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/64x64/basesWorkers64x64A.xml", utt);
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(2)Benzene.scxA.xml", utt);
 
-		GameState gs = new GameState(pgs, utt);
+		GameState gs = new GameState( pgs, utt );
 
-		bots.add(new MicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
+		bots.add( new MicroPhantom( utt, "src/ai/microPhantom/solver_cpp" ) );
 		//bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
 
 		// bots.add(new StrategyTactics(utt));
@@ -123,9 +124,9 @@ public class CompareAllAIsPartiallyObservable {
 		// bots.add(new PORangedRush(utt, new BFSPathFinding()));
 		// bots.add(new POWorkerRush(utt, new BFSPathFinding()));
 		// bots.add(new POHeavyRush(utt, new BFSPathFinding()));
-		bots.add(new POLightRush(utt));
-		// bots.add(new PORangedRush(utt));
-		// bots.add(new POWorkerRush(utt));
+		bots.add( new POLightRush( utt ) );
+		//bots.add(new PORangedRush(utt));
+		//bots.add(new POWorkerRush(utt));
 		// bots.add(new POHeavyRush(utt));
 		// bots.add(new BS3_NaiveMCTS(utt));
 
@@ -158,30 +159,34 @@ public class CompareAllAIsPartiallyObservable {
 		// bots.add(new NaiveMCTS(TIME, MAX_PLAYOUTS, PLAYOUT_TIME, MAX_DEPTH, 0.33f, 0.0f, 0.75f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true));
 		// bots.add(new NaiveMCTS(TIME, MAX_PLAYOUTS, PLAYOUT_TIME, MAX_DEPTH, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true));
 
-		if (CONTINUING) {
+		if( CONTINUING )
+		{
 			// Find out which of the bots can be used in "continuing" mode:
-			List<AI> bots2 = new LinkedList<>();
-			for(AI bot : bots) {
-				if (bot instanceof BS3_NaiveMCTS) {
-					bot.preGameAnalysis(gs, 100);
-				}
-				if (bot instanceof AIWithComputationBudget) {
-					if (bot instanceof InterruptibleAI) {
-						bots2.add(new ContinuingAI(bot));
-					} else {
-						bots2.add(new PseudoContinuingAI((AIWithComputationBudget)bot));
 
-					}
-				} else {
+			List<AI> bots2 = new LinkedList<>();
+			for( AI bot : bots )
+			{
+				if( bot instanceof BS3_NaiveMCTS )
+					bot.preGameAnalysis( gs, 100 );
+				if( bot instanceof AIWithComputationBudget )
+				{
+					if( bot instanceof InterruptibleAI )
+						bots2.add( new ContinuingAI( bot ) );
+					else 
+						bots2.add( new PseudoContinuingAI( (AIWithComputationBudget)bot ) );
+				}
+				else
+				{
 					// bots2.add(bot);
 				}
 			}
+			
 			bots = bots2;
 		}
 
-		PrintStream out1 = new PrintStream(new File( path + "_up.txt"));
-		PrintStream out2 = new PrintStream(new File( path + "_down.txt"));
-		//PrintStream out2 = new PrintStream(new File("results-PO_bottomright.txt"));
+		PrintStream out1 = new PrintStream( new File( path + "_up.txt" ) );
+		PrintStream out2 = new PrintStream( new File( path + "_down.txt" ) );
+		//PrintStream out2 = new PrintStream( new File( "results-PO_bottomright.txt" ) );
 
 		// Separate the matchs by map:
 		List<PhysicalGameState> maps = new LinkedList<PhysicalGameState>();
@@ -201,7 +206,13 @@ public class CompareAllAIsPartiallyObservable {
 		// maps.add(PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml",utt));
 		maps.add( pgs );
 
-		Experimenter.runExperiments(bots, maps, utt, NB_RUNS, TIMEOUT, 300, false, out1, out2, 0, true, true, false, "");
+		// in a modified src/test/Experimenter.java
+		// void runExperiments( List<AI> bots, List<PhysicalGameState> maps, UnitTypeTable utt, int iterations, int max_cycles, int max_inactive_cycles, boolean visualize,
+		//                      PrintStream out1, PrintStream out2, int run_only_those_involving_this_AI, boolean skip_self_play, boolean partiallyObservable,
+		//                      boolean saveTrace, boolean saveZip, String traceDir )
+		Experimenter.runExperiments( bots, maps, utt, NB_RUNS, TIMEOUT, 300, false,
+		                             out1, out2, 0, true, true,
+		                             false, false, "" );
 
 
 		//////////////////////////////////////////////////

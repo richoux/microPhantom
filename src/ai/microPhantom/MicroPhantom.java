@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,7 +61,6 @@ import java.io.PrintWriter;
  */
 public class MicroPhantom extends AbstractionLayerAI
 {
-	Random r = new Random();
 	protected UnitTypeTable utt;
 
 	public static int NB_SAMPLES = 50;
@@ -1047,10 +1045,10 @@ public class MicroPhantom extends AbstractionLayerAI
 				double tiebreak_distance = Double.MAX_VALUE;
 				
 				// Visit first the point closest to the mirror position of our base, if any
-				if( initial_base_position_x != -1 && heat_map[map_height - initial_base_position_y][map_width - initial_base_position_x] == -1 )
+				if( initial_base_position_x != -1 && heat_map[map_height - 1 - initial_base_position_y][map_width - 1 - initial_base_position_x] == -1 )
 				{
-					min_x = map_width - initial_base_position_x;
-					min_y = map_height - initial_base_position_y;
+					min_x = map_width - 1 - initial_base_position_x;
+					min_y = map_height - 1 - initial_base_position_y;
 				}
 				else
 				{				

@@ -60,24 +60,24 @@ public class RandomMicroPhantom extends MicroPhantom {
 	
 	boolean heavy=false;
 	
-	public RandomMicroPhantom( UnitTypeTable a_utt, String distribution_file_b, String distribution_file_wb, String solver )
+	public RandomMicroPhantom( UnitTypeTable a_utt, String solver )
 	{
-		this( a_utt, new AStarPathFinding(), distribution_file_b, distribution_file_wb, solver );
+		this( a_utt, new AStarPathFinding(), solver );
 	}
 
-	public RandomMicroPhantom( UnitTypeTable a_utt, PathFinding a_pf, String distribution_file_b, String distribution_file_wb, String solver )
+	public RandomMicroPhantom( UnitTypeTable a_utt, PathFinding a_pf, String solver )
 	{
-		super( a_utt, a_pf, distribution_file_b, distribution_file_wb, solver );
+		super( a_utt, a_pf, solver );
 	}
 
 	@Override
 	public AI clone()
 	{
-		return new RandomMicroPhantom( utt, pf, distribution_file_b, distribution_file_woutb, solver_name );
+		return new RandomMicroPhantom( utt, pf, solver_path );
 	}
 	
 	@Override
-	protected void barracksBehavior( Unit u, Player player, GameState gs, PhysicalGameState pgs, int time, AtomicInteger reserved_resources )
+	protected void barracksBehavior( Unit u, AtomicInteger reserved_resources )
 	{
 		if( heavy )
 		{

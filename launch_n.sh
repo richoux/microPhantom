@@ -12,10 +12,5 @@
 # $2 result file path 
 # $3 timeout
 
-#javac -cp src/:lib/jdom.jar:lib/minimal-json-0.9.4.jar src/tests/CompareAllAIsPartiallyObservable.java
-
-#java -cp src:lib/jdom.jar:minimal-json-0.9.4.jar tests.CompareAllAIsPartiallyObservable $1 $2 $3
-
 javac -cp src/:lib/microrts.jar src/tests/CompareAllAIsPartiallyObservable.java
-
 java -cp src:lib/microrts.jar tests.CompareAllAIsPartiallyObservable $1 $2 $3
