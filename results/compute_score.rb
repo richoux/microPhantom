@@ -10,11 +10,31 @@ if ARGV.length == 0
   exit
 end
 
-# file = File.open(ARGV[0])
+# Open file
+file = File.open(ARGV[0])
 
-wins = (IO.readlines(ARGV[0])[-17]).split(', ')[1].to_i
-ties = (IO.readlines(ARGV[0])[-14]).split(', ')[1].to_i
-losses = (IO.readlines(ARGV[0])[-11]).split(', ')[1].to_i
+# arrays
+wins      = 0
+ties      = 0
+losses    = 0
+
+# For each line in file
+file.each do |line|
+  # Good lines to parse start with |*
+  if line.start_with?("GLOBAL RESULTS")
+    line = file.readline()
+    line = file.readline()
+    wins = wins + line.split(', ')[1].to_i
+    line = file.readline()
+    line = file.readline()
+    line = file.readline()
+    ties = ties + line.split(', ')[1].to_i
+    line = file.readline()
+    line = file.readline()
+    line = file.readline()
+    losses = losses + line.split(', ')[1].to_i
+  end
+end
 
 score = wins + (ties.to_f / 2)
 

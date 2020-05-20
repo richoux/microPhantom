@@ -31,7 +31,7 @@ using namespace std;
 
 double regulation( const double x )
 {
-	return x >= 0 ? x : -(1+x)*(1+x);
+	return x >= 0 ? x : -(x*x)-1;
 }
 
 BestComposition::BestComposition( const vector< double >& coeff,
