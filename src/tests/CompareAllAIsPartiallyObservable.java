@@ -96,7 +96,7 @@ public class CompareAllAIsPartiallyObservable {
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
-			PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
+			//PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
 
 			// microRTS competition hidden maps
@@ -112,7 +112,7 @@ public class CompareAllAIsPartiallyObservable {
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/chambers32x32.xml", utt);
 
 			// not in the competition
-			//PhysicalGameState pgs = PhysicalGameState.load("maps/12x12/basesWorkers12x12A.xml", utt);
+			PhysicalGameState pgs = PhysicalGameState.load("maps/12x12/basesWorkers12x12A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/64x64/basesWorkers64x64A.xml", utt);
@@ -120,8 +120,8 @@ public class CompareAllAIsPartiallyObservable {
 
 			GameState gs = new GameState( pgs, utt );
 
-			bots.add( new MicroPhantom( utt, "src/ai/microPhantom/solver_cpp" ) );
-			//bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
+			//bots.add( new MicroPhantom( utt, "src/ai/microPhantom/solver_cpp" ) );
+			bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
 
 			// bots.add(new StrategyTactics(utt));
 			// bots.add(new RandomAI(utt));

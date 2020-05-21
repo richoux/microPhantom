@@ -1,3 +1,4 @@
+Base cost: 10
 Timeout: 3000
 AI top
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
@@ -103,23 +104,23 @@ MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingA
 MATCH UP: PseudoContinuingAI(POLightRush(AStarPathFinding)) vs PseudoContinuingAI(MicroPhantom(AStarPathFinding))
 RESULT TOP
 Wins: 
-0, 25, 
-25, 0, 
+0, 50, 
+0, 0, 
 Ties: 
 0, 0, 
 0, 0, 
 Loses: 
-0, 25, 
-25, 0, 
+0, 0, 
+50, 0, 
 Win average time: 
--, 670.0, 
-858.76, -, 
+-, 668.42, 
+-, -, 
 Tie average time: 
 -, -, 
 -, -, 
 Lose average time: 
--, 858.76, 
-670.0, -, 
+-, -, 
+668.42, -, 
 #####
 RESULT BOTTOM
 Wins: 
@@ -133,30 +134,30 @@ Loses:
 0, 0, 
 Win average time: 
 -, -, 
-587.24, -, 
+677.0, -, 
 Tie average time: 
 -, -, 
 -, -, 
 Lose average time: 
--, 587.24, 
+-, 677.0, 
 -, -, 
 #####
 GLOBAL RESULTS
 Wins: 
-0, 25, 
-75, 0, 
+0, 50, 
+50, 0, 
 Ties: 
 0, 0, 
 0, 0, 
 Loses: 
-0, 75, 
-25, 0, 
+0, 50, 
+50, 0, 
 Win average time: 
 -, -, 
-677.7466666666667, -, 
+677.0, -, 
 Tie average time: 
 -, -, 
 -, -, 
 Lose average time: 
--, 677.7466666666667, 
+-, 677.0, 
 -, -, 

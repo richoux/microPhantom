@@ -20,7 +20,7 @@ losses    = 0
 
 # For each line in file
 file.each do |line|
-  # Good lines to parse start with |*
+  # Can also handle non-determinitic results this way
   if line.start_with?("GLOBAL RESULTS")
     line = file.readline()
     line = file.readline()

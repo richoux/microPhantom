@@ -1,218 +1,218 @@
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 1  in 1358 cycles
+Winner: 0  in 1943 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1967 cycles
+Winner: 0  in 1203 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1510 cycles
+Winner: 0  in 1210 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1345 cycles
+Winner: 0  in 1951 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1739 cycles
+Winner: 0  in 1785 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1741 cycles
+Winner: 0  in 1149 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1545 cycles
+Winner: 0  in 1261 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1408 cycles
+Winner: 0  in 1843 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 1  in 1457 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1326 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1745 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1680 cycles
+Winner: 0  in 1755 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1329 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1420 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 2031 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1367 cycles
+Winner: 0  in 1890 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 1  in 1235 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1330 cycles
+Winner: 0  in 1935 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1469 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 1  in 1338 cycles
+Winner: 0  in 1254 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1352 cycles
+Winner: 0  in 1239 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1384 cycles
+Winner: 0  in 1599 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1880 cycles
+Winner: 0  in 1254 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1373 cycles
+Winner: 0  in 1210 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 2369 cycles
+Winner: 0  in 1356 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 2100 cycles
+Winner: 0  in 1939 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1341 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1352 cycles
+Winner: 0  in 1210 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1366 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1938 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1352 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1519 cycles
+Winner: 0  in 2045 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1436 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1445 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1387 cycles
+Winner: 0  in 1875 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1901 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 2020 cycles
+Winner: 0  in 1254 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1870 cycles
+Winner: 0  in 1623 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1368 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 1  in 1407 cycles
+Winner: 0  in 2124 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1345 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: -1  in 5000 cycles
+Winner: 0  in 1090 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1689 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 2299 cycles
+Winner: 0  in 1670 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 MATCH UP: PseudoContinuingAI(MicroPhantom(AStarPathFinding)) vs PseudoContinuingAI(POLightRush(AStarPathFinding))
-Winner: 0  in 1387 cycles
+Winner: 0  in 1105 cycles
 PseudoContinuingAI(MicroPhantom(AStarPathFinding)) : null
 PseudoContinuingAI(POLightRush(AStarPathFinding)) : null
 Wins: 
-0, 37, 
-5, 0, 
+0, 50, 
+0, 0, 
 Ties: 
-0, 8, 
-8, 0, 
+0, 0, 
+0, 0, 
 Loses: 
-0, 5, 
-37, 0, 
+0, 0, 
+50, 0, 
 Win average time: 
--, 1596.7297297297298, 
-1359.0, -, 
+-, 1363.46, 
+-, -, 
 Tie average time: 
--, 5000.0, 
-5000.0, -, 
+-, -, 
+-, -, 
 Lose average time: 
--, 1359.0, 
-1596.7297297297298, -, 
+-, -, 
+1363.46, -, 
