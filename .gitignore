@@ -1,0 +1,15 @@
+*.class
+run.log
+MicroPhantom.jar
+README_Santi.txt
+/bin/
+/.classpath
+/.project
+src/ai/microPhantom/data_solver
+src/ai/microPhantom/solver.log
+src/ai/microPhantom/solver_cpp*
+problem_model/solver_cpp*
+problem_model/src/solver
+*.o
+*~
+.DS_Store
