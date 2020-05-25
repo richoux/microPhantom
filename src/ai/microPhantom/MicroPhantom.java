@@ -1264,7 +1264,7 @@ public class MicroPhantom extends AbstractionLayerAI
 	{
 		int time = gs.getTime();
 		
-		if we are on a very small map, we must play quickly
+		//if we are on a very small map, we must play quickly
 		if( map_surface <= 144 && time <= 400 && my_army.size() <= 2 && player.getResources() >= fastest_to_train_type.cost )
 		{
 			train( u, fastest_to_train_type );

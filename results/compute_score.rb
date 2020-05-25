@@ -20,7 +20,7 @@ losses    = 0
 
 # For each line in file
 file.each do |line|
-  # Can also handle non-determinitic results this way
+  # Can also handle results in chaotic environments this way
   if line.start_with?("GLOBAL RESULTS")
     line = file.readline()
     line = file.readline()

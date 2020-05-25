@@ -84,8 +84,8 @@ public class CompareAllAIsPartiallyObservable {
 		for( int meta_run = 0; meta_run < NB_META_RUNS; ++meta_run )
 		{
 			List<AI> bots = new LinkedList<AI>();
-			UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_ORIGINAL_FINETUNED ); // Advanced parameters
-			//UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_NON_DETERMINISTIC );
+			//UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_ORIGINAL_FINETUNED ); // Advanced parameters
+			UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_NON_DETERMINISTIC );
 
 			System.out.println("Base cost: " + utt.getUnitType( "Base" ).cost);
 			
@@ -120,8 +120,8 @@ public class CompareAllAIsPartiallyObservable {
 
 			GameState gs = new GameState( pgs, utt );
 
-			//bots.add( new MicroPhantom( utt, "src/ai/microPhantom/solver_cpp" ) );
-			bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
+			bots.add( new MicroPhantom( utt, "src/ai/microPhantom/solver_cpp" ) );
+			//bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
 
 			// bots.add(new StrategyTactics(utt));
 			// bots.add(new RandomAI(utt));
