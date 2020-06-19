@@ -242,7 +242,7 @@ int main( int argc, char *argv[] )
 	 */
 	// cout << "Solve ..." << "\n";
 	// cout << solver_p.solve( cost_p, solution, 10000, 100000 ) << " : " << cost_p << " / " << obj->cost( variables ) << "\n";
-	solver_p.solve( cost_p, solution, 10000, 100000 );
+	solver_p.solve( cost_p, solution, 10000, 90000 );
 	cout << solution[9] << "\n" << solution[10] << "\n" << solution[11] << "\n";
 
 	// outfile << "Solution: "
