@@ -899,14 +899,16 @@ public class MicroPhantom extends AbstractionLayerAI
 		// not BASIC BEHAVIOR
 		// train 1 worker for each resource patch, excluding the scout
 		
-		// If I have no workers or less workers than resource patches
-		// AND I have enough money to buy a worker
-		// AND I have less than 4 workers
-		// AND I have at least one barrack, or no barracks but not enough money to get one
-		if( ( nb_workers < my_resource_patches.size() || nb_workers <= 0 )
-		    && player.getResources() >= worker_type.cost
-		    && nb_workers < 4
-		    && !( my_barracks.isEmpty() && player.getResources() >= barracks_type.cost ) )
+		// If I have no workers or
+		//  I have less workers than resource patches
+		//  AND I have enough money to buy a worker
+		//  AND I have less than 4 workers
+		//  AND I have at least one barrack, or no barracks but not enough money to get one
+		if( nb_workers <= 0 ||
+		    ( nb_workers < my_resource_patches.size()
+		      && player.getResources() >= worker_type.cost
+		      && nb_workers < 4
+		      && !( my_barracks.isEmpty() && player.getResources() >= barracks_type.cost ) ) )
 		{
 			train( u, worker_type );
 			reserved_resources.addAndGet( worker_type.cost );
