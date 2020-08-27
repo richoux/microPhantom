@@ -34,7 +34,7 @@ import util.XMLWriter;
 public class POGameVisualSimulationTest {
 	public static void main(String args[]) throws Exception {
 		UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_ORIGINAL_FINETUNED);
-		//UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_NON_DETERMINISTIC);
+		//UnitTypeTable utt = new UnitTypeTable(UnitTypeTable.VERSION_CHAOTIC);
 
 		// microRTS competition public maps
 		//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
