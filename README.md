@@ -90,3 +90,9 @@ simpler, and  can be  used to quickly  test theoretical  ideas, before
 moving  on  to  full-fledged  RTS games.  microRTS  was  developed  by
 [Santiago
 Ontañón](https://sites.google.com/site/santiagoontanonvillar/Home). 
+
+## Scientific production
+
+You can find the CoG 2020 paper about microPhantom [on my website](https://www.richoux.fr/publications/richoux2020microphantom.pdf), and my CoG video presentation on YouTube:
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/wHoRyI6a9HI/0.jpg)](https://www.youtube.com/watch?v=wHoRyI6a9HI)
+

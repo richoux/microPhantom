@@ -84,8 +84,8 @@ public class CompareAllAIsPartiallyObservable {
 		for( int meta_run = 0; meta_run < NB_META_RUNS; ++meta_run )
 		{
 			List<AI> bots = new LinkedList<AI>();
-			//UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_ORIGINAL_FINETUNED ); // Advanced parameters
-			UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_NON_DETERMINISTIC );
+			UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_ORIGINAL_FINETUNED ); // Advanced parameters
+			//UnitTypeTable utt = new UnitTypeTable( UnitTypeTable.VERSION_CHAOTIC );
 
 			System.out.println("Base cost: " + utt.getUnitType( "Base" ).cost);
 			
