@@ -35,15 +35,16 @@ using namespace ghost;
 
 class BestComposition : public Objective
 {
-	vector< double > _coeff;
+	vector<double> _coeff;
 	vector<vector<int>> _samples;
 
 	std::function<double(double)> phi;
 
-	double required_cost( const vector< Variable >& vecVariables ) const override;
+	double required_cost( const vector<Variable*>& variables ) const override;
 
 public:
-	BestComposition( const vector< double >& coeff,
+	BestComposition( const vector<Variable>& variables,
+	                 const vector<double>& coeff,
 	                 const vector<vector<int>>& samples,
 	                 std::function<double(double)> phi );
 };

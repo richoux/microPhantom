@@ -7,27 +7,27 @@ CXXFIRSTFLAGSDEBUG= -g -O0 -DBENCH -W -Wall -Wextra -pedantic -Wno-sign-compare 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	CXX=g++
-	CXXFLAGS= -std=c++14 $(CXXFIRSTFLAGS)
-	CXXFLAGSDEBUG= -std=c++14 $(CXXFIRSTFLAGSDEBUG)
+	CXXFLAGS= -std=c++17 $(CXXFIRSTFLAGS)
+	CXXFLAGSDEBUG= -std=c++17 $(CXXFIRSTFLAGSDEBUG)
 endif
 ifeq ($(UNAME_S),Darwin)
 	CXX=clang++
-	CXXFLAGS= -std=c++1y  -stdlib=libc++ $(CXXFIRSTFLAGS)
-	CXXFLAGSDEBUG= -std=c++1y  -stdlib=libc++ $(CXXFIRSTFLAGSDEBUG)
-	LDFLAGS=-lghost_static -lc++ -lc++abi
+	CXXFLAGS= -std=c++17  -stdlib=libc++ $(CXXFIRSTFLAGS)
+	CXXFLAGSDEBUG= -std=c++17  -stdlib=libc++ $(CXXFIRSTFLAGSDEBUG)
+	LDFLAGS=-lghost_static -lc++ -lc++abi -pthread
 endif
 
 # Directories
 SRCDIR=src
 OBJDIR=obj
-OBJ=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main.o)
+OBJ=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main.o builder.o)
 #BINDIR=../src/ai/microPhantom
 BINDIR=.
 INCLUDEDIR=../include
 LIBDIR=../lib
 
 # Linker flags
-LDFLAGS=-lghost_static
+LDFLAGS=-lghost_static -pthread
 
 # Files
 #SOURCES=$(foreach sdir, $(SRCDIR), $(wildcard $(sdir)/*.cpp))

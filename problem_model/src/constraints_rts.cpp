@@ -34,20 +34,20 @@ using namespace ghost;
  ** Assignment
  *****************/
 
-Assignment::Assignment( const vector< reference_wrapper<Variable> >& variables,
+Assignment::Assignment( const vector<int> variables_index,
                         double possessed_units )
-	: Constraint(variables),
+	: Constraint(variables_index),
 	  _possessed_units(possessed_units)
 { }
 
 // assign_XL + assign_XR + assign_XH = possessed_X + to_produce_X
-double Assignment::required_cost() const
+double Assignment::required_error( const vector<Variable*>& variables ) const
 {
-	double assigned = variables[0].get().get_value()
-		+ variables[1].get().get_value()
-		+ variables[2].get().get_value();
+	double assigned = variables[0]->get_value()
+		+ variables[1]->get_value()
+		+ variables[2]->get_value();
 
-	double own = _possessed_units + variables[3].get().get_value();
+	double own = _possessed_units + variables[3]->get_value();
 
 	return std::abs( assigned - own );
 }
@@ -57,24 +57,24 @@ double Assignment::required_cost() const
  ** Stock
  *******************/
 
-Stock::Stock( const vector<reference_wrapper< Variable> >& variables,
-              int heavy_cost,
-              int light_cost,
-              int ranged_cost,
+Stock::Stock( const vector<int> variables_index,
+              int heavy_error,
+              int light_error,
+              int ranged_error,
               double stock )
-	: Constraint(variables),
-	  _heavy_cost(heavy_cost),
-	  _light_cost(light_cost),
-	  _ranged_cost(ranged_cost),
+	: Constraint(variables_index),
+	  _heavy_error(heavy_error),
+	  _light_error(light_error),
+	  _ranged_error(ranged_error),
 	  _stock(stock)
 { }
 
-// H_cost*to_produce_H + L_cost*to_produce_L + R_cost*to_produce_R <= stock
-double Stock::required_cost() const
+// H_error*to_produce_H + L_error*to_produce_L + R_error*to_produce_R <= stock
+double Stock::required_error( const vector<Variable*>& variables ) const
 {
-	double sum = _heavy_cost * variables[0].get().get_value()
-	           + _light_cost * variables[1].get().get_value()
-	           + _ranged_cost * variables[2].get().get_value();
+	double sum = _heavy_error * variables[0]->get_value()
+	           + _light_error * variables[1]->get_value()
+	           + _ranged_error * variables[2]->get_value();
 
 	return std::max( 0., sum - _stock );
 }
@@ -84,16 +84,16 @@ double Stock::required_cost() const
  ** ProductionCapacity
  **********************/
 
-ProductionCapacity::ProductionCapacity( const vector<reference_wrapper< Variable> >& variables,
+ProductionCapacity::ProductionCapacity( const vector<int> variables_index,
                                         int nb_barracks )
-	: Constraint(variables),
+	: Constraint(variables_index),
 	  _nb_barracks(nb_barracks)
 { }
 
 // to_produce_H + to_produce_L + to_produce_R <= barracks production capacity
-double ProductionCapacity::required_cost() const
+double ProductionCapacity::required_error( const vector<Variable*>& variables ) const
 {
-	double sum = variables[0].get().get_value() + variables[1].get().get_value() + variables[2].get().get_value();
+	double sum = variables[0]->get_value() + variables[1]->get_value() + variables[2]->get_value();
 
 	return std::max( 0., sum - _nb_barracks );
 }

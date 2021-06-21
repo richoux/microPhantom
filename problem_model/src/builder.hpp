@@ -24,46 +24,39 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
-#include "ghost/constraint.hpp"
-#include "ghost/variable.hpp"
+#include "ghost/model_builder.hpp"
 
 using namespace std;
 using namespace ghost;
 
-class Assignment : public Constraint
+class Builder : public ModelBuilder
 {
-	double _possessed_units;
-
-	double required_error( const vector<Variable*>& variables ) const override;
-
-public:
-	Assignment( const vector<int> variables_index,
-	            double rhs );
-};
-
-class Stock : public Constraint
-{
-	int _heavy_error, _light_error, _ranged_error;
-	double _stock;
-
-	double required_error( const vector<Variable*>& variables ) const override;
-
-public:
-	Stock( const vector<int> variables_index,
-	       int heavy_error,
-	       int light_error,
-	       int ranged_error,
-	       double stock );
-};
-
-class ProductionCapacity : public Constraint
-{
+	int _solver_type;
+	int _my_heavy_units;
+	int _my_light_units;
+	int _my_ranged_units;
+	vector<vector<int>> _samples;
+	int _resources;
 	int _nb_barracks;
-
-	double required_error( const vector<Variable*>& variables ) const override;
+	int _heavy_cost;
+	int _light_cost;
+	int _ranged_cost;
 
 public:
-	ProductionCapacity( const vector<int> variables_index,
-	                    int nb_barracks );
+	Builder( int solver_type,
+	         int my_heavy_units,
+	         int my_light_units,
+	         int my_ranged_units,
+	         const vector<vector<int>>& samples,
+	         int resources,
+	         int nb_barracks,
+	         int heavy_cost,
+	         int light_cost,
+	         int ranged_cost );
+	
+	void declare_variables() override;
+	void declare_constraints() override;
+	void declare_objective() override;
 };

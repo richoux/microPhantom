@@ -33,16 +33,15 @@
 #include <vector>
 #include <numeric>
 
-#include "ghost/variable.hpp"
 #include "ghost/solver.hpp"
 
-#include "constraints_rts.hpp"
-#include "obj_rts.hpp"
-#include "phi_function.hpp"
+#include "builder.hpp"
 
 #include "randutils.hpp"
 
 using namespace std;
+using namespace ghost;
+using namespace std::literals::chrono_literals;
 
 int main( int argc, char *argv[] )
 {
@@ -180,60 +179,24 @@ int main( int argc, char *argv[] )
 		samples.push_back( { number_estimated_heavy + observed_enemy_heavy, number_estimated_light + observed_enemy_light, number_estimated_ranged + observed_enemy_ranged } );
 	}
 			
-	vector<Variable> variables;
+	Builder builder( solver_type,
+	                 my_heavy_units,
+	                 my_light_units,
+	                 my_ranged_units,
+	                 samples,
+	                 resources,
+	                 nb_barracks,
+	                 heavy_cost,
+	                 light_cost,
+	                 ranged_cost );
+	Options options;
+	options.parallel_runs = true;
+	options.number_threads = std::max( 2, options.number_threads / 2 );
 	
-	// Our units assigned to enemy units
-	variables.push_back( Variable( "Heavy assigned to heavy", "assign_Hh", 0, 20 + my_heavy_units ) ); //0
-	variables.push_back( Variable( "Light assigned to heavy", "assign_Lh", 0, 20 + my_light_units ) ); 
-	variables.push_back( Variable( "Ranged assigned to heavy", "assign_Rh", 0, 20 + my_ranged_units ) );
+	Solver solver_p( builder );
 
-	variables.push_back( Variable( "Heavy assigned to light", "assign_Hl", 0, 20 + my_heavy_units ) ); //3
-	variables.push_back( Variable( "Light assigned to light", "assign_Ll", 0, 20 + my_light_units ) ); 
-	variables.push_back( Variable( "Ranged assigned to light", "assign_Rl", 0, 20 + my_ranged_units ) );
-
-	variables.push_back( Variable( "Heavy assigned to ranged", "assign_Hr", 0, 20 + my_heavy_units ) ); //6
-	variables.push_back( Variable( "Light assigned to ranged", "assign_Lr", 0, 20 + my_light_units ) ); 
-	variables.push_back( Variable( "Ranged assigned to ranged", "assign_Rr", 0, 20 + my_ranged_units ) );
-
-	variables.push_back( Variable( "Heavy to produce", "to_prod_H", 0, 20 ) ); //9
-	variables.push_back( Variable( "Light to produce", "to_prod_L", 0, 20 ) ); 
-	variables.push_back( Variable( "Ranged to produce", "to_prod_R", 0, 20 ) ); 
-
-	vector< reference_wrapper<Variable> > variables_heavy{ variables[0], variables[3], variables[6], variables[9] };
-	vector< reference_wrapper<Variable> > variables_light{ variables[1], variables[4], variables[7], variables[10] };
-	vector< reference_wrapper<Variable> > variables_ranged{ variables[2], variables[5], variables[8], variables[11] };
-	vector< reference_wrapper<Variable> > variables_stock( variables.begin() + 9, variables.end() );
-
-	shared_ptr<Constraint> assign_heavy = make_shared<Assignment>( variables_heavy, my_heavy_units );
-	shared_ptr<Constraint> assign_light = make_shared<Assignment>( variables_light, my_light_units );
-	shared_ptr<Constraint> assign_ranged = make_shared<Assignment>( variables_ranged, my_ranged_units );
-	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, heavy_cost, light_cost, ranged_cost, resources );
-	shared_ptr<Constraint> capacity = make_shared<ProductionCapacity>( variables_stock, nb_barracks );
-
-	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_ranged, stock, capacity };
-
-	std::function<double(double)> phi_callback;
-	if( solver_type == 2)
-		phi_callback = pessimistic();
-	else if( solver_type == 1)
-		phi_callback = optimistic();
-	else
-		phi_callback = identity();
-
-	// Coefficients:
-	// H vs H, L vs H, R vs H
-	// H vs L, L vs L, R vs L
-	// H vs R, L vs R, R vs R
-	shared_ptr<Objective> obj = make_shared<BestComposition>( vector<double>{ 1.   , 0.374, 1.564,
-	                                                                          2.675, 1.   , 0.472,
-	                                                                          0.639, 2.119, 1. },
-	                                                          samples,
-	                                                          phi_callback );
-
-	Solver solver_p( variables, constraints, obj );
-
-	vector<int>solution( variables.size(), 0 );
-	double cost_p = 0.;
+	vector<int>solution;
+	double cost_p;
 
 	/*
 	 * POAdaptive is waiting for 6 lines
@@ -242,7 +205,7 @@ int main( int argc, char *argv[] )
 	 */
 	// cout << "Solve ..." << "\n";
 	// cout << solver_p.solve( cost_p, solution, 10000, 100000 ) << " : " << cost_p << " / " << obj->cost( variables ) << "\n";
-	solver_p.solve( cost_p, solution, 10000, 90000 );
+	solver_p.solve( cost_p, solution, 90ms, options );
 	cout << solution[9] << "\n" << solution[10] << "\n" << solution[11] << "\n";
 
 	// outfile << "Solution: "
