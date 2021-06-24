@@ -231,9 +231,9 @@ int main( int argc, char *argv[] )
 
 	SolutionBuffer solution;
 
-	solution.set_number_heavy( vec_solution[0] );
-	solution.set_number_light( vec_solution[1] );
-	solution.set_number_ranged( vec_solution[2] );
+	solution.set_number_heavy( vec_solution[9] );
+	solution.set_number_light( vec_solution[10] );
+	solution.set_number_ranged( vec_solution[11] );
 
 	auto size = solution.ByteSizeLong();
 	char* array = new char[size];
