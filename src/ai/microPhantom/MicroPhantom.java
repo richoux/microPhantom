@@ -38,6 +38,9 @@ import rts.units.*;
 import rts.UnitActionAssignment;
 import rts.UnitAction;
 
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.NumberFormatException;
 import java.util.List;
 import java.util.ArrayList;
@@ -48,12 +51,14 @@ import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 
+import com.microphantom.protos.SolutionBuffer;
+import com.microphantom.protos.GameStateBuffer;
 
 /**
  * @author Florian Richoux
@@ -168,6 +173,8 @@ public class MicroPhantom extends AbstractionLayerAI
 	UnitType fastest_to_train_type;
 	UnitType slowest_to_train_type;
 
+	ServerSocketChannel serverSocketChannel;
+	
 	/*
 	 * Constructors
 	 */
@@ -199,6 +206,22 @@ public class MicroPhantom extends AbstractionLayerAI
 		reset( a_utt );
 		this.solver_path = solver_path;
 
+		try
+		{
+			InetAddress inetAddress = InetAddress.getByName( "localhost" );  
+			//the port should be greater or equal to 0, else it will throw an error  
+			int port = 1085;
+			//System.out.println( "JAVA avant création du serveur\n" );
+			
+			serverSocketChannel = ServerSocketChannel.open();
+			serverSocketChannel.bind( new InetSocketAddress( inetAddress, port ) );
+		}
+		catch( IOException e1 )
+		{
+			System.out.println( "IO exception in process" );
+			System.out.println( e1.getMessage() );
+		}
+		
 		// try
 		// {
 		// 	writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
@@ -1168,61 +1191,10 @@ public class MicroPhantom extends AbstractionLayerAI
 		else
 			observed_ranged_in_total =	0;
 
-		// write parameter for solver in a file
 		try
 		{
-			PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
-
 			int no_initial_base_int = has_initial_base ? 0 : 1;
 			int no_initial_barracks_int = has_initial_barracks ? 0 : 1;
-			
-			writer.println( gs.getTime() );
-			writer.println( number_idle_barracks );
-			writer.println( min_distance_resource_base );
-			writer.println( max_distance_resource_base );
-			writer.println( no_initial_base_int );
-			writer.println( no_initial_barracks_int );
-
-			writer.println( player.getResources() );
-			writer.println( initial_resources );
-			writer.println( enemy_cost_loss );
-			
-			writer.println( worker_type.moveTime );
-			writer.println( worker_type.harvestTime );
-			writer.println( worker_type.returnTime );
-			writer.println( worker_type.harvestAmount );
-
-			writer.println( base_type.cost );
-			writer.println( barracks_type.cost );
-			writer.println( heavy_type.cost );
-			writer.println( light_type.cost );
-			writer.println( ranged_type.cost );
-			
-			writer.println( my_heavy_units.size() );
-			writer.println( my_light_units.size() );
-			writer.println( my_ranged_units.size() );
-			
-			writer.println( initial_number_workers );
-			writer.println( observed_worker );
-			writer.println( observed_heavy );
-			writer.println( observed_light );
-			writer.println( observed_ranged );
-			writer.println( observed_worker_in_total );
-			writer.println( observed_heavy_in_total );
-			writer.println( observed_light_in_total );
-			writer.println( observed_ranged_in_total );
-					
-			writer.close();
-		}
-		catch( IOException e1 )
-		{
-			System.out.println( "Exception in printer" );
-		}
-
-		no_training = false;
-		try
-		{
-			Runtime r = Runtime.getRuntime();
 
 			if( my_cost_loss + 2 * cheapest_type.cost <= enemy_cost_loss )
 				solver_type = 1;
@@ -1231,27 +1203,96 @@ public class MicroPhantom extends AbstractionLayerAI
 			else
 				solver_type = 0;
 
-			Process process = r.exec( String.format( "%s %d %s %d", solver_path, solver_type, "src/ai/microPhantom/data_solver", nb_samples ) );
-			process.waitFor();
+			no_training = false;
+			//System.out.println( "JAVA avant le lancement du client\n" );
+			Runtime r = Runtime.getRuntime();
+			//System.out.println( "JAVA Runtime lancé\n" );
+			//Process process = r.exec( String.format( "%s", solver_path ) );
+			Process process = r.exec( solver_path );
+			//System.out.println( "JAVA lancement du client ; solver " + solver_path + "\n" );
 
-			BufferedReader buffer = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
+			SocketChannel client = serverSocketChannel.accept();
+			//System.out.println( "JAVA serveur accepte le client\n" );
 
-			number_heavy_to_produce = Integer.parseInt( buffer.readLine() );
-			number_light_to_produce = Integer.parseInt( buffer.readLine() );
-			number_ranged_to_produce = Integer.parseInt( buffer.readLine() );
+			//System.out.println( "JAVA affichage de la trace C++\n" );
+			//System.out.println( "JAVA en attente du client\n" );
 
-			// System.out.println( "H" + number_heavy_to_produce + " L" + number_light_to_produce + " R" + number_ranged_to_produce + "\n" );
-			buffer.close();
+			GameStateBuffer gameState = GameStateBuffer.newBuilder()
+				.setTime( gs.getTime() )
+				.setNbBarracks( number_idle_barracks )
+				.setMinDistanceResourceBase( min_distance_resource_base )
+				.setMaxDistanceResourceBase( max_distance_resource_base )
+				.setNoInitialBase( no_initial_base_int )
+				.setNoInitialBarracks( no_initial_barracks_int )
+				.setResources( player.getResources() )
+				.setInitialResources( initial_resources )
+				.setEnemyResourcesLoss( enemy_cost_loss )
+				.setWorkerMoveTime( worker_type.moveTime )
+				.setWorkerHarvestTime( worker_type.harvestTime )
+				.setWorkerReturnTime( worker_type.returnTime )
+				.setHarvestAmount( worker_type.harvestAmount )
+				.setBaseCost( base_type.cost ) 
+				.setBarracksCost( barracks_type.cost )
+				.setHeavyCost( heavy_type.cost )
+				.setLightCost( light_type.cost )
+				.setRangedCost( ranged_type.cost )
+				.setMyHeavyUnits( my_heavy_units.size() )
+				.setMyLightUnits( my_light_units.size() )
+				.setMyRangedUnits( my_ranged_units.size() )
+				.setInitialEnemyWorker( initial_number_workers )
+				.setObservedEnemyWorker( observed_worker )
+				.setObservedEnemyHeavy( observed_heavy )
+				.setObservedEnemyLight( observed_light )
+				.setObservedEnemyRanged( observed_ranged )
+				.setObservedEnemyWorkerInTotal( observed_worker_in_total )
+				.setObservedEnemyHeavyInTotal( observed_heavy_in_total )
+				.setObservedEnemyLightInTotal( observed_light_in_total )
+				.setObservedEnemyRangedInTotal( observed_ranged_in_total )
+				.setSolverType( solver_type )
+				.setNbSamples( nb_samples )
+				.build();
+
+			//System.out.println( "JAVA avant l'envoie des données au client\n" );
+
+			// SEND
+			ByteBuffer byteBuffer = ByteBuffer.allocate( 1024 );
+			byteBuffer.put( gameState.toByteArray() );
+			byteBuffer.flip();
+			client.write( byteBuffer );
+
+			//System.out.println( "JAVA après l'envoie des données au client\n" );
+
+			// RECEIVE
+			//System.out.println( "JAVA avant la réception des données du client\n" );
+
+			ByteBuffer buf = ByteBuffer.allocate( 1024 );
+			int numBytesRead = client.read( buf );
+
+			//System.out.println( "JAVA après la réception des données du client\n" );
+						
+			if( numBytesRead == -1 )
+			{
+				client.close();
+				//System.out.println( "JAVA fermeture du client\n" );
+			}
+			
+			buf.flip();
+			
+			SolutionBuffer solution = SolutionBuffer.parseFrom( buf );
+			number_heavy_to_produce = solution.getNumberHeavy();
+			number_light_to_produce = solution.getNumberLight();
+			number_ranged_to_produce = solution.getNumberRanged();
+			System.out.println( "JAVA H" + number_heavy_to_produce + " L" + number_light_to_produce + " R" + number_ranged_to_produce + "\n" );
 		}
 		catch( IOException e1 )
 		{
 			System.out.println( "IO exception in process" );
 			System.out.println( e1.getMessage() );
 		}
-		catch( InterruptedException e2 )
-		{
-			System.out.println( "interupt exception in process" );
-		}
+		// catch( InterruptedException e2 )
+		// {
+		// 	System.out.println( "interupt exception in process" );
+		// }
 		catch( NumberFormatException e3 )
 		{
 			no_training = true;

@@ -18,20 +18,15 @@ ifeq ($(UNAME_S),Darwin)
 endif
 
 # Directories
-SRCDIR=src
+SRCDIR=src ../protobuf_code
 OBJDIR=obj
-OBJ=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main.o builder.o)
-#BINDIR=../src/ai/microPhantom
+OBJ=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main.o builder.o microphantom.pb.o)
 BINDIR=.
-INCLUDEDIR=../include
+INCLUDEDIR=-I../include -I../protobuf_code
 LIBDIR=../lib
 
 # Linker flags
-LDFLAGS=-lghost_static -pthread
-
-# Files
-#SOURCES=$(foreach sdir, $(SRCDIR), $(wildcard $(sdir)/*.cpp))
-#OBJECTS=$(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SOURCES)))
+LDFLAGS=-lghost_static -pthread -lprotobuf
 
 # For rm
 SOURCESTILDE=$(foreach sdir, $(SRCDIR), $(wildcard $(sdir)/*.cpp~))
@@ -53,11 +48,11 @@ $(BINDIR)/$(EXEC): $(OBJ)
 	$(CXX) -o  $@ $^ -L$(LIBDIR) $(LDFLAGS)
 	ln -sf ../../../problem_model/$(EXEC) ../src/ai/microPhantom/
 
-# $(OBJDIR)/main.o: $(SRCDIR)/main.cpp
-# 	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) $< -o $@
-
 $(OBJDIR)/%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c -I$(INCLUDEDIR) $< -o $@
+	$(CXX) $(CXXFLAGS) -c $(INCLUDEDIR) $< -o $@
+
+$(OBJDIR)/microphantom.pb.o: ../protobuf_code/microphantom.pb.cc
+	$(CXX) $(CXXFLAGS) -c $(INCLUDEDIR) $< -o $@
 
 $(OBJ): | $(OBJDIR)
 

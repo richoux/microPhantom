@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.microphantom.protos";
+option java_outer_classname = "MicroPhantomProtos";
+
+message GameStateBuffer
+{
+	int32 time = 1;
+	int32 nb_barracks = 2;
+	int32 min_distance_resource_base = 3;
+	int32 max_distance_resource_base = 4;
+	int32 no_initial_base = 5;
+	int32 no_initial_barracks = 6;
+	int32 resources = 7;
+	int32 initial_resources = 8;
+	int32 enemy_resources_loss = 9;
+	int32 worker_move_time = 10;
+	int32 worker_harvest_time = 11;
+	int32 worker_return_time = 12;
+	int32 harvest_amount = 13;
+	int32 base_cost = 14;
+	int32 barracks_cost = 15;
+	int32 heavy_cost = 16;
+	int32 light_cost = 17;
+	int32 ranged_cost = 18;
+	int32 my_heavy_units = 19;
+	int32 my_light_units = 20;
+	int32 my_ranged_units = 21;
+	int32 initial_enemy_worker = 22;
+	int32 observed_enemy_worker = 23;
+	int32 observed_enemy_heavy = 24;
+	int32 observed_enemy_light = 25;
+	int32 observed_enemy_ranged = 26;
+	int32 observed_enemy_worker_in_total = 27;
+	int32 observed_enemy_heavy_in_total = 28;
+	int32 observed_enemy_light_in_total = 29;
+	int32 observed_enemy_ranged_in_total = 30;
+	int32 solver_type = 31;
+	int32 nb_samples = 32;
+}
+
+message SolutionBuffer
+{
+	int32 number_heavy = 1;
+	int32 number_light = 2;
+	int32 number_ranged = 3;
+}
