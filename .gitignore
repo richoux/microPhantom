@@ -1,6 +1,6 @@
 *.class
 run.log
-MicroPhantom.jar
+microPhantom.jar
 README_Santi.txt
 /bin/
 /.classpath

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+cd problem_model
+make
+cd ..
+
 #Timeouts in the competition
 #8x8 maps: 3000
 #16x16 maps: 4000
