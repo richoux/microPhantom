@@ -1,8 +1,9 @@
 EXEC=solver_cpp
+EXEC_TEST=solver_test
 
 # Compiler flags
-CXXFIRSTFLAGS= -O3 -DBENCH -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter
-CXXFIRSTFLAGSDEBUG= -g -O0 -DBENCH -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter 
+CXXFIRSTFLAGS= -O3 -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter
+CXXFIRSTFLAGSDEBUG= -g -O0 -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter 
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
@@ -21,6 +22,7 @@ endif
 SRCDIR=src ../protobuf_code
 OBJDIR=obj
 OBJ=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main.o builder.o microphantom.pb.o)
+OBJ_TEST=$(addprefix $(OBJDIR)/,constraints_rts.o obj_rts.o main_test.o builder.o print_test.o)
 BINDIR=.
 INCLUDEDIR=-I../include -I../protobuf_code
 LIBDIR=../lib
@@ -44,9 +46,17 @@ all: $(BINDIR)/$(EXEC)
 debug: CXXFLAGS= $(CXXFLAGSDEBUG)
 debug: $(BINDIR)/$(EXEC)
 
+test: $(BINDIR)/$(EXEC_TEST)
+
 $(BINDIR)/$(EXEC): $(OBJ)
 	$(CXX) -o  $@ $^ -L$(LIBDIR) $(LDFLAGS)
 	ln -sf ../../../problem_model/$(EXEC) ../src/ai/microPhantom/
+
+$(BINDIR)/$(EXEC_TEST): $(OBJ_TEST)
+	$(CXX) -o  $@ $^ -L$(LIBDIR) $(LDFLAGS)
+
+$(OBJDIR)/main_test.o: main_test.cpp
+	$(CXX) $(CXXFLAGS) -c $(INCLUDEDIR) $< -DGHOST_BENCH -o $@
 
 $(OBJDIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $(INCLUDEDIR) $< -o $@
@@ -56,10 +66,12 @@ $(OBJDIR)/microphantom.pb.o: ../protobuf_code/microphantom.pb.cc
 
 $(OBJ): | $(OBJDIR)
 
+$(OBJ_TEST): | $(OBJDIR)
+
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 .PHONY: clean 
 
 clean:
-	rm -fr core *~ $(EXEC) $(OBJDIR)/*.o $(SOURCESTILDE) 
+	rm -fr core *~ $(EXEC) $(EXEC_TEST) $(OBJDIR)/*.o $(SOURCESTILDE) 
