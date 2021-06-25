@@ -1,7 +1,9 @@
 *.class
 run.log
 microPhantom.jar
+MindSeal.jar
 README_Santi.txt
+launch_vs_mindseal.sh
 /bin/
 /.classpath
 /.project

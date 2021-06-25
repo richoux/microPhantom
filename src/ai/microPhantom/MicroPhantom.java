@@ -209,10 +209,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		try
 		{
 			InetAddress inetAddress = InetAddress.getByName( "localhost" );  
-			//the port should be greater or equal to 0, else it will throw an error  
 			int port = 1085;
-			//System.out.println( "JAVA avant création du serveur\n" );
-			
 			serverSocketChannel = ServerSocketChannel.open();
 			serverSocketChannel.bind( new InetSocketAddress( inetAddress, port ) );
 		}
@@ -346,13 +343,13 @@ public class MicroPhantom extends AbstractionLayerAI
 					}
 					else
 					{
-						if( gs.getUnitAction( u ) == null )
-							++number_units_can_attack;
-
 						if( u.getType().ID == worker_type.ID )
 							my_workers.add( u );
 						else
 						{
+							if( gs.getUnitAction( u ) == null )
+								++number_units_can_attack;
+
 							track_my_army.put( u.getID(), new TrackUnit( u, true ) );
 							my_army.add( u );
 							
@@ -472,7 +469,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		return Math.abs( u2.getX() - u1.getX() ) + Math.abs( u2.getY() - u1.getY() );
 	}
 
-		private int manhattanDistance( int x1, int y1, int x2, int y2 )
+	private int manhattanDistance( int x1, int y1, int x2, int y2 )
 	{
 		return Math.abs( x2 - x1 ) + Math.abs( y2 - y1 );
 	}
@@ -869,13 +866,14 @@ public class MicroPhantom extends AbstractionLayerAI
 			if( gs.getUnitAction( u ) == null )
 			{
 				// BASIC BEHAVIOR
-				armyUnitBehavior_heatmap( u );
+				// armyUnitBehavior_heatmap( u );
 				
 				// not BASIC BEHAVIOR
-				// if( number_units_can_attack >= 4 )
-				//	 armyUnitBehavior_heatmap( u );
-				// else
-				//	 armyUnitBehavior( u );
+				//if( number_units_can_attack >= 4 )
+				if( my_army.size() >= 3 )
+					armyUnitBehavior_heatmap( u );
+				else
+					armyUnitBehavior( u );
 			}
 
 		workersBehavior( reserved_resources );
@@ -926,12 +924,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		//  I have less workers than resource patches
 		//  AND I have enough money to buy a worker
 		//  AND I have less than 4 workers
-		//  AND I have at least one barrack, or no barracks but not enough money to get one
+		//  AND I have at least one barrack, or no barracks but not enough money to get one <== disabled now
 		if( nb_workers <= 0 ||
 		    ( nb_workers < my_resource_patches.size()
 		      && player.getResources() >= worker_type.cost
-		      && nb_workers < 4
-		      && !( my_barracks.isEmpty() && player.getResources() >= barracks_type.cost ) ) )
+		      && nb_workers < 4 ) )
+			//&& !( my_barracks.isEmpty() && player.getResources() >= barracks_type.cost ) ) )
 		{
 			train( u, worker_type );
 			reserved_resources.addAndGet( worker_type.cost );
@@ -947,6 +945,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitCommonBehavior( Unit u, Unit closest_enemy )
 	{
+		//System.out.println("armyUnitCommonBehavior for unit " + u.getType() + " " + u.getID() );
+
 		int closest_distance = manhattanDistance( u, closest_enemy );
 		if( u.getType().ID == ranged_type.ID && closest_distance <= 2 )
 		{
@@ -1064,6 +1064,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitBehavior_heatmap( Unit u )
 	{
+		//System.out.println("armyUnitBehavior_heatmap for unit " + u.getType() + " " + u.getID() );
+
 		Unit closest_enemy = getClosestEnemy( u );
 
 		if( closest_enemy != null )
@@ -1115,6 +1117,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitBehavior( Unit u )
 	{
+		//System.out.println("armyUnitBehavior for unit " + u.getType() + " " + u.getID() );
 		Unit closest_enemy = getClosestEnemy( u );
 
 		if( closest_enemy != null )
@@ -1123,28 +1126,47 @@ public class MicroPhantom extends AbstractionLayerAI
 		{
 			if( pogs != null )
 			{
-				// there are no enemies, so we need to explore (find the nearest non-observable place):
-				int closest_x = 0;
-				int closest_y = 0;
-				int closest_distance = Integer.MAX_VALUE;
+				// there are no enemies, so we say in defense in front of the base
+				int guess_enemy_base_x = 0;
+				int guess_enemy_base_y = 0;
 
-				for( int y = 0 ; y < map_height ; ++y )
-					for( int x = 0 ; x < map_width ; ++x )
-						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE || pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
-						{
-							if( !pogs.observable( x, y ) )
-							{
-								int d = ( u.getX() - x ) * ( u.getX() - x ) + ( u.getY() - y ) * ( u.getY() - y );
-								if( d < closest_distance )
-								{
-									closest_x = x;
-									closest_y = y;
-									closest_distance = d;
-								}
-							}
-						}
+				if( initial_base_position_x != -1 )
+				{
+					// guess a mirror position
+					guess_enemy_base_x = map_width - 1 - initial_base_position_x;
+					guess_enemy_base_y = map_height - 1 - initial_base_position_y;
+				}
 
-				move( u, closest_x, closest_y );
+				int direction_x;
+				int direction_y;
+				
+				if( guess_enemy_base_x > initial_base_position_x )
+					direction_x = 1;
+				else
+				{
+					if( guess_enemy_base_x < initial_base_position_x )
+						direction_x = 1;
+					else
+						direction_x = 0;
+				}
+
+				if( guess_enemy_base_y > initial_base_position_y )
+					direction_y = 1;
+				else
+				{
+					if( guess_enemy_base_y < initial_base_position_y )
+						direction_y = 1;
+					else
+						direction_y = 0;
+				}
+
+				int max_map;
+				if( map_width > map_height )
+					max_map = map_width;
+				else 
+					max_map = map_height;
+				
+				move( u, initial_base_position_x + ( direction_x * ( max_map / 4 ) ), initial_base_position_y + ( direction_y * ( max_map / 4 ) ) );
 			}
 		}
 	}
@@ -1204,18 +1226,9 @@ public class MicroPhantom extends AbstractionLayerAI
 				solver_type = 0;
 
 			no_training = false;
-			//System.out.println( "JAVA avant le lancement du client\n" );
 			Runtime r = Runtime.getRuntime();
-			//System.out.println( "JAVA Runtime lancé\n" );
-			//Process process = r.exec( String.format( "%s", solver_path ) );
 			Process process = r.exec( solver_path );
-			//System.out.println( "JAVA lancement du client ; solver " + solver_path + "\n" );
-
 			SocketChannel client = serverSocketChannel.accept();
-			//System.out.println( "JAVA serveur accepte le client\n" );
-
-			//System.out.println( "JAVA affichage de la trace C++\n" );
-			//System.out.println( "JAVA en attente du client\n" );
 
 			GameStateBuffer gameState = GameStateBuffer.newBuilder()
 				.setTime( gs.getTime() )
@@ -1252,28 +1265,19 @@ public class MicroPhantom extends AbstractionLayerAI
 				.setNbSamples( nb_samples )
 				.build();
 
-			//System.out.println( "JAVA avant l'envoie des données au client\n" );
-
 			// SEND
 			ByteBuffer byteBuffer = ByteBuffer.allocate( 1024 );
 			byteBuffer.put( gameState.toByteArray() );
 			byteBuffer.flip();
 			client.write( byteBuffer );
 
-			//System.out.println( "JAVA après l'envoie des données au client\n" );
-
 			// RECEIVE
-			//System.out.println( "JAVA avant la réception des données du client\n" );
-
 			ByteBuffer buf = ByteBuffer.allocate( 1024 );
 			int numBytesRead = client.read( buf );
 
-			//System.out.println( "JAVA après la réception des données du client\n" );
-						
 			if( numBytesRead == -1 )
 			{
 				client.close();
-				//System.out.println( "JAVA fermeture du client\n" );
 			}
 			
 			buf.flip();
@@ -1282,17 +1286,12 @@ public class MicroPhantom extends AbstractionLayerAI
 			number_heavy_to_produce = solution.getNumberHeavy();
 			number_light_to_produce = solution.getNumberLight();
 			number_ranged_to_produce = solution.getNumberRanged();
-			System.out.println( "JAVA H" + number_heavy_to_produce + " L" + number_light_to_produce + " R" + number_ranged_to_produce + "\n" );
 		}
 		catch( IOException e1 )
 		{
 			System.out.println( "IO exception in process" );
 			System.out.println( e1.getMessage() );
 		}
-		// catch( InterruptedException e2 )
-		// {
-		// 	System.out.println( "interupt exception in process" );
-		// }
 		catch( NumberFormatException e3 )
 		{
 			no_training = true;
@@ -1387,18 +1386,20 @@ public class MicroPhantom extends AbstractionLayerAI
 		// }
 
 		List<Integer> reserved_positions = new LinkedList<Integer>();
-		if( my_bases.isEmpty() && !free_workers.isEmpty() )
+		if( my_bases.isEmpty() && player.getResources() >= base_type.cost )// && !free_workers.isEmpty() )
 		{
 			// build a base, and don't count reserved_resources: it's top priority
-			if( player.getResources() >= base_type.cost )
-			{
-				Unit u = free_workers.remove( 0 );
-				AtomicInteger new_building_x = new AtomicInteger( u.getX() );
-				AtomicInteger new_building_y = new AtomicInteger( u.getY() );
-				spiralSearch( new_building_x, new_building_y );
-				buildIfNotAlreadyBuilding( u, base_type, new_building_x.get(), new_building_y.get(), reserved_positions, player, pgs );
-				reserved_resources.addAndGet( base_type.cost );
-			}
+			Unit u;
+			if( free_workers.isEmpty() )
+				u = my_workers.get(0);
+			else
+				u = free_workers.remove( 0 );
+
+			AtomicInteger new_building_x = new AtomicInteger( u.getX() );
+			AtomicInteger new_building_y = new AtomicInteger( u.getY() );
+			spiralSearch( new_building_x, new_building_y );
+			buildIfNotAlreadyBuilding( u, base_type, new_building_x.get(), new_building_y.get(), reserved_positions, player, pgs );
+			reserved_resources.addAndGet( base_type.cost );
 		}
 
 		// if no barracks or plainty of money (on maps larger than 12x12 and if we have known resources around us)
