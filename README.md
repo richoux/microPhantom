@@ -7,21 +7,7 @@ toolkit,  to   design  and   solve  combinatorial  problems   for  all
 decision-making behaviors.
 
 
-## Before doing anything
-
-The version of microRTS used here (with `lib/microrts.jar`) is the one
-from the 
-[commit 88cdc76d0e5c6](https://github.com/santiontanon/microrts/tree/88cdc76d0e5c624e78ae562c8771fc0a863814ad)
-from May 16, 2020, compiled with Java OpenJDK 11.
-
-You may want use a more recent version.  To do so:
-
-1. Clone microRTS with `git clone https://github.com/santiontanon/microrts.git`.
-2. Compile      its      JAR      file      following      [these instructions](https://github.com/santiontanon/microrts#generating-a-jar-file).
-3. Copy `microrts_folder/bin/microrts.jar` in `microPhantom/lib`.
-
-
-## Compiling microPhantom
+## Compiling microPhantom's solver
 
 Follow this simple procedure:
 
@@ -30,6 +16,16 @@ Follow this simple procedure:
 
 It will compile the executable `solver_cpp` and make a symbolic link toward it in
 `microPhantom/src/ai/microPhantom`.
+
+You can run the script `launch.sh`  to be sure everything is (locally) ok!
+
+## Making a jar file for microPhantom
+
+Just run this script:
+
+`$> compile_jar.sh`  
+
+It will create a jar file into the `bin` folder.
 
 You can run the script `launch.sh`  to be sure everything is (locally) ok!
 
@@ -79,6 +75,9 @@ these steps:
    commands (you need cmake and g++ or clang): `./build.sh`
 3. Copy the file `libghost_static.a` from the lib directory of the GHOST
    folder to the lib directory of the microPhantom folder.
+4. Copy the `include/ghost` folder installed on your system (the last messages
+   after running `./build.sh` should tell you where is it located) to a
+	 `include/ghost` directory of the microPhantom folder.
 
 ## microRTS
 
