@@ -6,7 +6,7 @@ README_Santi.txt
 launch_vs_mindseal.sh
 .classpath
 .project
-competitions/*
+competitions/202?/*/
 src/ai/microPhantom/data_solver
 src/ai/microPhantom/solver.log
 src/ai/microPhantom/solver_cpp*
