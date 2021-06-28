@@ -35,25 +35,25 @@ class Assignment : public Constraint
 {
 	double _possessed_units;
 
-	double required_cost() const override;
+	double required_error( const vector<Variable*>& variables ) const override;
 
 public:
-	Assignment( const vector< reference_wrapper<Variable> >& variables,
+	Assignment( const vector<int> variables_index,
 	            double rhs );
 };
 
 class Stock : public Constraint
 {
-	int _heavy_cost, _light_cost, _ranged_cost;
+	int _heavy_error, _light_error, _ranged_error;
 	double _stock;
 
-	double required_cost() const override;
+	double required_error( const vector<Variable*>& variables ) const override;
 
 public:
-	Stock( const vector< reference_wrapper<Variable> >& variables,
-	       int heavy_cost,
-	       int light_cost,
-	       int ranged_cost,
+	Stock( const vector<int> variables_index,
+	       int heavy_error,
+	       int light_error,
+	       int ranged_error,
 	       double stock );
 };
 
@@ -61,9 +61,9 @@ class ProductionCapacity : public Constraint
 {
 	int _nb_barracks;
 
-	double required_cost() const override;
+	double required_error( const vector<Variable*>& variables ) const override;
 
 public:
-	ProductionCapacity( const vector< reference_wrapper<Variable> >& variables,
+	ProductionCapacity( const vector<int> variables_index,
 	                    int nb_barracks );
 };

@@ -34,16 +34,17 @@ double regulation( const double x )
 	return x >= 0 ? x : -(x*x)-1;
 }
 
-BestComposition::BestComposition( const vector< double >& coeff,
+BestComposition::BestComposition( const vector<Variable>& variables,
+                                  const vector< double >& coeff,
                                   const vector<vector<int>>& samples,
                                   std::function<double(double)> phi )
-	: Objective( "Best composition" ),
+	: Objective( variables, true, "Best composition" ),
 	  _coeff(coeff),
 	  _samples(samples),
 	  phi(phi)
 { }
 
-double BestComposition::required_cost( const vector< Variable >& vecVariables ) const
+double BestComposition::required_cost( const vector<Variable*>& variables ) const
 {
 	vector<double> sols;
 
@@ -63,9 +64,9 @@ double BestComposition::required_cost( const vector< Variable >& vecVariables ) 
 	for( int i = 0 ; i < N ; ++i )
 	{
 		// min( 1, number ) to forbid overkill, ie, thinking for instance we can defeat 10 lights when the opponent can just have 3 of them (while having other kinds of unit)
-		double tmp = regulation( std::min( 1.0, _coeff[0] * vecVariables[0].get_value() + _coeff[1] * vecVariables[1].get_value() + _coeff[2] * vecVariables[2].get_value() - _samples[i][0] ) ) //vs heavy
-			+ regulation( std::min( 1.0, _coeff[3] * vecVariables[3].get_value() + _coeff[4] * vecVariables[4].get_value() + _coeff[5] * vecVariables[5].get_value() - _samples[i][1] ) ) //vs light
-			+ regulation( std::min( 1.0, _coeff[6] * vecVariables[6].get_value() + _coeff[7] * vecVariables[7].get_value() + _coeff[8] * vecVariables[8].get_value() - _samples[i][2] ) ); //vs ranged
+		double tmp = regulation( std::min( 1.0, _coeff[0] * variables[0]->get_value() + _coeff[1] * variables[1]->get_value() + _coeff[2] * variables[2]->get_value() - _samples[i][0] ) ) //vs heavy
+			+ regulation( std::min( 1.0, _coeff[3] * variables[3]->get_value() + _coeff[4] * variables[4]->get_value() + _coeff[5] * variables[5]->get_value() - _samples[i][1] ) ) //vs light
+			+ regulation( std::min( 1.0, _coeff[6] * variables[6]->get_value() + _coeff[7] * variables[7]->get_value() + _coeff[8] * variables[8]->get_value() - _samples[i][2] ) ); //vs ranged
 
 		sols.push_back(tmp);
 	}
@@ -77,5 +78,5 @@ double BestComposition::required_cost( const vector< Variable >& vecVariables ) 
 	for( int i = 1 ; i < sols.size() ; ++i )
 		RDU += ( sols[i] - sols[i-1] ) * phi( static_cast<double>( N - i ) / N );
 
-	return -RDU;
+	return RDU;
 }

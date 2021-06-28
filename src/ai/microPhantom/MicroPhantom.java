@@ -38,6 +38,9 @@ import rts.units.*;
 import rts.UnitActionAssignment;
 import rts.UnitAction;
 
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.NumberFormatException;
 import java.util.List;
 import java.util.ArrayList;
@@ -48,12 +51,16 @@ import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.AlreadyBoundException;
 
+import com.microphantom.protos.SolutionBuffer;
+import com.microphantom.protos.GameStateBuffer;
 
 /**
  * @author Florian Richoux
@@ -168,6 +175,10 @@ public class MicroPhantom extends AbstractionLayerAI
 	UnitType fastest_to_train_type;
 	UnitType slowest_to_train_type;
 
+	ServerSocketChannel serverSocketChannel;
+	InetAddress inetAddress;
+	int port;
+	
 	/*
 	 * Constructors
 	 */
@@ -199,14 +210,17 @@ public class MicroPhantom extends AbstractionLayerAI
 		reset( a_utt );
 		this.solver_path = solver_path;
 
-		// try
-		// {
-		// 	writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
-		// }
-		// catch( IOException e1 )
-		// {
-		// 	System.out.println( "Exception with writer log" );
-		// }
+		try
+		{
+			inetAddress = InetAddress.getByName( "localhost" );
+		}
+		catch( UnknownHostException e )
+		{
+			System.out.println( "Unknown Host Exception (but it wouldn't be: it's localhost)" );
+			System.out.println( e.getMessage() );
+		}
+		
+		port = 1085;
 	}
 
 	/*
@@ -323,13 +337,13 @@ public class MicroPhantom extends AbstractionLayerAI
 					}
 					else
 					{
-						if( gs.getUnitAction( u ) == null )
-							++number_units_can_attack;
-
 						if( u.getType().ID == worker_type.ID )
 							my_workers.add( u );
 						else
 						{
+							if( gs.getUnitAction( u ) == null )
+								++number_units_can_attack;
+
 							track_my_army.put( u.getID(), new TrackUnit( u, true ) );
 							my_army.add( u );
 							
@@ -449,7 +463,7 @@ public class MicroPhantom extends AbstractionLayerAI
 		return Math.abs( u2.getX() - u1.getX() ) + Math.abs( u2.getY() - u1.getY() );
 	}
 
-		private int manhattanDistance( int x1, int y1, int x2, int y2 )
+	private int manhattanDistance( int x1, int y1, int x2, int y2 )
 	{
 		return Math.abs( x2 - x1 ) + Math.abs( y2 - y1 );
 	}
@@ -602,7 +616,18 @@ public class MicroPhantom extends AbstractionLayerAI
 	public void gameOver( int winner ) throws Exception
 	{
 		System.out.println("Closing microPhantom");
-		//writer_log.close();
+
+		try
+		{
+			if( serverSocketChannel.isOpen() )
+				serverSocketChannel.close();
+		}
+		catch( IOException e1 )
+		{
+			System.out.println( "IO exception in process" );
+			System.out.println( e1.getMessage() );
+		}
+
 		super.gameOver( winner );
 	}
 
@@ -846,13 +871,14 @@ public class MicroPhantom extends AbstractionLayerAI
 			if( gs.getUnitAction( u ) == null )
 			{
 				// BASIC BEHAVIOR
-				armyUnitBehavior_heatmap( u );
+				// armyUnitBehavior_heatmap( u );
 				
 				// not BASIC BEHAVIOR
-				// if( number_units_can_attack >= 4 )
-				//	 armyUnitBehavior_heatmap( u );
-				// else
-				//	 armyUnitBehavior( u );
+				//if( number_units_can_attack >= 4 )
+				if( my_army.size() >= 3 )
+					armyUnitBehavior_heatmap( u );
+				else
+					armyUnitBehavior( u );
 			}
 
 		workersBehavior( reserved_resources );
@@ -903,12 +929,12 @@ public class MicroPhantom extends AbstractionLayerAI
 		//  I have less workers than resource patches
 		//  AND I have enough money to buy a worker
 		//  AND I have less than 4 workers
-		//  AND I have at least one barrack, or no barracks but not enough money to get one
+		//  AND I have at least one barrack, or no barracks but not enough money to get one <== disabled now
 		if( nb_workers <= 0 ||
 		    ( nb_workers < my_resource_patches.size()
 		      && player.getResources() >= worker_type.cost
-		      && nb_workers < 4
-		      && !( my_barracks.isEmpty() && player.getResources() >= barracks_type.cost ) ) )
+		      && nb_workers < 4 ) )
+			//&& !( my_barracks.isEmpty() && player.getResources() >= barracks_type.cost ) ) )
 		{
 			train( u, worker_type );
 			reserved_resources.addAndGet( worker_type.cost );
@@ -924,6 +950,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitCommonBehavior( Unit u, Unit closest_enemy )
 	{
+		//System.out.println("armyUnitCommonBehavior for unit " + u.getType() + " " + u.getID() );
+
 		int closest_distance = manhattanDistance( u, closest_enemy );
 		if( u.getType().ID == ranged_type.ID && closest_distance <= 2 )
 		{
@@ -1041,6 +1069,8 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitBehavior_heatmap( Unit u )
 	{
+		//System.out.println("armyUnitBehavior_heatmap for unit " + u.getType() + " " + u.getID() );
+
 		Unit closest_enemy = getClosestEnemy( u );
 
 		if( closest_enemy != null )
@@ -1092,6 +1122,7 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void armyUnitBehavior( Unit u )
 	{
+		//System.out.println("armyUnitBehavior for unit " + u.getType() + " " + u.getID() );
 		Unit closest_enemy = getClosestEnemy( u );
 
 		if( closest_enemy != null )
@@ -1100,34 +1131,76 @@ public class MicroPhantom extends AbstractionLayerAI
 		{
 			if( pogs != null )
 			{
-				// there are no enemies, so we need to explore (find the nearest non-observable place):
-				int closest_x = 0;
-				int closest_y = 0;
-				int closest_distance = Integer.MAX_VALUE;
+				// there are no enemies, so we say in defense in front of the base
+				int guess_enemy_base_x = 0;
+				int guess_enemy_base_y = 0;
 
-				for( int y = 0 ; y < map_height ; ++y )
-					for( int x = 0 ; x < map_width ; ++x )
-						if( pgs.getTerrain( x, y ) == pgs.TERRAIN_NONE || pgs.getUnitAt( x, y ) == null || !pgs.getUnitAt( x, y ).getType().isResource )
-						{
-							if( !pogs.observable( x, y ) )
-							{
-								int d = ( u.getX() - x ) * ( u.getX() - x ) + ( u.getY() - y ) * ( u.getY() - y );
-								if( d < closest_distance )
-								{
-									closest_x = x;
-									closest_y = y;
-									closest_distance = d;
-								}
-							}
-						}
+				if( initial_base_position_x != -1 )
+				{
+					// guess a mirror position
+					guess_enemy_base_x = map_width - 1 - initial_base_position_x;
+					guess_enemy_base_y = map_height - 1 - initial_base_position_y;
+				}
 
-				move( u, closest_x, closest_y );
+				int direction_x;
+				int direction_y;
+				
+				if( guess_enemy_base_x > initial_base_position_x )
+					direction_x = 1;
+				else
+				{
+					if( guess_enemy_base_x < initial_base_position_x )
+						direction_x = 1;
+					else
+						direction_x = 0;
+				}
+
+				if( guess_enemy_base_y > initial_base_position_y )
+					direction_y = 1;
+				else
+				{
+					if( guess_enemy_base_y < initial_base_position_y )
+						direction_y = 1;
+					else
+						direction_y = 0;
+				}
+
+				int max_map;
+				if( map_width > map_height )
+					max_map = map_width;
+				else 
+					max_map = map_height;
+				
+				move( u, initial_base_position_x + ( direction_x * ( max_map / 4 ) ), initial_base_position_y + ( direction_y * ( max_map / 4 ) ) );
 			}
 		}
 	}
 
 	protected void decideProduction()
 	{
+		try
+		{
+			if( serverSocketChannel == null || !serverSocketChannel.isOpen() )
+			{
+				serverSocketChannel = ServerSocketChannel.open();
+			}
+		}
+		catch( IOException e1 )
+		{
+			System.out.println( "IO socket building exception" );
+		}
+
+		try
+		{
+			//if( serverSocketChannel.getLocalAddress() == null )
+			serverSocketChannel.bind( new InetSocketAddress( inetAddress, port ) );
+		}
+		catch( AlreadyBoundException e ){ }
+		catch( IOException e )
+		{
+			System.out.println( "Socket binding exception" );
+		}
+
 		if( count_current_enemy.get( worker_type.ID ) != null )
 			observed_worker = count_current_enemy.get( worker_type.ID ).get();
 		else
@@ -1168,61 +1241,10 @@ public class MicroPhantom extends AbstractionLayerAI
 		else
 			observed_ranged_in_total =	0;
 
-		// write parameter for solver in a file
 		try
 		{
-			PrintWriter writer = new PrintWriter( "src/ai/microPhantom/data_solver", "UTF-8" );
-
 			int no_initial_base_int = has_initial_base ? 0 : 1;
 			int no_initial_barracks_int = has_initial_barracks ? 0 : 1;
-			
-			writer.println( gs.getTime() );
-			writer.println( number_idle_barracks );
-			writer.println( min_distance_resource_base );
-			writer.println( max_distance_resource_base );
-			writer.println( no_initial_base_int );
-			writer.println( no_initial_barracks_int );
-
-			writer.println( player.getResources() );
-			writer.println( initial_resources );
-			writer.println( enemy_cost_loss );
-			
-			writer.println( worker_type.moveTime );
-			writer.println( worker_type.harvestTime );
-			writer.println( worker_type.returnTime );
-			writer.println( worker_type.harvestAmount );
-
-			writer.println( base_type.cost );
-			writer.println( barracks_type.cost );
-			writer.println( heavy_type.cost );
-			writer.println( light_type.cost );
-			writer.println( ranged_type.cost );
-			
-			writer.println( my_heavy_units.size() );
-			writer.println( my_light_units.size() );
-			writer.println( my_ranged_units.size() );
-			
-			writer.println( initial_number_workers );
-			writer.println( observed_worker );
-			writer.println( observed_heavy );
-			writer.println( observed_light );
-			writer.println( observed_ranged );
-			writer.println( observed_worker_in_total );
-			writer.println( observed_heavy_in_total );
-			writer.println( observed_light_in_total );
-			writer.println( observed_ranged_in_total );
-					
-			writer.close();
-		}
-		catch( IOException e1 )
-		{
-			System.out.println( "Exception in printer" );
-		}
-
-		no_training = false;
-		try
-		{
-			Runtime r = Runtime.getRuntime();
 
 			if( my_cost_loss + 2 * cheapest_type.cost <= enemy_cost_loss )
 				solver_type = 1;
@@ -1231,26 +1253,74 @@ public class MicroPhantom extends AbstractionLayerAI
 			else
 				solver_type = 0;
 
-			Process process = r.exec( String.format( "%s %d %s %d", solver_path, solver_type, "src/ai/microPhantom/data_solver", nb_samples ) );
-			process.waitFor();
+			no_training = false;
+			Runtime r = Runtime.getRuntime();
+			Process process = r.exec( solver_path );
+			SocketChannel client = serverSocketChannel.accept();
 
-			BufferedReader buffer = new BufferedReader( new InputStreamReader( process.getInputStream() ) );
+			GameStateBuffer gameState = GameStateBuffer.newBuilder()
+				.setTime( gs.getTime() )
+				.setNbBarracks( number_idle_barracks )
+				.setMinDistanceResourceBase( min_distance_resource_base )
+				.setMaxDistanceResourceBase( max_distance_resource_base )
+				.setNoInitialBase( no_initial_base_int )
+				.setNoInitialBarracks( no_initial_barracks_int )
+				.setResources( player.getResources() )
+				.setInitialResources( initial_resources )
+				.setEnemyResourcesLoss( enemy_cost_loss )
+				.setWorkerMoveTime( worker_type.moveTime )
+				.setWorkerHarvestTime( worker_type.harvestTime )
+				.setWorkerReturnTime( worker_type.returnTime )
+				.setHarvestAmount( worker_type.harvestAmount )
+				.setBaseCost( base_type.cost ) 
+				.setBarracksCost( barracks_type.cost )
+				.setHeavyCost( heavy_type.cost )
+				.setLightCost( light_type.cost )
+				.setRangedCost( ranged_type.cost )
+				.setMyHeavyUnits( my_heavy_units.size() )
+				.setMyLightUnits( my_light_units.size() )
+				.setMyRangedUnits( my_ranged_units.size() )
+				.setInitialEnemyWorker( initial_number_workers )
+				.setObservedEnemyWorker( observed_worker )
+				.setObservedEnemyHeavy( observed_heavy )
+				.setObservedEnemyLight( observed_light )
+				.setObservedEnemyRanged( observed_ranged )
+				.setObservedEnemyWorkerInTotal( observed_worker_in_total )
+				.setObservedEnemyHeavyInTotal( observed_heavy_in_total )
+				.setObservedEnemyLightInTotal( observed_light_in_total )
+				.setObservedEnemyRangedInTotal( observed_ranged_in_total )
+				.setSolverType( solver_type )
+				.setNbSamples( nb_samples )
+				.build();
 
-			number_heavy_to_produce = Integer.parseInt( buffer.readLine() );
-			number_light_to_produce = Integer.parseInt( buffer.readLine() );
-			number_ranged_to_produce = Integer.parseInt( buffer.readLine() );
+			// SEND
+			ByteBuffer byteBuffer = ByteBuffer.allocate( 1024 );
+			byteBuffer.put( gameState.toByteArray() );
+			byteBuffer.flip();
+			client.write( byteBuffer );
 
-			// System.out.println( "H" + number_heavy_to_produce + " L" + number_light_to_produce + " R" + number_ranged_to_produce + "\n" );
-			buffer.close();
+			// RECEIVE
+			ByteBuffer buf = ByteBuffer.allocate( 1024 );
+			int numBytesRead = client.read( buf );
+
+			if( numBytesRead == -1 )
+			{
+				client.close();
+			}
+			
+			buf.flip();
+			
+			SolutionBuffer solution = SolutionBuffer.parseFrom( buf );
+			number_heavy_to_produce = solution.getNumberHeavy();
+			number_light_to_produce = solution.getNumberLight();
+			number_ranged_to_produce = solution.getNumberRanged();
+
+			if( serverSocketChannel.isOpen() )
+				serverSocketChannel.close();
 		}
 		catch( IOException e1 )
 		{
 			System.out.println( "IO exception in process" );
-			System.out.println( e1.getMessage() );
-		}
-		catch( InterruptedException e2 )
-		{
-			System.out.println( "interupt exception in process" );
 		}
 		catch( NumberFormatException e3 )
 		{
@@ -1346,18 +1416,20 @@ public class MicroPhantom extends AbstractionLayerAI
 		// }
 
 		List<Integer> reserved_positions = new LinkedList<Integer>();
-		if( my_bases.isEmpty() && !free_workers.isEmpty() )
+		if( my_bases.isEmpty() && player.getResources() >= base_type.cost )// && !free_workers.isEmpty() )
 		{
 			// build a base, and don't count reserved_resources: it's top priority
-			if( player.getResources() >= base_type.cost )
-			{
-				Unit u = free_workers.remove( 0 );
-				AtomicInteger new_building_x = new AtomicInteger( u.getX() );
-				AtomicInteger new_building_y = new AtomicInteger( u.getY() );
-				spiralSearch( new_building_x, new_building_y );
-				buildIfNotAlreadyBuilding( u, base_type, new_building_x.get(), new_building_y.get(), reserved_positions, player, pgs );
-				reserved_resources.addAndGet( base_type.cost );
-			}
+			Unit u;
+			if( free_workers.isEmpty() )
+				u = my_workers.get(0);
+			else
+				u = free_workers.remove( 0 );
+
+			AtomicInteger new_building_x = new AtomicInteger( u.getX() );
+			AtomicInteger new_building_y = new AtomicInteger( u.getY() );
+			spiralSearch( new_building_x, new_building_y );
+			buildIfNotAlreadyBuilding( u, base_type, new_building_x.get(), new_building_y.get(), reserved_positions, player, pgs );
+			reserved_resources.addAndGet( base_type.cost );
 		}
 
 		// if no barracks or plainty of money (on maps larger than 12x12 and if we have known resources around us)

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+cd problem_model
+make
+cd ..
+
 #Timeouts in the competition
 #8x8 maps: 3000
 #16x16 maps: 4000
@@ -13,5 +17,5 @@
 # $3 timeout
 # $4 number of meta-runs (usually = 1, except for non-deterministic experiments)
 
-javac -cp src/:lib/microrts.jar src/tests/CompareAllAIsPartiallyObservable.java
-java -cp src:lib/microrts.jar tests.CompareAllAIsPartiallyObservable $1 $2 $3 $4
+javac -cp src/:lib/microrts.jar:lib/protobuf-java-3.17.3.jar src/tests/CompareAllAIsPartiallyObservable.java
+java -cp src:lib/microrts.jar:lib/protobuf-java-3.17.3.jar tests.CompareAllAIsPartiallyObservable $1 $2 $3 $4

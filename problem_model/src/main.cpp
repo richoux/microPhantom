@@ -29,69 +29,88 @@
 #include <memory>
 #include <random>
 #include <algorithm>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 #include <vector>
 #include <numeric>
 
-#include "ghost/variable.hpp"
 #include "ghost/solver.hpp"
-
-#include "constraints_rts.hpp"
-#include "obj_rts.hpp"
-#include "phi_function.hpp"
-
+#include "builder.hpp"
 #include "randutils.hpp"
+#include "microphantom.pb.h"
 
 using namespace std;
+using namespace ghost;
+using namespace std::literals::chrono_literals;
 
 int main( int argc, char *argv[] )
 {
-	int solver_type = std::stoi( argv[1] );
-	std::ifstream infile( argv[2] );
-	// std::ofstream outfile;
-	// outfile.open( "run.log", std::ios::app );
+	//cout << "Lancement du programme\n";
 
-	int nb_samples = std::stoi( argv[3] );
-	int time;
-	int nb_barracks, min_distance_resource_base, max_distance_resource_base;
-	int no_initial_base, no_initial_barracks;
-	int resources, initial_resources, enemy_resources_loss;
-	int worker_move_time, worker_harvest_time, worker_return_time, harvest_amount;
-	int base_cost, barracks_cost, heavy_cost, ranged_cost, light_cost;
-	int my_heavy_units, my_light_units, my_ranged_units;
-	int initial_enemy_worker;
-	int observed_enemy_worker, observed_enemy_heavy, observed_enemy_light, observed_enemy_ranged;
-	int observed_enemy_worker_in_total, observed_enemy_heavy_in_total, observed_enemy_light_in_total, observed_enemy_ranged_in_total;
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	//cout << "Pas d'erreur de version protobuf\n";
 
-	infile >> time >> nb_barracks >> min_distance_resource_base >> max_distance_resource_base >> no_initial_base >> no_initial_barracks;
-	infile >> resources >> initial_resources >> enemy_resources_loss;
-	infile >> worker_move_time >> worker_harvest_time >> worker_return_time >> harvest_amount;
-	infile >> base_cost >> barracks_cost >> heavy_cost >> light_cost >> ranged_cost;
-	infile >> my_heavy_units >> my_light_units >> my_ranged_units;
-	infile >> initial_enemy_worker >> observed_enemy_worker >> observed_enemy_heavy >> observed_enemy_light >> observed_enemy_ranged;
-	infile >> observed_enemy_worker_in_total >> observed_enemy_heavy_in_total >> observed_enemy_light_in_total >> observed_enemy_ranged_in_total;
+	int sock = 0;
+	struct sockaddr_in serv_addr;
+	int port = 1085;
+	
+	if( ( sock = socket( AF_INET, SOCK_STREAM, 0 ) ) < 0 )
+	{
+		//cout << "\n Socket creation error \n";
+		exit( EXIT_FAILURE );
+	}
+
+	//cout << "C++ Socket créé\n";
+
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons( port );
+	
+	// Convert IPv4 and IPv6 addresses from text to binary form
+	if( inet_pton( AF_INET, "127.0.0.1", &serv_addr.sin_addr ) <= 0 ) 
+	{
+		//cout << "\nInvalid address/ Address not supported \n";
+		exit( EXIT_FAILURE );
+	}
+
+	//cout << "C++ adresse affectée au client \n";
+
+	if( connect( sock, (struct sockaddr *)&serv_addr, sizeof( serv_addr ) ) < 0 )
+	{
+		//cout << "\nConnection Failed \n";
+		exit( EXIT_FAILURE );
+	}
+
+	//cout << "C++ client connecté \n";
+	GameStateBuffer game_state;
+	
+	char* buffer = new char[1024];
+	recv( sock, buffer, 1024, 0 );
+	game_state.ParseFromString( buffer );
+
+	//cout << "C++ réception des données du serveur\n";
 
 	// outfile << "######################\n" << "Time: " << time << "\n";
 	// outfile << observed_enemy_heavy << "/" << observed_enemy_heavy_in_total << ", "
 	//         << observed_enemy_light << "/" << observed_enemy_light_in_total << ", "
 	//         << observed_enemy_ranged << "/" << observed_enemy_ranged_in_total << "\n";
-	
-	observed_enemy_worker = std::max( initial_enemy_worker, observed_enemy_worker );
+
+	int observed_enemy_worker = std::max( game_state.initial_enemy_worker(), game_state.observed_enemy_worker() );
 
 	// Estimate how much resources the opponent has.
 	double mean_distance;
-	if( min_distance_resource_base != -1 )
-		mean_distance = static_cast<double>( min_distance_resource_base + max_distance_resource_base ) / 2;
+	if( game_state.min_distance_resource_base() != -1 )
+		mean_distance = static_cast<double>( game_state.min_distance_resource_base() + game_state.max_distance_resource_base() ) / 2;
 	else
 		mean_distance = 20.0; // let's consider resources are far away
 
 	// outfile << "distances (min, mean, max): (" << min_distance_resource_base << ", " << mean_distance << ", " << max_distance_resource_base << "), move time: " << worker_move_time << ", harvest time: " << worker_harvest_time << ", return time: " << worker_return_time << "\n";
 	
 	// 20 * ( initial_enemy_worker - 1 ) is to express a penalty when there are more than one worker: they tend to hinder each other.
-	int gathered_resources = harvest_amount * initial_enemy_worker * ( time / ( mean_distance * worker_move_time * 2 + worker_harvest_time + worker_return_time + ( 20 * ( initial_enemy_worker - 1 ) ) ) );
-	int estimated_cumulated_resources = initial_resources + gathered_resources;
-	int value_enemy_army = observed_enemy_heavy * heavy_cost + observed_enemy_light * light_cost + observed_enemy_ranged * ranged_cost;
-	int estimated_remaining_resources = std::max( 0, estimated_cumulated_resources - ( no_initial_base * base_cost + no_initial_barracks * barracks_cost + enemy_resources_loss + value_enemy_army ) );
+	int gathered_resources = game_state.harvest_amount() * game_state.initial_enemy_worker() * ( game_state.time() / ( mean_distance * game_state.worker_move_time() * 2 + game_state.worker_harvest_time() + game_state.worker_return_time() + ( 20 * ( game_state.initial_enemy_worker() - 1 ) ) ) );
+	int estimated_cumulated_resources = game_state.initial_resources() + gathered_resources;
+	int value_enemy_army = game_state.observed_enemy_heavy() * game_state.heavy_cost() + game_state.observed_enemy_light() * game_state.light_cost() + game_state.observed_enemy_ranged() * game_state.ranged_cost();
+	int estimated_remaining_resources = std::max( 0, estimated_cumulated_resources - ( game_state.no_initial_base() * game_state.base_cost() + game_state.no_initial_barracks() * game_state.barracks_cost() + game_state.enemy_resources_loss() + value_enemy_army ) );
 
 	// if( no_initial_base )
 	// 	outfile << "No initial base (" << base_cost << "), ";
@@ -107,28 +126,28 @@ int main( int argc, char *argv[] )
 	// outfile << "Resources estimations: gathered=" << gathered_resources << ", initial=" << initial_resources << ", value army=" << value_enemy_army << ", remaining=" << estimated_remaining_resources << "\n";
 	
 	// after estimating how much resources we haven't seen used from the opponent, we need to estimate how the opponent spent it!
-	int min_cost = heavy_cost;
-	if( light_cost < min_cost )
+	int min_cost = game_state.heavy_cost();
+	if( game_state.light_cost() < min_cost )
 	{
-		if( ranged_cost < light_cost )
-			min_cost = ranged_cost;
+		if( game_state.ranged_cost() < game_state.light_cost() )
+			min_cost = game_state.ranged_cost();
 		else
-			min_cost = light_cost;
+			min_cost = game_state.light_cost();
 	}
 	else
-		if( ranged_cost < min_cost )
-			min_cost = ranged_cost;
+		if( game_state.ranged_cost() < min_cost )
+			min_cost = game_state.ranged_cost();
 
 	// Enemy units currently seen count double. Enemy units unseen but we saw before (so dead or returned under the fog) count simple.
-	observed_enemy_heavy_in_total -= observed_enemy_heavy;
-	observed_enemy_light_in_total -= observed_enemy_light;
-	observed_enemy_ranged_in_total -= observed_enemy_ranged;
+	int observed_enemy_heavy_in_total = game_state.observed_enemy_heavy_in_total() - game_state.observed_enemy_heavy();
+	int observed_enemy_light_in_total = game_state.observed_enemy_light_in_total() - game_state.observed_enemy_light();
+	int observed_enemy_ranged_in_total = game_state.observed_enemy_ranged_in_total() - game_state.observed_enemy_ranged();
 	
 	// +1 to each unit type to never have a probability = 0 of producing any type of unit.
-	int total = 3 + 2 * ( observed_enemy_heavy + observed_enemy_light + observed_enemy_ranged ) + ( observed_enemy_heavy_in_total + observed_enemy_light_in_total + observed_enemy_ranged_in_total );
-	auto distribution = { ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total,
-	                      ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total,
-	                      ( 1 + 2 * observed_enemy_ranged + observed_enemy_ranged_in_total ) * 100.0 / total };
+	int total = 3 + 2 * ( game_state.observed_enemy_heavy() + game_state.observed_enemy_light() + game_state.observed_enemy_ranged() ) + ( observed_enemy_heavy_in_total + observed_enemy_light_in_total + observed_enemy_ranged_in_total );
+	auto distribution = { ( 1 + 2 * game_state.observed_enemy_heavy() + observed_enemy_heavy_in_total ) * 100.0 / total,
+	                      ( 1 + 2 * game_state.observed_enemy_light() + observed_enemy_light_in_total ) * 100.0 / total,
+	                      ( 1 + 2 * game_state.observed_enemy_ranged() + observed_enemy_ranged_in_total ) * 100.0 / total };
 	// outfile << "Distribution: "
 	//         << ( 1 + 2 * observed_enemy_heavy + observed_enemy_heavy_in_total ) * 100.0 / total << ", "
 	//         << ( 1 + 2 * observed_enemy_light + observed_enemy_light_in_total ) * 100.0 / total << ", "
@@ -137,7 +156,7 @@ int main( int argc, char *argv[] )
 	randutils::mt19937_rng rng;
 	vector< vector<int> > samples;
 	
-	for( int counter = 0; counter < nb_samples; ++counter )
+	for( int counter = 0; counter < game_state.nb_samples(); ++counter )
 	{
 		int estimated_resources = estimated_remaining_resources;
 		int unit_produced = -1;
@@ -152,24 +171,24 @@ int main( int argc, char *argv[] )
 			switch( unit_produced )
 			{
 			case 0: // heavy
-				if( estimated_resources >= heavy_cost )
+				if( estimated_resources >= game_state.heavy_cost() )
 				{
 					++number_estimated_heavy;
-					estimated_resources -= heavy_cost;
+					estimated_resources -= game_state.heavy_cost();
 				}
 				break;
 			case 1: // light
-				if( estimated_resources >= light_cost )
+				if( estimated_resources >= game_state.light_cost() )
 				{
 					++number_estimated_light;
-					estimated_resources -= light_cost;
+					estimated_resources -= game_state.light_cost();
 				}
 				break;
 			case 2: // ranged
-				if( estimated_resources >= ranged_cost )
+				if( estimated_resources >= game_state.ranged_cost() )
 				{
 					++number_estimated_ranged;
-					estimated_resources -= ranged_cost;
+					estimated_resources -= game_state.ranged_cost();
 				}
 				break;
 			default:
@@ -177,63 +196,27 @@ int main( int argc, char *argv[] )
 			}
 		}
 		// outfile << number_estimated_heavy + observed_enemy_heavy << ", " << number_estimated_light + observed_enemy_light << ", " << number_estimated_ranged + observed_enemy_ranged << "\n";
-		samples.push_back( { number_estimated_heavy + observed_enemy_heavy, number_estimated_light + observed_enemy_light, number_estimated_ranged + observed_enemy_ranged } );
+		samples.push_back( { number_estimated_heavy + game_state.observed_enemy_heavy(), number_estimated_light + game_state.observed_enemy_light(), number_estimated_ranged + game_state.observed_enemy_ranged() } );
 	}
 			
-	vector<Variable> variables;
+	Builder builder( game_state.solver_type(),
+	                 game_state.my_heavy_units(),
+	                 game_state.my_light_units(),
+	                 game_state.my_ranged_units(),
+	                 samples,
+	                 game_state.resources(),
+	                 game_state.nb_barracks(),
+	                 game_state.heavy_cost(),
+	                 game_state.light_cost(),
+	                 game_state.ranged_cost() );
+	Options options;
+	options.parallel_runs = true;
+	options.number_threads = std::max( 2, options.number_threads / 2 );
 	
-	// Our units assigned to enemy units
-	variables.push_back( Variable( "Heavy assigned to heavy", "assign_Hh", 0, 20 + my_heavy_units ) ); //0
-	variables.push_back( Variable( "Light assigned to heavy", "assign_Lh", 0, 20 + my_light_units ) ); 
-	variables.push_back( Variable( "Ranged assigned to heavy", "assign_Rh", 0, 20 + my_ranged_units ) );
+	Solver solver_p( builder );
 
-	variables.push_back( Variable( "Heavy assigned to light", "assign_Hl", 0, 20 + my_heavy_units ) ); //3
-	variables.push_back( Variable( "Light assigned to light", "assign_Ll", 0, 20 + my_light_units ) ); 
-	variables.push_back( Variable( "Ranged assigned to light", "assign_Rl", 0, 20 + my_ranged_units ) );
-
-	variables.push_back( Variable( "Heavy assigned to ranged", "assign_Hr", 0, 20 + my_heavy_units ) ); //6
-	variables.push_back( Variable( "Light assigned to ranged", "assign_Lr", 0, 20 + my_light_units ) ); 
-	variables.push_back( Variable( "Ranged assigned to ranged", "assign_Rr", 0, 20 + my_ranged_units ) );
-
-	variables.push_back( Variable( "Heavy to produce", "to_prod_H", 0, 20 ) ); //9
-	variables.push_back( Variable( "Light to produce", "to_prod_L", 0, 20 ) ); 
-	variables.push_back( Variable( "Ranged to produce", "to_prod_R", 0, 20 ) ); 
-
-	vector< reference_wrapper<Variable> > variables_heavy{ variables[0], variables[3], variables[6], variables[9] };
-	vector< reference_wrapper<Variable> > variables_light{ variables[1], variables[4], variables[7], variables[10] };
-	vector< reference_wrapper<Variable> > variables_ranged{ variables[2], variables[5], variables[8], variables[11] };
-	vector< reference_wrapper<Variable> > variables_stock( variables.begin() + 9, variables.end() );
-
-	shared_ptr<Constraint> assign_heavy = make_shared<Assignment>( variables_heavy, my_heavy_units );
-	shared_ptr<Constraint> assign_light = make_shared<Assignment>( variables_light, my_light_units );
-	shared_ptr<Constraint> assign_ranged = make_shared<Assignment>( variables_ranged, my_ranged_units );
-	shared_ptr<Constraint> stock = make_shared<Stock>( variables_stock, heavy_cost, light_cost, ranged_cost, resources );
-	shared_ptr<Constraint> capacity = make_shared<ProductionCapacity>( variables_stock, nb_barracks );
-
-	vector< shared_ptr<Constraint> > constraints = { assign_heavy, assign_light, assign_ranged, stock, capacity };
-
-	std::function<double(double)> phi_callback;
-	if( solver_type == 2)
-		phi_callback = pessimistic();
-	else if( solver_type == 1)
-		phi_callback = optimistic();
-	else
-		phi_callback = identity();
-
-	// Coefficients:
-	// H vs H, L vs H, R vs H
-	// H vs L, L vs L, R vs L
-	// H vs R, L vs R, R vs R
-	shared_ptr<Objective> obj = make_shared<BestComposition>( vector<double>{ 1.   , 0.374, 1.564,
-	                                                                          2.675, 1.   , 0.472,
-	                                                                          0.639, 2.119, 1. },
-	                                                          samples,
-	                                                          phi_callback );
-
-	Solver solver_p( variables, constraints, obj );
-
-	vector<int>solution( variables.size(), 0 );
-	double cost_p = 0.;
+	vector<int> vec_solution;
+	double cost_p;
 
 	/*
 	 * POAdaptive is waiting for 6 lines
@@ -242,8 +225,25 @@ int main( int argc, char *argv[] )
 	 */
 	// cout << "Solve ..." << "\n";
 	// cout << solver_p.solve( cost_p, solution, 10000, 100000 ) << " : " << cost_p << " / " << obj->cost( variables ) << "\n";
-	solver_p.solve( cost_p, solution, 10000, 90000 );
-	cout << solution[9] << "\n" << solution[10] << "\n" << solution[11] << "\n";
+	solver_p.solve( cost_p, vec_solution, 90ms, options );
+
+	//cout << "C++ solution trouvée\n";
+
+	SolutionBuffer solution;
+
+	solution.set_number_heavy( vec_solution[9] );
+	solution.set_number_light( vec_solution[10] );
+	solution.set_number_ranged( vec_solution[11] );
+
+	auto size = solution.ByteSizeLong();
+	char* array = new char[size];
+	solution.SerializeToArray( array, size );
+	
+	send( sock, (const char*)array, size, 0 );
+
+	//cout << "C++ envoie de la solution au serveur\n";
+
+	google::protobuf::ShutdownProtobufLibrary();
 
 	// outfile << "Solution: "
 	//         << solution[0] << ", "
