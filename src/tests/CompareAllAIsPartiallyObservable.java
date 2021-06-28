@@ -7,8 +7,6 @@ import ai.core.PseudoContinuingAI;
 import ai.portfolio.PortfolioAI;
 import ai.*;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
-import ai.microPhantom.MicroPhantom;
-import ai.microPhantom.RandomMicroPhantom;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
@@ -35,6 +33,10 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.units.*;
 import ai.core.InterruptibleAI;
+
+import ai.microPhantom.MicroPhantom;
+import ai.microPhantom.RandomMicroPhantom;
+import GNS.MentalSealPO;
 
 /**
  *
@@ -91,7 +93,7 @@ public class CompareAllAIsPartiallyObservable {
 			
 			// microRTS competition public maps
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-			//PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
+			PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
@@ -112,7 +114,7 @@ public class CompareAllAIsPartiallyObservable {
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/chambers32x32.xml", utt);
 
 			// not in the competition
-			PhysicalGameState pgs = PhysicalGameState.load("maps/12x12/basesWorkers12x12A.xml", utt);
+			//PhysicalGameState pgs = PhysicalGameState.load("maps/12x12/basesWorkers12x12A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
 			//PhysicalGameState pgs = PhysicalGameState.load("maps/64x64/basesWorkers64x64A.xml", utt);
@@ -123,6 +125,7 @@ public class CompareAllAIsPartiallyObservable {
 			bots.add( new MicroPhantom( utt, "src/ai/microPhantom/solver_cpp" ) );
 			//bots.add(new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp"));
 
+			bots.add( new MentalSealPO( utt ) );
 			// bots.add(new StrategyTactics(utt));
 			// bots.add(new RandomAI(utt));
 			// bots.add(new RandomBiasedAI());
@@ -130,7 +133,7 @@ public class CompareAllAIsPartiallyObservable {
 			// bots.add(new PORangedRush(utt, new BFSPathFinding()));
 			// bots.add(new POWorkerRush(utt, new BFSPathFinding()));
 			// bots.add(new POHeavyRush(utt, new BFSPathFinding()));
-			bots.add( new POLightRush( utt ) );
+			//bots.add( new POLightRush( utt ) );
 			//bots.add(new PORangedRush(utt));
 			//bots.add(new POWorkerRush(utt));
 			// bots.add(new POHeavyRush(utt));
@@ -172,7 +175,7 @@ public class CompareAllAIsPartiallyObservable {
 				List<AI> bots2 = new LinkedList<>();
 				for( AI bot : bots )
 				{
-					if( bot instanceof BS3_NaiveMCTS )
+					if( bot instanceof BS3_NaiveMCTS || bot instanceof MentalSealPO )
 						bot.preGameAnalysis( gs, 100 );
 					if( bot instanceof AIWithComputationBudget )
 					{

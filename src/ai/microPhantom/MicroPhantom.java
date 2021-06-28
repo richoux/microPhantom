@@ -53,9 +53,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.AlreadyBoundException;
 
 import com.microphantom.protos.SolutionBuffer;
 import com.microphantom.protos.GameStateBuffer;
@@ -174,6 +176,8 @@ public class MicroPhantom extends AbstractionLayerAI
 	UnitType slowest_to_train_type;
 
 	ServerSocketChannel serverSocketChannel;
+	InetAddress inetAddress;
+	int port;
 	
 	/*
 	 * Constructors
@@ -208,25 +212,15 @@ public class MicroPhantom extends AbstractionLayerAI
 
 		try
 		{
-			InetAddress inetAddress = InetAddress.getByName( "localhost" );  
-			int port = 1085;
-			serverSocketChannel = ServerSocketChannel.open();
-			serverSocketChannel.bind( new InetSocketAddress( inetAddress, port ) );
+			inetAddress = InetAddress.getByName( "localhost" );
 		}
-		catch( IOException e1 )
+		catch( UnknownHostException e )
 		{
-			System.out.println( "IO exception in process" );
-			System.out.println( e1.getMessage() );
+			System.out.println( "Unknown Host Exception (but it wouldn't be: it's localhost)" );
+			System.out.println( e.getMessage() );
 		}
 		
-		// try
-		// {
-		// 	writer_log = new PrintWriter( "heatmap.txt", "UTF-8" );
-		// }
-		// catch( IOException e1 )
-		// {
-		// 	System.out.println( "Exception with writer log" );
-		// }
+		port = 1085;
 	}
 
 	/*
@@ -622,7 +616,18 @@ public class MicroPhantom extends AbstractionLayerAI
 	public void gameOver( int winner ) throws Exception
 	{
 		System.out.println("Closing microPhantom");
-		//writer_log.close();
+
+		try
+		{
+			if( serverSocketChannel.isOpen() )
+				serverSocketChannel.close();
+		}
+		catch( IOException e1 )
+		{
+			System.out.println( "IO exception in process" );
+			System.out.println( e1.getMessage() );
+		}
+
 		super.gameOver( winner );
 	}
 
@@ -1173,6 +1178,29 @@ public class MicroPhantom extends AbstractionLayerAI
 
 	protected void decideProduction()
 	{
+		try
+		{
+			if( serverSocketChannel == null || !serverSocketChannel.isOpen() )
+			{
+				serverSocketChannel = ServerSocketChannel.open();
+			}
+		}
+		catch( IOException e1 )
+		{
+			System.out.println( "IO socket building exception" );
+		}
+
+		try
+		{
+			//if( serverSocketChannel.getLocalAddress() == null )
+			serverSocketChannel.bind( new InetSocketAddress( inetAddress, port ) );
+		}
+		catch( AlreadyBoundException e ){ }
+		catch( IOException e )
+		{
+			System.out.println( "Socket binding exception" );
+		}
+
 		if( count_current_enemy.get( worker_type.ID ) != null )
 			observed_worker = count_current_enemy.get( worker_type.ID ).get();
 		else
@@ -1286,11 +1314,13 @@ public class MicroPhantom extends AbstractionLayerAI
 			number_heavy_to_produce = solution.getNumberHeavy();
 			number_light_to_produce = solution.getNumberLight();
 			number_ranged_to_produce = solution.getNumberRanged();
+
+			if( serverSocketChannel.isOpen() )
+				serverSocketChannel.close();
 		}
 		catch( IOException e1 )
 		{
 			System.out.println( "IO exception in process" );
-			System.out.println( e1.getMessage() );
 		}
 		catch( NumberFormatException e3 )
 		{
