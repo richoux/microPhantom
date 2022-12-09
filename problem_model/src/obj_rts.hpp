@@ -33,7 +33,7 @@
 using namespace std;
 using namespace ghost;
 
-class BestComposition : public Objective
+class BestComposition : public Maximize
 {
 	vector<double> _coeff;
 	vector<vector<int>> _samples;

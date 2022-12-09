@@ -31,29 +31,45 @@
 
 #include <vector>
 #include <memory>
-#include <algorithm>
 
-#include "variable.hpp"
-#include "constraint.hpp"
-#include "objective.hpp"
-#include "auxiliary_data.hpp"
+#include "../constraint.hpp"
+#include "../variable.hpp"
 
 namespace ghost
 {
-	struct Model final
+	namespace algorithms
 	{
-		std::vector<Variable> variables;
-		std::vector<std::shared_ptr<Constraint>> constraints;
-		std::shared_ptr<Objective> objective;
-		std::shared_ptr<AuxiliaryData> auxiliary_data;
-		bool permutation_problem;
+		class ErrorProjection
+		{
+		protected:
+			std::string name;
+			int number_variables;
+			int number_constraints;
 
-		Model() = default;
-		
-		Model( std::vector<Variable>&& variables,
-		       const std::vector<std::shared_ptr<Constraint>>&	constraints,
-		       const std::shared_ptr<Objective>& objective,
-		       const std::shared_ptr<AuxiliaryData>& auxiliary_data,
-		       bool permutation_problem );
-	};
+		public:
+			ErrorProjection( std::string&& name )
+				: name( std::move( name ) )
+			{ }
+
+			//! Default virtual destructor.
+			virtual ~ErrorProjection() = default;
+
+			inline std::string get_name() const { return name; }
+			inline void set_number_variables( int num ) { number_variables = num ; }
+			inline void set_number_constraints( int num ) { number_constraints = num ; }
+
+			virtual void initialize_data_structures() {};
+
+			virtual void compute_variable_errors( std::vector<double>& error_variables,
+			                                      const std::vector<Variable>& variables,
+			                                      const std::vector<std::vector<int>>& matrix_var_ctr,
+			                                      const std::vector<std::shared_ptr<Constraint>>& constraints ) = 0;
+
+			virtual void update_variable_errors( std::vector<double>& error_variables,
+			                                     const std::vector<Variable>& variables,
+			                                     const std::vector<std::vector<int>>& matrix_var_ctr,
+			                                     std::shared_ptr<Constraint> constraint,
+			                                     double delta ) = 0;
+		};
+	}
 }

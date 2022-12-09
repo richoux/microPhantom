@@ -30,30 +30,36 @@
 #pragma once
 
 #include <vector>
-#include <memory>
-#include <algorithm>
 
-#include "variable.hpp"
-#include "constraint.hpp"
-#include "objective.hpp"
-#include "auxiliary_data.hpp"
+#include "../search_unit_data.hpp"
+// #include "../macros.hpp"
+#include "../thirdparty/randutils.hpp"
 
 namespace ghost
 {
-	struct Model final
+	namespace algorithms
 	{
-		std::vector<Variable> variables;
-		std::vector<std::shared_ptr<Constraint>> constraints;
-		std::shared_ptr<Objective> objective;
-		std::shared_ptr<AuxiliaryData> auxiliary_data;
-		bool permutation_problem;
+		/*
+		 * VariableHeuristic follows the Strategy design pattern to implement variable selection heuristics.
+		 */
+		class VariableHeuristic
+		{
+		protected:
+			std::string name;
 
-		Model() = default;
-		
-		Model( std::vector<Variable>&& variables,
-		       const std::vector<std::shared_ptr<Constraint>>&	constraints,
-		       const std::shared_ptr<Objective>& objective,
-		       const std::shared_ptr<AuxiliaryData>& auxiliary_data,
-		       bool permutation_problem );
-	};
+		public:
+			VariableHeuristic( std::string&& name )
+				: name( std::move( name ) )
+			{ }
+
+			//! Default virtual destructor.
+			virtual ~VariableHeuristic() = default;
+
+			inline std::string get_name() const { return name; }
+
+			// candidates is a vector of double to be more generic, allowing for instance a vector of errors
+			// rather than a vector of ID, like it would certainly be often the case in practice.
+			virtual int select_variable_candidate( const std::vector<double>& candidates, const SearchUnitData& data, randutils::mt19937_rng& rng ) const = 0;
+		};
+	}
 }

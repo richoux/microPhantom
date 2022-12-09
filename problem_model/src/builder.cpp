@@ -42,7 +42,7 @@ Builder::Builder( int solver_type,
 	  _samples(samples),
 	  _resources(resources),
 	  _nb_barracks(nb_barracks),
-	  _heavy_cost(_heavy_cost),
+	  _heavy_cost(heavy_cost),
 	  _light_cost(light_cost),
 	  _ranged_cost(ranged_cost)
 { }

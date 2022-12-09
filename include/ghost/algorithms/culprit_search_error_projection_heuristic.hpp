@@ -29,31 +29,35 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <algorithm>
-
-#include "variable.hpp"
-#include "constraint.hpp"
-#include "objective.hpp"
-#include "auxiliary_data.hpp"
+#include "error_projection_heuristic.hpp"
 
 namespace ghost
 {
-	struct Model final
+	namespace algorithms
 	{
-		std::vector<Variable> variables;
-		std::vector<std::shared_ptr<Constraint>> constraints;
-		std::shared_ptr<Objective> objective;
-		std::shared_ptr<AuxiliaryData> auxiliary_data;
-		bool permutation_problem;
+		class CulpritSearchErrorProjection : public ErrorProjection
+		{
+			std::vector<std::vector<double>> _error_variables_by_constraints;
+			
+			void compute_variable_errors_on_constraint( const std::vector<Variable>& variables,
+			                                            const std::vector<std::vector<int>>& matrix_var_ctr,
+			                                            std::shared_ptr<Constraint> constraint );
+			
+		public:
+			CulpritSearchErrorProjection();
 
-		Model() = default;
-		
-		Model( std::vector<Variable>&& variables,
-		       const std::vector<std::shared_ptr<Constraint>>&	constraints,
-		       const std::shared_ptr<Objective>& objective,
-		       const std::shared_ptr<AuxiliaryData>& auxiliary_data,
-		       bool permutation_problem );
-	};
+			void initialize_data_structures() override;
+
+			void compute_variable_errors( std::vector<double>& error_variables,
+			                              const std::vector<Variable>& variables,
+			                              const std::vector<std::vector<int>>& matrix_var_ctr,
+			                              const std::vector<std::shared_ptr<Constraint>>& constraints ) override;
+			
+			void update_variable_errors( std::vector<double>& error_variables,
+			                             const std::vector<Variable>& variables,
+			                             const std::vector<std::vector<int>>& matrix_var_ctr,
+			                             std::shared_ptr<Constraint> constraint,
+			                             double delta ) override;
+		};
+	}
 }

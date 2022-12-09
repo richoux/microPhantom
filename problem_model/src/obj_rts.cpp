@@ -38,7 +38,7 @@ BestComposition::BestComposition( const vector<Variable>& variables,
                                   const vector< double >& coeff,
                                   const vector<vector<int>>& samples,
                                   std::function<double(double)> phi )
-	: Objective( variables, true, "Best composition" ),
+	: Maximize( variables, "Best composition" ),
 	  _coeff(coeff),
 	  _samples(samples),
 	  phi(phi)

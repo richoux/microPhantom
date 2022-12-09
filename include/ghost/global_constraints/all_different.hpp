@@ -30,30 +30,48 @@
 #pragma once
 
 #include <vector>
-#include <memory>
-#include <algorithm>
+#include <map>
 
-#include "variable.hpp"
-#include "constraint.hpp"
-#include "objective.hpp"
-#include "auxiliary_data.hpp"
+#include "../variable.hpp"
+#include "../constraint.hpp"
 
 namespace ghost
 {
-	struct Model final
+	namespace global_constraints
 	{
-		std::vector<Variable> variables;
-		std::vector<std::shared_ptr<Constraint>> constraints;
-		std::shared_ptr<Objective> objective;
-		std::shared_ptr<AuxiliaryData> auxiliary_data;
-		bool permutation_problem;
+	/*!
+	 * Implementation of the All Different constraint.
+	 * See http://sofdem.github.io/gccat/gccat/Calldifferent.html
+	 */
+		class AllDifferent : public Constraint
+		{
+			mutable std::map<int,int> _count;
+			
+			double required_error( const std::vector<Variable*>& variables ) const override;
+			
+			double optional_delta_error( const std::vector<Variable*>& variables,
+			                             const std::vector<int>& variable_indexes,
+			                             const std::vector<int>& candidate_values ) const override;
+			
+			void conditional_update_data_structures( const std::vector<Variable*>& variables,
+			                                         int variable_index,
+			                                         int new_value ) override;
 
-		Model() = default;
-		
-		Model( std::vector<Variable>&& variables,
-		       const std::vector<std::shared_ptr<Constraint>>&	constraints,
-		       const std::shared_ptr<Objective>& objective,
-		       const std::shared_ptr<AuxiliaryData>& auxiliary_data,
-		       bool permutation_problem );
-	};
+			double binomial_with_2( int value ) const;
+
+		public:
+			/*!
+			 * Constructor with a vector of variable IDs. This vector is internally used by ghost::Constraint
+			 * to know what variables from the global variable vector it is handling.
+			 * \param variables_index a const reference to a vector of IDs of variables composing the constraint.
+			 */
+			AllDifferent( const std::vector<int>& variables_index );
+			
+			/*!
+			 * Constructor with a vector of variable.
+			 * \param variables a const reference to a vector of variables composing the constraint.
+			 */
+			AllDifferent( const std::vector<Variable>& variables );
+		};
+	}
 }

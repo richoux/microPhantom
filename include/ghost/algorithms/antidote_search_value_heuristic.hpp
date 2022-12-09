@@ -30,30 +30,24 @@
 #pragma once
 
 #include <vector>
-#include <memory>
-#include <algorithm>
 
-#include "variable.hpp"
-#include "constraint.hpp"
-#include "objective.hpp"
-#include "auxiliary_data.hpp"
+#include "value_heuristic.hpp"
 
 namespace ghost
 {
-	struct Model final
+	namespace algorithms
 	{
-		std::vector<Variable> variables;
-		std::vector<std::shared_ptr<Constraint>> constraints;
-		std::shared_ptr<Objective> objective;
-		std::shared_ptr<AuxiliaryData> auxiliary_data;
-		bool permutation_problem;
-
-		Model() = default;
-		
-		Model( std::vector<Variable>&& variables,
-		       const std::vector<std::shared_ptr<Constraint>>&	constraints,
-		       const std::shared_ptr<Objective>& objective,
-		       const std::shared_ptr<AuxiliaryData>& auxiliary_data,
-		       bool permutation_problem );
-	};
+		class AntidoteSearchValueHeuristic : public ValueHeuristic
+		{
+		public:
+			AntidoteSearchValueHeuristic();
+			
+			int select_value_candidates( int variable_to_change,
+			                             const SearchUnitData& data,
+			                             const Model& model,
+			                             const std::map<int, std::vector<double>>& delta_errors,
+			                             double& min_conflict,
+			                             randutils::mt19937_rng& rng ) const override;
+		};
+	}
 }

@@ -95,7 +95,7 @@ int main( int argc, char *argv[] )
 	//         << observed_enemy_light << "/" << observed_enemy_light_in_total << ", "
 	//         << observed_enemy_ranged << "/" << observed_enemy_ranged_in_total << "\n";
 
-	int observed_enemy_worker = std::max( game_state.initial_enemy_worker(), game_state.observed_enemy_worker() );
+	// int observed_enemy_worker = std::max( game_state.initial_enemy_worker(), game_state.observed_enemy_worker() );
 
 	// Estimate how much resources the opponent has.
 	double mean_distance;

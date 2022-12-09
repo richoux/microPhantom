@@ -26,7 +26,7 @@ import rts.PlayerAction;
 import rts.units.UnitTypeTable;
 import util.XMLWriter;
 
-import GNS.MentalSealPO;
+//import GNS.MentalSealPO;
 
 /**
  *
@@ -74,8 +74,8 @@ public class POGameVisualSimulationTest {
 		AI ai1 = new MicroPhantom(utt, "src/ai/microPhantom/solver_cpp");
 		//AI ai1 = new RandomMicroPhantom(utt, "src/ai/microPhantom/solver_cpp");
 
-		AI ai2 = new MentalSealPO(utt);
-		//AI ai2 = new POLightRush(utt, new BFSPathFinding());
+		//AI ai2 = new MentalSealPO(utt);
+		AI ai2 = new POLightRush(utt, new BFSPathFinding());
 		//AI ai2 = new POLightRush(utt);
 		//AI ai2 = new RandomAI();
 		//AI ai2 = new POWorkerRush(utt, new BFSPathFinding());
